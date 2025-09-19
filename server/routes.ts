@@ -45,34 +45,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { message } = chatRequestSchema.parse(req.body);
       console.log("Received message:", message);
       
-      // Get all cases for context and sanitize for ASCII
+      // Check if OpenAI API key is available
+      if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-placeholder') {
+        return res.status(200).json({
+          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan OpenAI API-avain toimiakseen. Voit tarkastella case-esimerkkejä sivun vasemmasta reunasta.'
+        });
+      }
+      
+      // Get all cases for context with minimal normalization
       const cases = await storage.getAllCases();
-      const sanitizeText = (text: string) => {
+      const normalizeText = (text: string) => {
+        // Only normalize problematic characters that cause header encoding issues
         return text
-          .replace(/[–—]/g, '-')           // en-dash, em-dash to hyphen
-          .replace(/[""]/g, '"')           // smart quotes to regular quotes
-          .replace(/['']/g, "'")           // smart apostrophes to regular apostrophes
-          .replace(/[^\x00-\x7F]/g, '?')   // Replace any non-ASCII chars with ?
-          .normalize('NFD')                // Decompose accented characters
-          .replace(/[\u0300-\u036f]/g, '') // Remove accents
+          .replace(/[\u2013\u2014]/g, '-')   // Replace em-dash and en-dash with regular dash
+          .replace(/[\u201C\u201D]/g, '"')  // Replace smart quotes with regular quotes
+          .replace(/[\u2018\u2019]/g, "'")  // Replace smart apostrophes with regular apostrophes
           .replace(/\s+/g, ' ')            // Normalize whitespace
           .trim();
       };
       
       const casesContext = cases.map(c => 
-        `${sanitizeText(c.company)} (${sanitizeText(c.country)}, ${sanitizeText(c.industry)}): ${sanitizeText(c.full_text)}`
+        `${normalizeText(c.company)} (${normalizeText(c.country)}, ${normalizeText(c.industry)}): ${normalizeText(c.full_text)}`
       ).join('\n\n');
 
-      const systemPrompt = `You are an AI expert helping humm.fi team understand successful AI customer service implementations. Always respond in Finnish and focus on practical implementation tips, technical details, cost savings and benefits. Keep answers informative but concise (max 200 words).`;
+      // Create compact case summaries to avoid encoding issues while preserving context
+      const compactCases = cases.map(c => {
+        const company = normalizeText(c.company);
+        const country = normalizeText(c.country);
+        const industry = normalizeText(c.industry);
+        // Extract key metrics and benefits from full text (first 300 chars to keep prompt manageable)
+        const summary = normalizeText(c.full_text.substring(0, 300));
+        return `${company} (${country}, ${industry}): ${summary}...`;
+      }).join('\n\n');
 
-      const response = await openai.chat.completions.create({
-        model: GPT_MODEL,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: sanitizeText(message) }
-        ],
-        max_completion_tokens: 500,
-      });
+      const systemPrompt = `You are an AI expert helping humm.fi team understand successful AI customer service implementations.
+
+You have information about these 6 successful cases:
+
+${compactCases}
+
+Always respond in Finnish and focus on:
+1. Practical implementation tips for humm.fi
+2. Technical details from the cases
+3. Cost savings and benefits mentioned
+4. Learning points and challenges
+5. Applicability to Finnish companies
+
+If the question is not related to these cases, tell that you can only help with these 6 AI customer service implementations.
+
+Keep answers informative but concise (max 200 words).`;
+
+      // Try OpenAI request with retry for transient failures
+      let response;
+      try {
+        response = await openai.chat.completions.create({
+          model: GPT_MODEL,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: normalizeText(message) }
+          ],
+          max_tokens: 500,
+        });
+      } catch (error: any) {
+        console.error("OpenAI request failed:", error.name, error.message);
+        // Return graceful fallback instead of 500
+        return res.status(200).json({
+          response: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit silti tarkastella case-esimerkkejä sivun vasemmasta reunasta ja kokeilla kysyä uudelleen hetken päästä.'
+        });
+      }
 
       const aiResponse = response.choices[0].message.content || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
 
