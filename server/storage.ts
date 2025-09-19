@@ -1,24 +1,29 @@
-import { type Case, type InsertCase, type ChatMessage, type InsertChatMessage } from "@shared/schema";
+import { type Case, type InsertCase, type Trend, type InsertTrend, type ChatMessage, type InsertChatMessage } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
   getAllCases(): Promise<Case[]>;
   getCaseById(id: string): Promise<Case | undefined>;
   createCase(case_: InsertCase): Promise<Case>;
+  getAllTrends(): Promise<Trend[]>;
+  getTrendsByCategory(category: string): Promise<Trend[]>;
   saveChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
   getChatHistory(): Promise<ChatMessage[]>;
 }
 
 export class MemStorage implements IStorage {
   private cases: Map<string, Case>;
+  private trends: Map<string, Trend>;
   private chatMessages: Map<string, ChatMessage>;
 
   constructor() {
     this.cases = new Map();
+    this.trends = new Map();
     this.chatMessages = new Map();
     
-    // Initialize with the case data from the provided text
+    // Initialize with the case data and trend data
     this.initializeCases();
+    this.initializeTrends();
   }
 
   private initializeCases() {
@@ -169,13 +174,101 @@ export class MemStorage implements IStorage {
 
   async saveChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
     const id = randomUUID();
-    const message: ChatMessage = { ...insertMessage, id };
+    const message: ChatMessage = { 
+      ...insertMessage, 
+      id,
+      context_type: insertMessage.context_type || "general"
+    };
     this.chatMessages.set(id, message);
     return message;
   }
 
+  async getAllTrends(): Promise<Trend[]> {
+    return Array.from(this.trends.values());
+  }
+
+  async getTrendsByCategory(category: string): Promise<Trend[]> {
+    return Array.from(this.trends.values()).filter(trend => trend.category === category);
+  }
+
   async getChatHistory(): Promise<ChatMessage[]> {
     return Array.from(this.chatMessages.values()).sort((a, b) => a.timestamp - b.timestamp);
+  }
+
+  private initializeTrends() {
+    const trendsData: InsertTrend[] = [
+      {
+        category: "customer_understanding",
+        title: "Tekoäly syväluotaa asiakasdatan",
+        description: "AI-mallit analysoivat valtavia määriä asiakasdataa löytäen merkityksellisiä kuvioita asiakaspalautteiden, tukipyyntöjen ja keskustelulogien joukosta.",
+        key_points: [
+          "Generatiiviset kielimallit tiivistävät tuhansia asiakaspalautteita nopeasti",
+          "Toistuvien teemojen ja ongelmakohtien paljastaminen automaattisesti",
+          "Zendesk luokittelee tukipyynnöt aiheen, kielen ja sentimentin perusteella",
+          "Reaaliaikainen asiakasymmärrys ennennäkemättömälle syvyydelle"
+        ],
+        examples: ["Zendesk"],
+        full_content: "Nykyiset AI-mallit - mukaan lukien suuret kielimallit (LLM) ja monimodaaliset mallit - pystyvät analysoimaan valtavia määriä asiakasdataa (kuten tekstiä, ääntä ja kuvaa) ja löytämään sieltä merkityksellisiä kuvioita. Esimerkiksi asiakaspalautteet, tukipyynnöt ja keskustelulokit sisältävät jäsentämätöntä tietoa, jonka käsittelyyn AI tuo tehoa. Generatiiviset kielimallit voivat tiivistää tuhansia asiakaspalautteita nopeasti ja paljastaa toistuvat teemat tai ongelmakohdat, mikä olisi manuaalisesti lähes mahdotonta."
+      },
+      {
+        category: "customer_understanding",
+        title: "Asiakassegmentointi ja churn-ennustaminen",
+        description: "Koneoppiminen ennustaa asiakasarvoa, tunnistaa churn-riskejä ja analysoi jäsentämätöntä tekstidataa luonnollisen kielen käsittelyn avulla.",
+        key_points: [
+          "Ennakoiva analytiikka yhdistää historiatiedot ja nykykäyttäytymisen",
+          "Turhautumisen ja tyytymättömyyden merkkien tunnistaminen teksteistä",
+          "Proaktiivinen puuttuminen ennen asiakkaan menettämistä",
+          "Miljoonasäästöt tilausliiketoiminnassa ja telecom-sektorilla"
+        ],
+        examples: ["Zendesk"],
+        full_content: "Vuonna 2025 monet yritykset hyödyntävät AI:ta esimerkiksi asiakassegmentoinnissa, asiakasarvon ennustamisessa sekä churn-riskin tunnistamisessa. Ennakoiva analytiikka pystyy yhdistämään historiatietoja ja nykykäyttäytymistä paljastaakseen, mitkä asiakkaat ovat vaarassa lähteä kilpailijalle. Uudet työkalut analysoivat jopa jäsentämätöntä tekstidataa - kuten asiakasviestejä - luonnollisen kielen käsittelyn avulla: ne seulovat tuhansia avainsanoja ja lauseita havaitakseen turhautumisen tai tyytymättömyyden merkkejä."
+      },
+      {
+        category: "customer_understanding",
+        title: "Hyperpersoonallistaminen reaaliajassa",
+        description: "Jokaiselle asiakkaalle luodaan yksilöllinen kokemus reaaliaikaisen data-analyysin avulla, hyödyntäen selaushistoriaa, ostotietoja ja preferenssejä.",
+        key_points: [
+          "85% kuluttajista odottaa yritysten ennakoivan tarpeitaan etukäteen",
+          "Yksilöidyt kokemukset tuottavat 40% enemmän liikevaihtoa massalähestymiseen verrattuna",
+          "80% kuluttajista todennäköisemmin ostoaikeissa personoitujen kokemusten kanssa",
+          "Netflix AI-suosittelu tuottaa yli miljardi dollaria lisävuosituloa"
+        ],
+        examples: ["Netflix", "Starbucks", "Amazon Rufus"],
+        full_content: "Pelkkä personointi ei enää riitä - nyt pyritään hyperpersoonallistamiseen, jossa jokaiselle asiakkaalle luodaan yksilöllinen kokemus reaaliaikaisen data-analyysin avulla. AI:n tukema hyperpersoonallistaminen tarkoittaa, että järjestelmät hyödyntävät mm. asiakkaan selaushistoriaa, ostotietoja, sijaintia ja muita preferenssejä räätälöidäkseen sisällön ja viestit juuri kyseiselle henkilölle sopiviksi."
+      },
+      {
+        category: "automation",
+        title: "Generatiiviset tekoälymallit asiakaspalvelussa",
+        description: "Suuret kielimallit mullistavat asiakaspalvelun automaation laadun tuottamalla dynaamisia, ihmismäisiä vastauksia asiakkaiden kysymyksiin.",
+        key_points: [
+          "Yli 80% yrityksistä ottaa käyttöön generatiivista tekoälyä vuonna 2025",
+          "Pankkikonsernin chatbot parani 20% seitsemässä viikossa",
+          "51% asiakkaista suosii botti-palvelua välittömiin vastauksiin",
+          "95% asiakaskohtaamisista sisältää AI-komponentin vuoteen 2025"
+        ],
+        examples: ["OpenAI GPT-sarja"],
+        full_content: "Generatiivinen tekoäly - erityisesti suuret kielimallit kuten OpenAI:n GPT-sarja - on mullistanut asiakaspalvelun automaation laadun. Toisin kuin vanhat sääntöpohjaiset chatbotit, uudet LLM-mallit tuottavat dynaamisia, ihmismäisiä vastauksia asiakkaiden kysymyksiin. Vuonna 2025 yli 80 % yrityksistä on jo ottanut käyttöön tai suunnittelee ottavansa käyttöön generatiivista tekoälyä asiakasvuorovaikutuksessaan."
+      },
+      {
+        category: "automation",
+        title: "Autonomiset agentit ja työnkulkujen orkestrointi",
+        description: "Autonomiset tekoälyagentit hoitavat tehtäviä itsenäisesti ennalta asetettujen tavoitteiden mukaisesti, suunnitellen ja suorittaen monivaiheisia prosesseja.",
+        key_points: [
+          "Agentit käyttävät tekoälyä tehtävien suorittamiseen ilman tarkkoja käyttäjän syötteitä",
+          "Pystyvät laatimaan suunnitelman ja käyttämään erilaisia työkaluja",
+          "Salesforce Agentforce tarjoaa 100 tekoälybotin kirjaston",
+          "Talkdesk AI Agents for Retail vähittäiskaupalle"
+        ],
+        examples: ["Salesforce Agentforce", "Talkdesk AI Agents"],
+        full_content: "Yksi vuoden 2025 puhutuimmista edistysaskeleista on agenttiteknologia - toisin sanoen autonomiset tekoälyagentit, jotka hoitavat tehtäviä itsenäisesti ennalta asetettujen tavoitteiden mukaisesti. Aikaisemmat chatbotit odottivat käyttäjän seuraavaa viestiä, mutta agenttimainen AI voi omatoimisesti suunnitella ja suorittaa useita askeleita sisältäviä prosesseja."
+      }
+    ];
+
+    trendsData.forEach(trendData => {
+      const id = randomUUID();
+      const trend: Trend = { ...trendData, id };
+      this.trends.set(id, trend);
+    });
   }
 }
 

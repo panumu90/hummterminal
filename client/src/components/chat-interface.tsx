@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bot, User, Send } from "lucide-react";
+import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -14,15 +14,51 @@ interface ChatMessage {
   timestamp: number;
 }
 
+type ContextType = "strategic" | "practical" | "finnish" | "planning" | "general";
+
+const contextConfig = {
+  strategic: {
+    label: "Strategiset trendit",
+    icon: TrendingUp,
+    color: "bg-blue-500 hover:bg-blue-600",
+    description: "2025 AI-trendit ja tulevaisuuden näkymät"
+  },
+  practical: {
+    label: "Käytännön toteutus",
+    icon: Wrench,
+    color: "bg-green-500 hover:bg-green-600",
+    description: "Konkreettiset case-esimerkit ja tulokset"
+  },
+  finnish: {
+    label: "Suomalainen näkökulma",
+    icon: MapPin,
+    color: "bg-orange-500 hover:bg-orange-600",
+    description: "Soveltaminen Suomen markkinoilla"
+  },
+  planning: {
+    label: "Strateginen suunnittelu",
+    icon: Target,
+    color: "bg-purple-500 hover:bg-purple-600",
+    description: "Humm.fi:n seuraavat askeleet"
+  },
+  general: {
+    label: "Yleinen",
+    icon: Bot,
+    color: "bg-gray-500 hover:bg-gray-600",
+    description: "Yleiset kysymykset"
+  }
+};
+
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      content: "Hei! Voin kertoa lisää näistä AI-asiakaspalvelutoteutuksista. Kysy esimerkiksi teknisistä yksityiskohdista, kustannuksista, tai toteutusvinkeistä humm.fi:lle.",
+      content: "Hei! Voin kertoa lisää näistä AI-asiakaspalvelutoteutuksista. Valitse painikkeesta aihepiiri joka kiinnostaa sinua eniten, niin osaan antaa tarkempia vastauksia.",
       isUser: false,
       timestamp: Date.now()
     }
   ]);
   const [inputValue, setInputValue] = useState("");
+  const [selectedContext, setSelectedContext] = useState<ContextType>("general");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -36,7 +72,10 @@ export function ChatInterface() {
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
-      const response = await apiRequest("POST", "/api/chat", { message });
+      const response = await apiRequest("POST", "/api/chat", { 
+        message,
+        context_type: selectedContext
+      });
       return response.json();
     },
     onSuccess: (data) => {
@@ -91,8 +130,33 @@ export function ChatInterface() {
           </div>
         </div>
 
+        {/* Context Selection */}
+        <div className="border-b border-border p-4">
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(contextConfig).map(([key, config]) => {
+              const IconComponent = config.icon;
+              return (
+                <Button
+                  key={key}
+                  variant={selectedContext === key ? "default" : "outline"}
+                  size="sm"
+                  className={`h-8 text-xs ${selectedContext === key ? config.color : ""}`}
+                  onClick={() => setSelectedContext(key as ContextType)}
+                  data-testid={`context-${key}`}
+                >
+                  <IconComponent className="h-3 w-3 mr-1" />
+                  {config.label}
+                </Button>
+              );
+            })}
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Valittu: {contextConfig[selectedContext].description}
+          </p>
+        </div>
+
         {/* Chat Messages */}
-        <div className="h-96 overflow-y-auto p-4 space-y-4" data-testid="chat-messages">
+        <div className="h-80 overflow-y-auto p-4 space-y-4" data-testid="chat-messages">
           {messages.map((message, index) => (
             <div key={index} className="chat-message" data-testid={`message-${index}`}>
               <div className={`flex items-start space-x-3 ${message.isUser ? 'flex-row-reverse' : ''}`}>
