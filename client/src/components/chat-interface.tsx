@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target } from "lucide-react";
+import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +15,66 @@ interface ChatMessage {
 }
 
 type ContextType = "strategic" | "practical" | "finnish" | "planning" | "general";
+
+interface DataCategory {
+  id: string;
+  label: string;
+  icon: typeof Bot;
+  description: string;
+  color: string;
+}
+
+const dataCategories: DataCategory[] = [
+  {
+    id: "autonomous-agents",
+    label: "Autonomiset agentit",
+    icon: Bot,
+    description: "AI-agentit ja automaatio",
+    color: "bg-blue-500"
+  },
+  {
+    id: "ai-investments",
+    label: "AI-investoinnit",
+    icon: DollarSign,
+    description: "ROI ja tuotto-odotukset",
+    color: "bg-green-500"
+  },
+  {
+    id: "hyperpersonalization",
+    label: "Personointi",
+    icon: Crosshair,
+    description: "Hyperpersoonallistaminen",
+    color: "bg-purple-500"
+  },
+  {
+    id: "proactive-service",
+    label: "Proaktiivinen palvelu",
+    icon: Zap,
+    description: "Ennakoiva asiakaspalvelu",
+    color: "bg-orange-500"
+  },
+  {
+    id: "finnish-cases",
+    label: "Suomalaiset toteutukset",
+    icon: MapPin,
+    description: "Case-esimerkit Suomesta",
+    color: "bg-red-500"
+  },
+  {
+    id: "international-cases",
+    label: "Kansainväliset toteutukset",
+    icon: Globe,
+    description: "Globaalit case-esimerkit",
+    color: "bg-indigo-500"
+  },
+  {
+    id: "by-industry",
+    label: "Toimialat",
+    icon: Building,
+    description: "Toteutukset toimialoittain",
+    color: "bg-teal-500"
+  }
+];
 
 const contextConfig = {
   strategic: {
@@ -61,6 +121,40 @@ export function ChatInterface() {
   const [selectedContext, setSelectedContext] = useState<ContextType>("general");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  const categorySummaryMutation = useMutation({
+    mutationFn: async (categoryId: string) => {
+      const response = await apiRequest("GET", `/api/categories/${categoryId}/summary`);
+      return response.json();
+    },
+    onSuccess: (data, categoryId) => {
+      const category = dataCategories.find(c => c.id === categoryId);
+      setMessages(prev => [...prev, {
+        content: data.summary,
+        isUser: false,
+        timestamp: Date.now()
+      }]);
+      // Set context based on category
+      if (['autonomous-agents', 'ai-investments', 'hyperpersonalization', 'proactive-service'].includes(categoryId)) {
+        setSelectedContext('strategic');
+      } else if (categoryId === 'finnish-cases') {
+        setSelectedContext('finnish');
+      } else if (['international-cases', 'by-industry'].includes(categoryId)) {
+        setSelectedContext('practical');
+      }
+    },
+    onError: () => {
+      toast({
+        title: "Virhe",
+        description: "Yhteenvedon lataaminen epäonnistui.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleCategoryClick = (categoryId: string) => {
+    categorySummaryMutation.mutate(categoryId);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -130,8 +224,33 @@ export function ChatInterface() {
           </div>
         </div>
 
+        {/* Data Category Buttons */}
+        <div className="border-b border-border p-4">
+          <h4 className="text-sm font-medium mb-3 text-foreground">Tutustu dataan kategorioittain:</h4>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            {dataCategories.map((category) => {
+              const IconComponent = category.icon;
+              return (
+                <Button
+                  key={category.id}
+                  variant="outline"
+                  size="sm"
+                  className={`h-12 text-xs flex flex-col items-center justify-center gap-1 hover:${category.color} hover:text-white transition-colors`}
+                  onClick={() => handleCategoryClick(category.id)}
+                  disabled={categorySummaryMutation.isPending}
+                  data-testid={`category-${category.id}`}
+                >
+                  <IconComponent className="h-4 w-4" />
+                  <span className="text-center leading-tight">{category.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Context Selection */}
         <div className="border-b border-border p-4">
+          <h4 className="text-sm font-medium mb-2 text-foreground">Kysymystyyppi:</h4>
           <div className="flex flex-wrap gap-2">
             {Object.entries(contextConfig).map(([key, config]) => {
               const IconComponent = config.icon;
@@ -168,9 +287,9 @@ export function ChatInterface() {
                   )}
                 </div>
                 <div className={`${message.isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'} rounded-lg p-3 max-w-xs`}>
-                  <p className={`text-sm ${message.isUser ? '' : 'text-muted-foreground'}`}>
+                  <div className={`text-sm ${message.isUser ? '' : 'text-muted-foreground'} whitespace-pre-wrap`}>
                     {message.content}
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>

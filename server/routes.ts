@@ -53,6 +53,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get category summary
+  app.get("/api/categories/:category/summary", async (req, res) => {
+    try {
+      const { category } = req.params;
+      const cases = await storage.getAllCases();
+      const trends = await storage.getAllTrends();
+      
+      let summary = "";
+      
+      // Finnish AI Trends Categories
+      if (category === "autonomous-agents") {
+        const agentTrends = trends.filter(t => t.category === "autonomous_agents");
+        summary = "🤖 **Autonomiset AI-agentit tehostavat asiakaspalvelua**\n\n" +
+          "• AI-agentit tulevat tavanomaisiksi osaksi asiakaspalvelua\n" +
+          "• Integroituvat asiakasviestintaalustoihin hoitamaan yksinkertaisia kyselyitä\n" +
+          "• Lyhentävät jonotusaikoja ja mahdollistavat hyperpersoonoidun tuen\n" +
+          "• Monista kuluttajista tulee AI-kanavan 'natiiveja'\n\n" +
+          "💡 Yrityksillä ilman toimivaa AI-palvelukanavaa on riski asiakasuskollisuuden heikkenemiseen.";
+      } else if (category === "ai-investments") {
+        summary = "💰 **AI-investointien tuotto-odotukset kypsyvät**\n\n" +
+          "• 49% AI-johtajista odottaa tuloksia 1-3 vuodessa\n" +
+          "• 44% odottaa tuloksia 3-5 vuodessa\n" +
+          "• Hype on laantumassa ja johtajat painottavat realistisempia mittareita\n" +
+          "• Ennakoiva AI tulee takaisin generatiivisen AI:n rinnalle\n\n" +
+          "⚠️ Jopa 30% AI-projekteista saatetaan hylätä huonon datan tai kustannusten vuoksi.";
+      } else if (category === "hyperpersonalization") {
+        summary = "🎯 **Hyperpersoonallistaminen ja datan laatu**\n\n" +
+          "• Generatiivinen AI ja monimodaaliset mallit mahdollistavat yksilöllisen vuorovaikutuksen\n" +
+          "• Analysoidaan ostotietoja, selaushistoriaa ja tunnesävyä\n" +
+          "• Palvelut ovat entistä henkilökohtaisempia ja tehokkaampia\n" +
+          "• Datan laatu on kriittinen menestyksen edellytys\n\n" +
+          "📊 AI ei pysty tarjoamaan täyttä asiakasymmärrystä, jos data on hajaantuneena eri järjestelmiin.";
+      } else if (category === "proactive-service") {
+        summary = "🔮 **Proaktiivinen kanavien yli ulottuva palvelu**\n\n" +
+          "• Siirtyminen reaktiivisesta proaktiiviseen asiakkaan ilahduttamiseen\n" +
+          "• AI yhdistää eri järjestelmiä tarjoamaan ajantasaista apua\n" +
+          "• Reaaliaikainen kanavien välinen näkyvyys mahdollistaa sentimentin ymmärtämisen\n" +
+          "• Esim. lentoyhtiöt rebookaavat lennot automaattisesti\n\n" +
+          "🎪 Intentional channel strategies ovat välttämättömiä menestymiselle.";
+      }
+      
+      // Case Study Categories
+      else if (category === "finnish-cases") {
+        const finnishCases = cases.filter(c => c.country === "Suomi" || c.country === "Suomi/Pohjoismaat");
+        summary = "🇫🇮 **Suomalaiset AI-asiakaspalvelutoteutukset**\n\n" +
+          finnishCases.map(c => 
+            `**${c.company}** (${c.industry})\n` +
+            `${c.description}\n` +
+            `${Array.isArray(c.key_metrics) ? c.key_metrics.map((m: any) => `• ${m.label}: ${m.value}`).join('\n') : ''}\n`
+          ).join('\n') +
+          "\n🌟 Suomalaiset yritykset ovat ottaneet AI:n hyvin käyttöön asiakaspalvelussa.";
+      } else if (category === "international-cases") {
+        const intlCases = cases.filter(c => c.country !== "Suomi" && c.country !== "Suomi/Pohjoismaat");
+        summary = "🌍 **Kansainväliset AI-toteutukset**\n\n" +
+          intlCases.slice(0, 4).map(c => 
+            `**${c.company}** (${c.country}, ${c.industry})\n` +
+            `${c.description}\n` +
+            `${Array.isArray(c.key_metrics) ? c.key_metrics.map((m: any) => `• ${m.label}: ${m.value}`).join('\n') : ''}\n`
+          ).join('\n') +
+          "\n🚀 Globaalit johtajat näyttävät tietä AI-asiakaspalvelussa.";
+      } else if (category === "by-industry") {
+        const industries = Array.from(new Set(cases.map(c => c.industry)));
+        summary = "🏭 **AI-toteutukset toimialoittain**\n\n" +
+          industries.map(industry => {
+            const industryCases = cases.filter(c => c.industry === industry);
+            return `**${industry}**: ${industryCases.length} toteutusta\n` +
+              industryCases.slice(0, 2).map(c => `• ${c.company}: ${c.solution_name}`).join('\n');
+          }).join('\n\n') +
+          "\n\n📈 AI soveltuu monille eri toimialoille.";
+      }
+      
+      if (!summary) {
+        return res.status(404).json({ error: "Category not found" });
+      }
+      
+      res.json({ summary });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch category summary" });
+    }
+  });
+
   // Chat endpoint
   app.post("/api/chat", async (req, res) => {
     try {
@@ -70,7 +151,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cases = await storage.getAllCases();
       const trends = await storage.getAllTrends();
       const normalizeText = (text: string) => {
-        // Aggressive ASCII normalization for OpenAI ByteString compatibility
+        // Targeted normalization to prevent ByteString errors while preserving Finnish
         return text
           // Replace Unicode punctuation and symbols
           .replace(/[\u2013\u2014\u2212]/g, '-')   // em-dash, en-dash, minus sign
@@ -79,17 +160,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .replace(/[\u2026]/g, '...')          // ellipsis
           .replace(/[\u00A0\u202F]/g, ' ')       // non-breaking spaces
           .replace(/[\u2000-\u206F]/g, ' ')      // general punctuation
-          // Convert accented characters to basic ASCII
-          .replace(/[äåàáâãæ]/g, 'a')
-          .replace(/[ÄÅÀÁÂÃÆ]/g, 'A')
-          .replace(/[öòóôõø]/g, 'o')
-          .replace(/[ÖÒÓÔÕØ]/g, 'O')
-          .replace(/[ü]/g, 'u')
-          .replace(/[Ü]/g, 'U')
-          .replace(/[ç]/g, 'c')
-          .replace(/[Ç]/g, 'C')
-          // Remove any remaining non-ASCII characters (code > 127)
-          .replace(/[^\x00-\x7F]/g, '')
+          // Keep Finnish characters ä, ö, å essential for Finnish content quality
+          // Only remove other problematic characters that cause ByteString issues
           .replace(/\s+/g, ' ')                // Normalize whitespace
           .trim();
       };
@@ -230,7 +302,17 @@ Keep answers informative but concise (max 200 words).`;
       }
 
       // Final sanitization of systemPrompt before OpenAI call
-      systemPrompt = normalizeText(systemPrompt);
+      // Targeted sanitization to prevent ByteString errors while preserving Finnish
+      systemPrompt = systemPrompt
+        .replace(/[\u2013\u2014\u2212]/g, '-')     // en-dash, em-dash, minus sign
+        .replace(/[\u201C\u201D]/g, '"')          // smart quotes  
+        .replace(/[\u2018\u2019]/g, "'")          // smart apostrophes
+        .replace(/[\u2026]/g, '...')            // ellipsis
+        .replace(/[\u2022]/g, '-')             // bullet points to safe ASCII dash
+        // Keep Finnish characters ä, ö, å as they are essential for Finnish content
+        // Only remove other problematic Unicode that causes ByteString issues
+        .replace(/\s+/g, ' ')                // normalize whitespace
+        .trim();
       
       // Debug logging for encoding issues (temporary)
       if (context_type === 'strategic') {
