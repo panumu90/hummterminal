@@ -197,6 +197,90 @@ export class MemStorage implements IStorage {
 
   private initializeTrends() {
     const trendsData: InsertTrend[] = [
+      // Finnish AI trends from comprehensive market analysis
+      {
+        category: "autonomous_agents",
+        title: "Autonomiset AI-agentit tehostavat asiakaspalvelua",
+        description: "AI-agentit tulevat tavanomaisiksi osaksi asiakaspalvelua integroituen asiakasviestintaalustoihin ja hoitaen pieniarvoisia tehtavia taysin itsenaisesti.",
+        key_points: [
+          "Integroituvat asiakasviestintaalustoihin hoitamaan yksinkertaisia kyselyita",
+          "Lyhentavat jonotusaikoja ja mahdollistavat hyperpersoonoidun tuen",
+          "Monista kuluttajista tulee AI-kanavan natiiveja",
+          "Yrityksilla ilman toimivaa AI-palvelukanavaa riski asiakasuskollisuuden heikkenemiseen"
+        ],
+        examples: ["CCaaS- ja UCaaS-ratkaisut", "Proaktiivinen asiakaspalvelu"],
+        full_content: "Mila D'Antonio (Omdia) ennustaa, etta autonomiset AI-agentit tulevat tavanomaisiksi osaksi asiakaspalvelua. Ne integroituvat asiakasviestintaalustoihin ja hoitavat pieniarvoisia tehtavia - esimerkiksi yksinkertaisia kyselyita tai tilausten seurantaa - taysin itsenaisesti. Nain ne lyhentavat jonotusaikoja ja mahdollistavat hyperpersoonoidun tuen. Zeus Kerravala muistuttaa, etta monista kuluttajista tulee AI-kanavan natiiveja: he asioivat mieluummin tekoalyagentin kanssa yksinkertaisissa asioissa."
+      },
+      {
+        category: "ai_investments",
+        title: "AI-investointien tuotto-odotukset kypsyvat",
+        description: "Forresterin AI-pulse-tutkimuksen mukaan 49% AI-johtajista odottaa investointien tuottavan tulosta 1-3 vuodessa ja 44% 3-5 vuodessa. Hype on laantumassa ja johtajat painottavat realistisempia liiketoimintalahtöisia mittareita.",
+        key_points: [
+          "49% AI-johtajista odottaa tuloksia 1-3 vuodessa",
+          "44% odottaa tuloksia 3-5 vuodessa",
+          "Ennakoiva AI tulee takaisin generatiivisen AI:n rinnalle",
+          "50% kayttotapauksista hyodyntaa perinteisia koneoppimisalgoritmeja",
+          "30% AI-projekteista saatetaan hylata huonon datan tai kustannusten vuoksi"
+        ],
+        examples: ["Webex", "Metrigy", "Forrester"],
+        full_content: "Christina McAllister (Forrester) toteaa, etta aiemmin generatiivinen AI sai paljon huomiota, mutta vuonna 2025 ennakoiva AI tulee takaisin: jopa 50% kayttotapauksista hyodyntaa perinteisia koneoppimisalgoritmeja, koska ne suorittavat tietyt tehtavat tehokkaammin tai taydentavat generatiivista AI:ta. Vaikka lahes 60% yrityksista on ottanut AI:n laajalti kayttoon, vain noin puolet kokee nykyisen teknologiansa tuottavan toivotun asiakaskokemuksen."
+      },
+      {
+        category: "hyperpersonalization",
+        title: "Hyperpersoonalistaminen ja datan laatu",
+        description: "Generatiivinen AI ja monimodaaliset mallit mahdollistavat yksilollisen vuorovaikutuksen jokaiselle asiakkaalle analysoimalla ostotietoja, selaushistoriaa ja tunnesavya.",
+        key_points: [
+          "AI mahdollistaa hyperpersoonalisoinnin, automatisoidut tyonkulut ja tunteiden tunnistuksen",
+          "Palvelut ovat entista henkilokohtaisempia ja tehokkaampia",
+          "Generatiivisen AI:n avulla voidaan toimittaa raataloitya sisaltoa skaalauttavasti",
+          "Datan laatu on kriittinen menestyksen edellytys",
+          "Datan siilot on purettava taydellisen asiakasymmartyksen saavuttamiseksi"
+        ],
+        examples: ["NICE", "Genesys", "ServiceNow"],
+        full_content: "NICE:n mukaan AI mahdollistaa hyperpersoonalisoinnin, automatisoidut tyonkulut, tunteiden tunnistuksen ja ennakoivan analytiikan, jolloin palvelut ovat entista henkilokohtaisempia ja tehokkaampia. Asiantuntijat painottavat myos datan laatua. Cathy Mauzaize (ServiceNow) toteaa, etta AI-hankkeet kaatuvat usein datan puhtauden puutteeseen; onnistuminen vaatii siirtymista proof-of-conceptista proof-of-valueen todellisella datalla."
+      },
+      {
+        category: "proactive_service",
+        title: "Proaktiivinen kanavien yli ulottuva palvelu",
+        description: "AI ja automaatio siirtyvat reaktiivisesta ongelmanratkaisusta kohti proaktiivista asiakkaan ilahduttamista. Esimerkkeja ovat lentoyhtiöt, jotka rebookaavat lennot automaattisesti.",
+        key_points: [
+          "Siirtyminen reaktiivisesta proaktiiviseen asiakkaan ilahduttamiseen",
+          "AI voi yhdistaa eri jarjestelmia tarjoamaan ajantasaista apua",
+          "Reaaliaikainen kanavien valinen nakyvyys mahdollistaa sentimentin ymmartamisen",
+          "Keskeista on ymmartaa asiakkaan profiili, mieltymykset ja aikomukset",
+          "Intentional channel strategies ovat valttamattomia"
+        ],
+        examples: ["Lentoyhtiöt", "Terveydenhuolto", "Genesys"],
+        full_content: "Nextivan Kate Hodgins huomauttaa, etta AI ja automaatio siirtyvat reaktiivisesta ongelmanratkaisusta kohti proaktiivista asiakkaan ilahduttamista. Esimerkkeja ovat lentoyhtiöt, jotka rebookaavat lennot automaattisesti ja ilmoittavat asiakkaille, tai terveydenhuollon toimijat, jotka muistuttavat ajoissa sovituista ajoista. Keskeista on ymmartaa asiakkaan profiili, mieltymykset ja aikomukset ja kayttaa naita tietoja oikea-aikaiseen yhteydenottoon."
+      },
+      {
+        category: "human_ai_collaboration",
+        title: "Ihmisen ja tekoalyn yhteistyo",
+        description: "Asiakkaat odottavat yha ihmiskosketusta monimutkaisissa tilanteissa. Yritysten on koulutettava agenteista entista empaattisempia ja paremmin informoituja.",
+        key_points: [
+          "AI parantaa asiakastyytyvaisyytta keskimaarin 22,3%",
+          "40% kuluttajista valttaa chatboteja, koska ne eivat ymmarra pyyntoja",
+          "Menestyvat organisaatiot mittaavat menestysta asiakasuskollisuudella",
+          "Yritykset siirtyvat pienempiin raatalöityihin malleihin",
+          "Luotettavien AI-toimittajien etsiminen on kriittista"
+        ],
+        examples: ["Agent assist -ratkaisut", "NICE", "Forbes"],
+        full_content: "Alpa Shah (Frost & Sullivan) muistuttaa, etta asiakkaat odottavat yha ihmiskosketusta monimutkaisissa tilanteissa. Yritysten on koulutettava agenteista entista empaattisempia ja paremmin informoituja, koska AI hoitaa peruskysymykset. Robin Gareiss huomauttaa, etta vaikka AI parantaa asiakastyytyvaisyytta keskimaarin 22,3%, 40% kuluttajista valttaa chatboteja, koska ne eivat ymmarra heidan pyynnönsä."
+      },
+      {
+        category: "business_impact",
+        title: "Liiketoimintavaikutus ja vastuullisuus",
+        description: "CX:n arvoa mitataan yha selvemmin liiketoiminnan mittareilla. Tietosuojasta ja eettisyydesta on tullut kriittisia. Sosiaalisen median rooli kasvaa ostopoluissa.",
+        key_points: [
+          "Yritykset yhdistävät asiakaspalvelustrategiat liiketoiminnan tuloksiin",
+          "Asiakaselinkaaren arvo ja uskollisuus ovat keskiossa",
+          "Monet organisaatiot hylkäävät AI-hankkeet ilman läpinäkyvyyttä",
+          "TikTok, Amazon ja muut algoritmit vaikuttavat suoraan ostopolkuihin",
+          "Brändien näkyvyys siirtyy generatiivisten AI-hakujen maailmaan"
+        ],
+        examples: ["Genesys", "Gartner", "TikTok", "Amazon"],
+        full_content: "Genesysin mukaan yritykset yhdistävät asiakaspalvelustrategiat selvästi liiketoiminnan tuloksiin, kuten asiakaselinkaaren arvoon ja uskollisuuteen. Tietosuojasta ja eettisyydestä on tullut kriittisiä. Gartner ennustaa, että monet organisaatiot hylkäävät AI-hankkeita, jos ne eivät pysty osoittamaan, että mallit ovat läpinäkyviä ja ennakkoluulottomia. Myös sosiaalisen median rooli kasvaa: TikTokin, Amazonin ja muiden alojen algoritmit vaikuttavat suoraan asiakkaiden ostopolkuihin."
+      },
       {
         category: "customer_understanding",
         title: "Tekoäly syväluotaa asiakasdatan",
@@ -251,7 +335,7 @@ export class MemStorage implements IStorage {
       },
       {
         category: "automation",
-        title: "Autonomiset agentit ja työnkulkujen orkestrointi",
+        title: "Autonomiset agentit ja työnkulkujen orkestrointi (klassinen)",
         description: "Autonomiset tekoälyagentit hoitavat tehtäviä itsenäisesti ennalta asetettujen tavoitteiden mukaisesti, suunnitellen ja suorittaen monivaiheisia prosesseja.",
         key_points: [
           "Agentit käyttävät tekoälyä tehtävien suorittamiseen ilman tarkkoja käyttäjän syötteitä",

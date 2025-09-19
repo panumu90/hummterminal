@@ -5,7 +5,20 @@ import OpenAI from "openai";
 import { z } from "zod";
 
 const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY || "sk-placeholder"
+  apiKey: process.env.OPENAI_API_KEY || "sk-placeholder",
+  fetch: (url, init) => {
+    // Sanitize all headers to ASCII to prevent ByteString conversion errors
+    const headers = new Headers(init?.headers || {});
+    headers.forEach((value, key) => {
+      const asciiKey = key.replace(/[^\x00-\x7F]/g, '');
+      const asciiValue = String(value).replace(/[^\x00-\x7F]/g, '');
+      if (asciiKey !== key) {
+        headers.delete(key);
+      }
+      headers.set(asciiKey, asciiValue);
+    });
+    return fetch(url, { ...init, headers });
+  }
 });
 
 // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
@@ -57,14 +70,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cases = await storage.getAllCases();
       const trends = await storage.getAllTrends();
       const normalizeText = (text: string) => {
-        // Comprehensive normalization for OpenAI ByteString compatibility
+        // Aggressive ASCII normalization for OpenAI ByteString compatibility
         return text
-          .replace(/[\u2013\u2014\u2212]/g, '-')   // Replace em-dash, en-dash, minus sign with regular dash
-          .replace(/[\u201C\u201D]/g, '"')        // Replace smart quotes with regular quotes
-          .replace(/[\u2018\u2019]/g, "'")        // Replace smart apostrophes with regular apostrophes
-          .replace(/[\u2026]/g, '...')          // Replace ellipsis with three dots
-          .replace(/[\u00A0\u202F]/g, ' ')       // Replace non-breaking spaces with regular space
-          .replace(/[\u2000-\u206F]/g, ' ')      // Replace general punctuation with spaces
+          // Replace Unicode punctuation and symbols
+          .replace(/[\u2013\u2014\u2212]/g, '-')   // em-dash, en-dash, minus sign
+          .replace(/[\u201C\u201D]/g, '"')        // smart quotes
+          .replace(/[\u2018\u2019]/g, "'")        // smart apostrophes
+          .replace(/[\u2026]/g, '...')          // ellipsis
+          .replace(/[\u00A0\u202F]/g, ' ')       // non-breaking spaces
+          .replace(/[\u2000-\u206F]/g, ' ')      // general punctuation
+          // Convert accented characters to basic ASCII
+          .replace(/[äåàáâãæ]/g, 'a')
+          .replace(/[ÄÅÀÁÂÃÆ]/g, 'A')
+          .replace(/[öòóôõø]/g, 'o')
+          .replace(/[ÖÒÓÔÕØ]/g, 'O')
+          .replace(/[ü]/g, 'u')
+          .replace(/[Ü]/g, 'U')
+          .replace(/[ç]/g, 'c')
+          .replace(/[Ç]/g, 'C')
+          // Remove any remaining non-ASCII characters (code > 127)
+          .replace(/[^\x00-\x7F]/g, '')
           .replace(/\s+/g, ' ')                // Normalize whitespace
           .trim();
       };
@@ -73,14 +98,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let systemPrompt = "";
       
       if (context_type === "strategic") {
-        const strategicTrends = trends.filter(t => t.category === "customer_understanding" || t.category === "automation");
-        const trendsContent = strategicTrends.map(t => 
-          `${normalizeText(t.title)}: ${normalizeText(t.description)} - ${Array.isArray(t.key_points) ? (t.key_points as string[]).map(p => normalizeText(p)).join("; ") : ""}`
-        ).join("\n\n");
+        // Use comprehensive Finnish AI trend data from storage
+        const strategicTrends = trends.filter(t => 
+          t.category === "autonomous_agents" || 
+          t.category === "ai_investments" || 
+          t.category === "hyperpersonalization" || 
+          t.category === "proactive_service" ||
+          t.category === "human_ai_collaboration" ||
+          t.category === "business_impact"
+        );
+        
+        const trendsContent = strategicTrends.map(t => {
+          const title = normalizeText(t.title);
+          const description = normalizeText(t.description);
+          const keyPoints = Array.isArray(t.key_points) ? 
+            (t.key_points as string[]).map(p => normalizeText(p)).join("; ") : "";
+          return `${title}: ${description} - ${keyPoints}`;
+        }).join("\n\n");
         
         systemPrompt = `You are an AI expert helping humm.fi team understand 2025 AI trends in customer experience.
 
-You have comprehensive trend data:
+You have comprehensive Finnish market analysis from latest research:
 
 ${trendsContent}
 
