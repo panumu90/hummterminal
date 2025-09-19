@@ -1,0 +1,58 @@
+Onnistuneet tekoäly-caset asiakaspalvelussa (parannettu kokemus ja tehokkuus)
+
+Alibaba (Kiina, verkkokauppa): Maailman suurimpiin kuuluva verkkokauppatoimija Alibaba otti tekoälypohjaisen AliMe-chatbotin käyttöön asiakaspalvelussaan. Tekoäly hoiti massiiviset 95–97 % kaikista asiakaspalvelukyselyistä suurimman ostospäivän (Singles’ Day) aikana, vastaten satoihin miljooniin asiakaskyselyihin
+d3.harvard.edu
+. Esimerkiksi vuonna 2019 AliMe vastasi 300 miljoonaan kysymykseen Singles’ Day -festivaalin aikana, mikä vastaa 85 000 ihmistyöntekijän kapasiteettia
+d3.harvard.edu
+. Chatbot hyödynsi puheentunnistusta, semanttista ymmärrystä ja ennakoivaa analytiikkaa: se osasi jopa tunnistaa asiakkaan tunnetilan ja hälyttää ihmistyöntekijän linjoille tarvittaessa
+d3.harvard.edu
+. Tuloksena Alibaba pystyi palvelemaan ostostapahtumien valtavat volyymit nopeasti, vähentämään inhimillisen työn tarvetta huippukuormituksen aikana sekä pitämään vastausajat sekunneissa – mikä parantaa asiakaskokemusta ruuhkatilanteissakin.
+
+Autodesk (USA, B2B-ohjelmistotuki): Suunnittelu- ja ohjelmistoyritys Autodesk on onnistuneesti ottanut käyttöön virtuaalisen tukiasiantuntijan nimeltä AVA (Autodesk Virtual Agent) asiakkaidensa tukipalvelussa. AVA hyödyntää tekoälyä (IBM Watson -teknologiaa) vastatakseen yleisimpiin tukipyyntöihin ja ratkaistakseen ongelmia. Tulokset ovat olleet vaikuttavia: Autodeskin mukaan AVA lyhensi tukipyyntöjen ratkaisuajan keskimäärin 36 tunnista vain muutamiin minuutteihin – toisin sanoen ratkaisuajat paranivat jopa 99 %
+adsknews.autodesk.com
+. Samalla asiakastyytyväisyys nousi 10 prosenttiyksikköä virtuaaliassistentin käyttöönoton myötä
+adsknews.autodesk.com
+. AVA:sta on tullut Autodeskin asiakaspalvelun käytetyin kanava: se käsittelee yli 35 000 asiakaskysymystä kuukaudessa ja hoitaa näin suurimman osan kontakteista
+adsknews.autodesk.com
+. Myös kustannustehokkuus parani dramaattisesti – yhden tukitapauksen hoitamisen kustannus laski arviolta $15–200 tasolta alle $1 tapaukseen tekoälyn ansiosta
+topbots.com
+. Tämä vapauttaa ihmistukihenkilöiden aikaa vaativampiin tehtäviin ja takaa asiakkaille nopean palvelun ympäri vuorokauden.
+
+Swedbank (Ruotsi, pankkipalvelu): Pohjoismainen pankkikonserni Swedbank otti jo 2010-luvun puolivälissä käyttöön Nina-nimisen virtuaalisen asiakaspalvelijan verkkosivuillaan. Nina-pohjautuu luonnollisen kielen ymmärtämiseen ja pystyy käymään asiakkaiden kanssa keskustelua näiden kirjoittamalla kielellä. Tulokset näkyivät nopeasti: 78 % asiakkaiden kyselyistä ratkesi ensi kontaktilla Ninan avulla jo kolmen kuukauden sisällä käyttöönotosta
+fintechfutures.com
+. Chatbot kävi keskimäärin 30 000 keskustelua kuukaudessa, ja osasi vastata 8 kysymykseen 10:stä onnistuneesti ilman ihmisagentin apua
+fintechfutures.com
+. Tämä paransi palvelun saatavuutta ja vapautti pankin asiakaspalvelijoita monimutkaisempien tapausten hoitoon. Swedbankin mukaan asiakaskokemus parani selvästi, kun yleisimpiin kysymyksiin saatiin välittömät vastaukset vuorokaudenajasta riippumatta
+fintechfutures.com
+.
+
+Verkkokauppa.com (Suomi, verkkomyynti): Suomen suurimpiin kuuluva elektroniikan verkkokauppa Verkkokauppa.com on hyödyntänyt chatbot-teknologiaa asiakaspalveluchatissaan tehokkaasti. Yhtiön vuoden 2021 kestävän kehityksen raportin mukaan 38 % kaikista asiakaspalvelukontakteista tapahtui chat-kanavassa, ja näistä keskusteluista peräti 77 % hoidettiin chatbotin voimin
+investors.verkkokauppa.com
+. Toisin sanoen valtaosa asiakkaiden chat-kyselyistä saatiin ratkaistua automaattisesti tekoälyn avulla, ilman että ihmistyöntekijän tarvitsi puuttua – vain noin joka neljännessä chatissa tarvittiin ihmisen apua. Tämä on tuonut huomattavaa tehokkuutta: chatbot vastaa välittömästi yleisimpiin kysymyksiin (24/7), mikä lyhentää asiakkaiden odotusaikoja ja säästää asiakaspalvelijoiden aikaa. Ihmiset voivat keskittyä monimutkaisempiin tukipyyntöihin, kun botti hoitaa rutiinikysymykset. Verkkokauppa.com onkin raportoinut asiakaskokemuksen kohentuneen chat-kanavassa, ja asiakkaat ovat omaksuneet botti-palvelun hyvin
+investors.verkkokauppa.com
+.
+
+Nordea (Suomi/Pohjoismaat, pankki): Pohjoismaiden suurin pankki Nordea on kehittänyt oman virtuaalisen asiakaspalvelijansa nimeltä Nova. Nova on ollut käytössä vuodesta 2017 ja palvelee Nordean henkilö- ja yritysasiakkaita tyypillisissä pankkiasioissa. Vuosien 2021–2023 aikana Nordean chatbotin käyttö on kaksinkertaistunut, ja vuonna 2024 Nova-chatbotin odotetaan käyvän yli 7 miljoonaa asiakaskeskustelua
+nordea.com
+nordea.com
+. Nova pystyy vastaamaan yksinkertaisiin kysymyksiin noin kahdessa sekunnissa, mikä on huomattavasti nopeampaa kuin puhelinpalvelussa jonottaminen
+nordea.com
+. Nordea kertoo, että chatbot vapauttaa heidän asiakasneuvojilleen aikaa keskittyä vaikeampiin tapauksiin, kun Nova hoitaa peruskysymykset reaaliajassa
+nordea.com
+. Chatbotin laatu on parantunut tekoälyn kehittymisen ja jatkuvan koulutuksen myötä, ja Nova osaa nykyään viedä asiakkaan suoraan tarvitsemiinsa pankkipalveluihin (esim. unohtuneen PIN-koodin tapauksessa Nova ohjaa suoraan kortin PIN-koodin näyttötoimintoon)
+nordea.com
+. Tämä on parantanut käyttökokemusta: asiakkaat saavat vastaukset ja palvelun nopeasti itsepalveluna, ja palaute on ollut Nordean mukaan myönteistä. Eri Pohjoismaissa kuitenkin näkyy eroja käyttöasteessa – esimerkiksi Norjassa chatbotia käytetään suhteessa eniten ja Tanskassa ollaan varovaisimpia – mutta kokonaisuutena Nova on vakiinnuttanut paikkansa tärkeänä ensikontaktin palvelukanavana
+nordea.com
+.
+
+Fonecta (Suomi, digitaalinen tuki): Fonecta, joka tarjoaa digitaalisia yhteystieto- ja markkinointipalveluja, on ottanut käyttöön Aina-nimisen chatbotin asiakaspalvelussaan. Yhtiön kokemusten mukaan Aina-botti vastaa itsenäisesti 60–70 % asiakkaiden kyselyistä, jolloin inhimilliset asiakaspalvelijat voivat keskittyä vain noin kolmannekseen yhteydenotoista
+sofigate.com
+. Tämä on lyhentänyt ihmistyöntekijöiden vastausaikoja ja parantanut palvelun saatavuutta: botti on aina hereillä ja käytettävissä, myös aukioloaikojen ulkopuolella
+sofigate.com
+. Fonectan mukaan sekä asiakkaiden että työntekijöiden palaute on ollut lähes yksinomaan positiivista, koska botti ratkaisee nopeasti perustarpeet ja työntekijät säästyvät jatkuvalta toistolta
+sofigate.com
+. Vastaavanlaisia hyötyjä on raportoitu myös muissa suomalaisissa organisaatioissa, joissa chatbot otettiin osaksi tiimiä: botti toimii tehokkaana “tiimiläisenä” ja saa usein jopa leikkimielisen oman nimensä yrityskulttuurissa, mikä kuvastaa sen integroitumista osaksi arkea
+sofigate.com
+.
+
+(Yhteenvetona onnistumisista: Tekoälyllä on pystytty nopeuttamaan vastausaikoja, ratkaisemaan valtaosa rutiinikyselyistä sekä parantamaan asiakastyytyväisyyttä tarjoamalla 24/7-palvelua ja virheettömiä vastauksia tyypillisiin kysymyksiin. Monissa tapauksissa on saatu myös mitattavia kustannussäästöjä asiakaspalvelussa. Kriittistä menestyksen kannalta on ollut chatbotin jatkuva kouluttaminen yrityksen omilla tietoajoilla ja poikkeustilanteiden tunnistaminen, jotta botti osaa tarvittaessa ohjata asiakkaan ihmisavustajalle.)
