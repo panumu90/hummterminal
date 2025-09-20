@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users } from "lucide-react";
+import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -14,65 +14,269 @@ interface ChatMessage {
   timestamp: number;
 }
 
-type ContextType = "strategic" | "practical" | "finnish" | "planning" | "general";
+type ContextType = "strategic" | "practical" | "finnish" | "planning" | "technical" | "general";
 
-interface DataCategory {
+interface QuestionButton {
   id: string;
-  label: string;
+  question: string;
+  category: string;
   icon: typeof Bot;
-  description: string;
   color: string;
 }
 
-const dataCategories: DataCategory[] = [
+interface TopicArea {
+  id: string;
+  title: string;
+  icon: typeof Bot;
+  color: string;
+  questions: QuestionButton[];
+}
+
+// MCP (Model Context Protocol) - TÄRKEÄ!
+const mcpQuestions: QuestionButton[] = [
   {
-    id: "autonomous-agents",
-    label: "Autonomiset agentit",
-    icon: Bot,
-    description: "AI-agentit ja automaatio",
-    color: "bg-blue-500"
+    id: "mcp-security",
+    question: "Miten MCP parantaa AI-integraatioiden turvallisuutta?",
+    category: "mcp",
+    icon: Shield,
+    color: "bg-emerald-500"
   },
   {
-    id: "ai-investments",
-    label: "AI-investoinnit",
-    icon: DollarSign,
-    description: "ROI ja tuotto-odotukset",
-    color: "bg-green-500"
+    id: "mcp-automation",
+    question: "Mitä hyötyä MCP:stä on asiakaspalvelun automaatiossa?",
+    category: "mcp",
+    icon: Cpu,
+    color: "bg-emerald-500"
+  },
+  {
+    id: "mcp-access-control",
+    question: "Kuinka MCP:n avulla hallitaan AI:n pääsyoikeuksia?",
+    category: "mcp",
+    icon: Scale,
+    color: "bg-emerald-500"
+  }
+];
+
+const topicAreas: TopicArea[] = [
+  {
+    id: "strategy-roi",
+    title: "Strategia & ROI",
+    icon: TrendingUp,
+    color: "bg-blue-500",
+    questions: [
+      {
+        id: "roi-measurement",
+        question: "Miten AI-investoinnista saa mitattavaa arvoa asiakaspalvelussa?",
+        category: "strategy-roi",
+        icon: DollarSign,
+        color: "bg-blue-500"
+      },
+      {
+        id: "cx-trends-2025",
+        question: "Mitkä ovat vuoden 2025 suurimmat CX-trendit?",
+        category: "strategy-roi",
+        icon: TrendingUp,
+        color: "bg-blue-500"
+      }
+    ]
+  },
+  {
+    id: "data-privacy",
+    title: "Data & tietosuoja",
+    icon: Database,
+    color: "bg-purple-500",
+    questions: [
+      {
+        id: "data-quality",
+        question: "Miten varmistetaan, että asiakasdata pysyy laadukkaana ja suojattuna?",
+        category: "data-privacy",
+        icon: Shield,
+        color: "bg-purple-500"
+      },
+      {
+        id: "gdpr-compliance",
+        question: "Kuinka vältetään datasiilot ja GDPR-riskit AI-projekteissa?",
+        category: "data-privacy",
+        icon: Scale,
+        color: "bg-purple-500"
+      }
+    ]
+  },
+  {
+    id: "automation-workflows",
+    title: "Automaatio & työnkulut",
+    icon: Workflow,
+    color: "bg-green-500",
+    questions: [
+      {
+        id: "reduce-manual-work",
+        question: "Miten automaatio voi vähentää manuaalista työtä asiakaspalvelussa?",
+        category: "automation-workflows",
+        icon: Workflow,
+        color: "bg-green-500"
+      },
+      {
+        id: "ticket-classification",
+        question: "Mitä hyötyä on AI:sta tikettien luokittelussa ja reitityksessä?",
+        category: "automation-workflows",
+        icon: Target,
+        color: "bg-green-500"
+      }
+    ]
+  },
+  {
+    id: "bots-agents",
+    title: "Botit & agentit",
+    icon: Bot,
+    color: "bg-orange-500",
+    questions: [
+      {
+        id: "bot-vs-agent",
+        question: "Mikä ero on chatbotilla ja AI-agentilla?",
+        category: "bots-agents",
+        icon: Bot,
+        color: "bg-orange-500"
+      },
+      {
+        id: "escalation-timing",
+        question: "Milloin kannattaa eskaloida botti-asiakaspalvelusta ihmiselle?",
+        category: "bots-agents",
+        icon: Users,
+        color: "bg-orange-500"
+      }
+    ]
+  },
+  {
+    id: "voice-phone",
+    title: "Ääni & puhelin",
+    icon: Phone,
+    color: "bg-pink-500",
+    questions: [
+      {
+        id: "asr-sentiment",
+        question: "Miten puheentunnistus (ASR) ja sentimenttianalyysi voivat parantaa puhelinpalvelua?",
+        category: "voice-phone",
+        icon: Phone,
+        color: "bg-pink-500"
+      },
+      {
+        id: "call-summary",
+        question: "Kuinka automaattinen yhteenveto helpottaa agentin työtä puhelun jälkeen?",
+        category: "voice-phone",
+        icon: MessageCircle,
+        color: "bg-pink-500"
+      }
+    ]
   },
   {
     id: "hyperpersonalization",
-    label: "Personointi",
-    icon: Crosshair,
-    description: "Hyperpersoonallistaminen",
-    color: "bg-purple-500"
+    title: "Hyperpersoonallistaminen",
+    icon: Heart,
+    color: "bg-red-500",
+    questions: [
+      {
+        id: "realtime-recommendations",
+        question: "Miten AI voi tarjota asiakkaille räätälöityjä suosituksia reaaliajassa?",
+        category: "hyperpersonalization",
+        icon: Crosshair,
+        color: "bg-red-500"
+      },
+      {
+        id: "proactive-communication",
+        question: "Kuinka proaktiivinen viestintä lisää asiakastyytyväisyyttä?",
+        category: "hyperpersonalization",
+        icon: Zap,
+        color: "bg-red-500"
+      }
+    ]
   },
   {
-    id: "proactive-service",
-    label: "Proaktiivinen palvelu",
-    icon: Zap,
-    description: "Ennakoiva asiakaspalvelu",
-    color: "bg-orange-500"
+    id: "agent-quality",
+    title: "Agenttien laatu & koulutus",
+    icon: GraduationCap,
+    color: "bg-indigo-500",
+    questions: [
+      {
+        id: "quality-assessment",
+        question: "Miten AI voi arvioida ja parantaa asiakaspalvelijan laatua?",
+        category: "agent-quality",
+        icon: Star,
+        color: "bg-indigo-500"
+      },
+      {
+        id: "agent-assist-training",
+        question: "Voiko agent-assist toimia myös koulutusvälineenä?",
+        category: "agent-quality",
+        icon: GraduationCap,
+        color: "bg-indigo-500"
+      }
+    ]
   },
   {
-    id: "finnish-cases",
-    label: "Suomalaiset toteutukset",
-    icon: MapPin,
-    description: "Case-esimerkit Suomesta",
-    color: "bg-red-500"
+    id: "case-library",
+    title: "Case-kirjasto",
+    icon: BookOpen,
+    color: "bg-cyan-500",
+    questions: [
+      {
+        id: "successful-cases",
+        question: "Mitä voimme oppia onnistuneista AI-caseista asiakaspalvelussa?",
+        category: "case-library",
+        icon: BookOpen,
+        color: "bg-cyan-500"
+      },
+      {
+        id: "failed-projects",
+        question: "Miksi osa AI-projekteista epäonnistuu CX:ssä?",
+        category: "case-library",
+        icon: Target,
+        color: "bg-cyan-500"
+      }
+    ]
   },
   {
-    id: "international-cases",
-    label: "Kansainväliset toteutukset",
-    icon: Globe,
-    description: "Globaalit case-esimerkit",
-    color: "bg-indigo-500"
+    id: "technology-integrations",
+    title: "Teknologia & integraatiot",
+    icon: Cpu,
+    color: "bg-teal-500",
+    questions: [
+      {
+        id: "required-technologies",
+        question: "Mitä teknologioita tarvitaan AI:n integrointiin asiakaspalveluun?",
+        category: "technology-integrations",
+        icon: Cpu,
+        color: "bg-teal-500"
+      },
+      {
+        id: "platform-integration",
+        question: "Miten Intercom, CRM ja CCaaS voidaan yhdistää tekoälyn avulla?",
+        category: "technology-integrations",
+        icon: Globe,
+        color: "bg-teal-500"
+      }
+    ]
   },
   {
-    id: "by-industry",
-    label: "Toimialat",
-    icon: Building,
-    description: "Toteutukset toimialoittain",
-    color: "bg-teal-500"
+    id: "governance-ethics",
+    title: "Hallintamalli & eettisyys",
+    icon: Scale,
+    color: "bg-slate-500",
+    questions: [
+      {
+        id: "ethical-ai",
+        question: "Miten varmistetaan tekoälyn eettinen käyttö asiakaspalvelussa?",
+        category: "governance-ethics",
+        icon: Scale,
+        color: "bg-slate-500"
+      },
+      {
+        id: "decision-responsibility",
+        question: "Kuka vastaa tekoälyn tekemistä päätöksistä CX-yrityksessä?",
+        category: "governance-ethics",
+        icon: Users,
+        color: "bg-slate-500"
+      }
+    ]
   }
 ];
 
@@ -101,6 +305,12 @@ const contextConfig = {
     color: "bg-purple-500 hover:bg-purple-600",
     description: "Humm.fi:n seuraavat askeleet"
   },
+  technical: {
+    label: "Tekninen toteutus",
+    icon: Cpu,
+    color: "bg-emerald-500 hover:bg-emerald-600",
+    description: "MCP ja teknologiset ratkaisut"
+  },
   general: {
     label: "Yleinen",
     icon: Bot,
@@ -122,38 +332,41 @@ export function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const categorySummaryMutation = useMutation({
-    mutationFn: async (categoryId: string) => {
-      const response = await apiRequest("GET", `/api/categories/${categoryId}/summary`);
+  const questionMutation = useMutation({
+    mutationFn: async (questionId: string) => {
+      const response = await apiRequest("GET", `/api/questions/${questionId}/answer`);
       return response.json();
     },
-    onSuccess: (data, categoryId) => {
-      const category = dataCategories.find(c => c.id === categoryId);
+    onSuccess: (data, questionId) => {
       setMessages(prev => [...prev, {
-        content: data.summary,
+        content: data.answer,
         isUser: false,
         timestamp: Date.now()
       }]);
-      // Set context based on category
-      if (['autonomous-agents', 'ai-investments', 'hyperpersonalization', 'proactive-service'].includes(categoryId)) {
+      // Set context based on question type
+      if (questionId.includes('mcp-') || questionId.includes('required-technologies') || questionId.includes('platform-integration')) {
+        setSelectedContext('technical');
+      } else if (questionId.includes('roi-') || questionId.includes('cx-trends') || questionId.includes('strategy')) {
         setSelectedContext('strategic');
-      } else if (categoryId === 'finnish-cases') {
-        setSelectedContext('finnish');
-      } else if (['international-cases', 'by-industry'].includes(categoryId)) {
+      } else if (questionId.includes('successful-cases') || questionId.includes('failed-projects') || questionId.includes('automation') || questionId.includes('bot-')) {
         setSelectedContext('practical');
+      } else if (questionId.includes('finnish') || questionId.includes('suomalainen')) {
+        setSelectedContext('finnish');
+      } else {
+        setSelectedContext('general');
       }
     },
     onError: () => {
       toast({
         title: "Virhe",
-        description: "Yhteenvedon lataaminen epäonnistui.",
+        description: "Vastauksen lataaminen epäonnistui.",
         variant: "destructive"
       });
     }
   });
 
-  const handleCategoryClick = (categoryId: string) => {
-    categorySummaryMutation.mutate(categoryId);
+  const handleQuestionClick = (questionId: string) => {
+    questionMutation.mutate(questionId);
   };
 
   const scrollToBottom = () => {
