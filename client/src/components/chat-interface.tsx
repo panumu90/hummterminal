@@ -3,6 +3,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
@@ -335,7 +337,7 @@ export function ChatInterface() {
 
   const questionMutation = useMutation({
     mutationFn: async (questionId: string) => {
-      const response = await apiRequest("GET", `/api/questions/${questionId}/answer`);
+      const response = await apiRequest("GET", `/api/questions/${questionId}/answer?enhance=true`);
       return response.json();
     },
     onSuccess: (data, questionId) => {
@@ -572,9 +574,32 @@ export function ChatInterface() {
                     <Bot className="h-4 w-4 text-primary-foreground" />
                   )}
                 </div>
-                <div className={`${message.isUser ? 'bg-primary text-primary-foreground' : 'bg-muted'} rounded-lg p-3 max-w-xs`}>
-                  <div className={`text-sm ${message.isUser ? '' : 'text-muted-foreground'} whitespace-pre-wrap`}>
-                    {message.content}
+                <div className={`${message.isUser ? 'bg-primary text-primary-foreground max-w-xs' : 'bg-muted max-w-2xl'} rounded-lg p-3`}>
+                  <div className={`text-sm ${message.isUser ? '' : 'text-muted-foreground'}`}>
+                    {message.isUser ? (
+                      <span className="whitespace-pre-wrap">{message.content}</span>
+                    ) : (
+                      <div className="prose prose-sm dark:prose-invert">
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            h1: ({children}) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
+                            h2: ({children}) => <h2 className="text-base font-semibold mb-2">{children}</h2>,
+                            h3: ({children}) => <h3 className="text-sm font-medium mb-1">{children}</h3>,
+                            p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
+                            ul: ({children}) => <ul className="list-disc pl-4 mb-2">{children}</ul>,
+                            ol: ({children}) => <ol className="list-decimal pl-4 mb-2">{children}</ol>,
+                            li: ({children}) => <li className="mb-1">{children}</li>,
+                            strong: ({children}) => <strong className="font-semibold">{children}</strong>,
+                            em: ({children}) => <em className="italic">{children}</em>,
+                            code: ({children}) => <code className="bg-muted px-1 py-0.5 rounded text-xs">{children}</code>,
+                            blockquote: ({children}) => <blockquote className="border-l-2 border-border pl-3 italic">{children}</blockquote>
+                          }}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

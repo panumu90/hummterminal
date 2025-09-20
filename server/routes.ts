@@ -54,20 +54,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get question answer - NEW STRUCTURE!
+  // Get question answer with AI enhancement - NEW STRUCTURE!
   app.get("/api/questions/:questionId/answer", async (req, res) => {
     try {
       const { questionId } = req.params;
+      const enhance = req.query.enhance === 'true';
       
       // Check if answer exists in our question bank
       const questionAnswer = questionAnswers[questionId];
-      if (questionAnswer) {
-        return res.json({ answer: questionAnswer.answer });
+      if (!questionAnswer) {
+        return res.status(404).json({ error: "Question not found" });
+      }
+
+      let finalAnswer = questionAnswer.answer;
+
+      // Enhance with AI if requested
+      if (enhance) {
+        try {
+          // Clean text to prevent encoding issues
+          const cleanContent = questionAnswer.answer
+            .replace(/[^\x00-\x7F]/g, (char) => {
+              // Replace common Unicode characters with ASCII equivalents
+              const replacements: Record<string, string> = {
+                '–': '-', // en dash
+                '—': '-', // em dash  
+                ''': "'", // left single quotation mark
+                ''': "'", // right single quotation mark
+                '"': '"', // left double quotation mark
+                '"': '"', // right double quotation mark
+                '…': '...',// horizontal ellipsis
+              };
+              return replacements[char] || char;
+            });
+
+          const enhancementResponse = await openai.chat.completions.create({
+            model: GPT_MODEL, // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+            messages: [
+              {
+                role: "system",
+                content: "Olet asiantuntija AI-asiakaspalvelun toteutuksissa. Parannat annettuja vastauksia tekemaan niista selkeampia, kattavampia ja paremmin muotoiltuja. Sailyta alkuperainen suomenkielisyys ja asiantuntemus. Kayta markdown-muotoilua otsikoille, listalle ja korostuksille. Pida vastaus kaytannollisena ja toimintasuuntautuneena."
+              },
+              {
+                role: "user", 
+                content: `Paranna tama AI-asiakaspalveluvastaus tekemaan siita selkeampi ja kattavampi:\n\n${cleanContent}`
+              }
+            ],
+          });
+
+          if (enhancementResponse.choices[0].message.content) {
+            finalAnswer = enhancementResponse.choices[0].message.content;
+          }
+        } catch (aiError) {
+          console.error("AI enhancement failed:", aiError);
+          // Fall back to original answer if AI enhancement fails
+        }
       }
       
-      // If not found, return error
-      return res.status(404).json({ error: "Question not found" });
+      return res.json({ 
+        answer: finalAnswer,
+        enhanced: enhance && finalAnswer !== questionAnswer.answer
+      });
     } catch (error) {
+      console.error("Question answer error:", error);
       res.status(500).json({ error: "Failed to fetch answer" });
     }
   });
