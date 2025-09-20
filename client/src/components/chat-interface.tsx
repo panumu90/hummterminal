@@ -560,7 +560,7 @@ export function ChatInterface() {
 
         {/* Chat Messages */}
         <div className={`overflow-y-auto p-4 space-y-4 transition-all duration-300 ${
-          isExpanded ? 'h-96' : 'h-80'
+          isExpanded ? 'h-[calc(100vh-12rem)]' : 'h-80'
         }`} data-testid="chat-messages">
           {messages.map((message, index) => (
             <div key={index} className="chat-message" data-testid={`message-${index}`}>
