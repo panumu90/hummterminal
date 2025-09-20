@@ -370,6 +370,23 @@ export function ChatInterface() {
 
   const handleQuestionClick = (questionId: string) => {
     setIsExpanded(true); // Auto-expand chat when question is clicked
+    
+    // Find question text
+    const allQuestions = [
+      ...mcpQuestions.map(q => ({ ...q, id: `mcp-${q.id}` })),
+      ...topicAreas.flatMap(topic => topic.questions)
+    ];
+    const question = allQuestions.find(q => q.id === questionId);
+    
+    if (question) {
+      // Add user question first
+      setMessages(prev => [...prev, {
+        content: question.question,
+        isUser: true,
+        timestamp: Date.now()
+      }]);
+    }
+    
     questionMutation.mutate(questionId);
   };
 

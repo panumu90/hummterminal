@@ -76,13 +76,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             .replace(/[^\x00-\x7F]/g, (char) => {
               // Replace common Unicode characters with ASCII equivalents
               const replacements: Record<string, string> = {
-                '–': '-', // en dash
-                '—': '-', // em dash  
-                ''': "'", // left single quotation mark
-                ''': "'", // right single quotation mark
-                '"': '"', // left double quotation mark
-                '"': '"', // right double quotation mark
-                '…': '...',// horizontal ellipsis
+                "\u2013": "-", // en dash
+                "\u2014": "-", // em dash  
+                "\u2018": "'", // left single quotation mark
+                "\u2019": "'", // right single quotation mark
+                "\u201C": '"', // left double quotation mark
+                "\u201D": '"', // right double quotation mark
+                "\u2026": "...",// horizontal ellipsis
               };
               return replacements[char] || char;
             });
@@ -227,18 +227,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const cases = await storage.getAllCases();
       const trends = await storage.getAllTrends();
       const normalizeText = (text: string) => {
-        // Targeted normalization to prevent ByteString errors while preserving Finnish
+        // Aggressive normalization to prevent ByteString errors
         return text
-          // Replace Unicode punctuation and symbols
-          .replace(/[\u2013\u2014\u2212]/g, '-')   // em-dash, en-dash, minus sign
-          .replace(/[\u201C\u201D]/g, '"')        // smart quotes
-          .replace(/[\u2018\u2019]/g, "'")        // smart apostrophes
-          .replace(/[\u2026]/g, '...')          // ellipsis
-          .replace(/[\u00A0\u202F]/g, ' ')       // non-breaking spaces
-          .replace(/[\u2000-\u206F]/g, ' ')      // general punctuation
-          // Keep Finnish characters ä, ö, å essential for Finnish content quality
-          // Only remove other problematic characters that cause ByteString issues
-          .replace(/\s+/g, ' ')                // Normalize whitespace
+          .replace(/[^\x00-\x7F]/g, (char) => {
+            // Replace common Unicode characters with ASCII equivalents
+            const replacements: Record<string, string> = {
+              "\u2013": "-", // en dash
+              "\u2014": "-", // em dash  
+              "\u2018": "'", // left single quotation mark
+              "\u2019": "'", // right single quotation mark
+              "\u201C": '"', // left double quotation mark
+              "\u201D": '"', // right double quotation mark
+              "\u2026": "...",// horizontal ellipsis
+              "\u00A0": " ", // non-breaking space
+              "\u202F": " ", // narrow no-break space
+              // Keep Finnish characters for quality
+              "ä": "ä", "ö": "ö", "å": "å",
+              "Ä": "Ä", "Ö": "Ö", "Å": "Å"
+            };
+            return replacements[char] || "";
+          })
+          .replace(/\s+/g, ' ')
           .trim();
       };
       
@@ -377,31 +386,40 @@ Always respond in Finnish and provide balanced information about AI customer ser
 Keep answers informative but concise (max 200 words).`;
       }
 
-      // Final sanitization of systemPrompt before OpenAI call
-      // Targeted sanitization to prevent ByteString errors while preserving Finnish
+      // Final aggressive sanitization to prevent ByteString errors
       systemPrompt = systemPrompt
-        .replace(/[\u2013\u2014\u2212]/g, '-')     // en-dash, em-dash, minus sign
-        .replace(/[\u201C\u201D]/g, '"')          // smart quotes  
-        .replace(/[\u2018\u2019]/g, "'")          // smart apostrophes
-        .replace(/[\u2026]/g, '...')            // ellipsis
-        .replace(/[\u2022]/g, '-')             // bullet points to safe ASCII dash
-        // Keep Finnish characters ä, ö, å as they are essential for Finnish content
-        // Only remove other problematic Unicode that causes ByteString issues
-        .replace(/\s+/g, ' ')                // normalize whitespace
+        .replace(/[^\x00-\x7F]/g, (char) => {
+          // Replace common Unicode characters with ASCII equivalents
+          const replacements: Record<string, string> = {
+            "\u2013": "-", // en dash
+            "\u2014": "-", // em dash  
+            "\u2018": "'", // left single quotation mark
+            "\u2019": "'", // right single quotation mark
+            "\u201C": '"', // left double quotation mark
+            "\u201D": '"', // right double quotation mark
+            "\u2026": "...",// horizontal ellipsis
+            "\u00A0": " ", // non-breaking space
+            "\u202F": " ", // narrow no-break space
+            "\u2022": "-", // bullet point
+            // Keep Finnish characters for quality
+            "ä": "ä", "ö": "ö", "å": "å",
+            "Ä": "Ä", "Ö": "Ö", "Å": "Å"
+          };
+          return replacements[char] || "";
+        })
+        .replace(/\s+/g, ' ')
         .trim();
       
-      // Debug logging for encoding issues (temporary)
-      if (context_type === 'strategic') {
-        const problematicChars = [];
-        for (let i = 0; i < systemPrompt.length; i++) {
-          const charCode = systemPrompt.codePointAt(i);
-          if (charCode && charCode > 127) {
-            problematicChars.push({ index: i, char: systemPrompt[i], code: charCode });
-          }
+      // Debug logging for encoding issues
+      const problematicChars = [];
+      for (let i = 0; i < systemPrompt.length; i++) {
+        const charCode = systemPrompt.codePointAt(i);
+        if (charCode && charCode > 127) {
+          problematicChars.push({ index: i, char: systemPrompt[i], code: charCode });
         }
-        if (problematicChars.length > 0) {
-          console.log('Non-ASCII chars found in strategic systemPrompt:', problematicChars);
-        }
+      }
+      if (problematicChars.length > 0) {
+        console.log(`Non-ASCII chars found in ${context_type} systemPrompt:`, problematicChars.slice(0, 10));
       }
       
       // Try OpenAI request with retry for transient failures
