@@ -433,14 +433,30 @@ export function ChatInterface() {
     <div className="sticky top-24">
       <Card className="overflow-hidden" data-testid="chat-interface">
         {/* Chat Header */}
-        <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center">
-            <Bot className="h-4 w-4" />
+        <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+              <Bot className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="font-semibold" data-testid="chat-title">AI Assistentti</h3>
+              <p className="text-xs opacity-90">Kysy tarkempia kysymyksiä toteutuksista</p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold" data-testid="chat-title">AI Assistentti</h3>
-            <p className="text-xs opacity-90">Kysy tarkempia kysymyksiä toteutuksista</p>
-          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleExpanded}
+            className="text-primary-foreground hover:bg-primary-foreground/20 p-2"
+            data-testid="expand-button"
+            title={isExpanded ? "Pienennä chat" : "Laajenna chat"}
+          >
+            {isExpanded ? (
+              <Minimize2 className="h-4 w-4" />
+            ) : (
+              <Maximize2 className="h-4 w-4" />
+            )}
+          </Button>
         </div>
 
         {/* MCP Section - TÄRKEÄ! */}
