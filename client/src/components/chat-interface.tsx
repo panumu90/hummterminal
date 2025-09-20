@@ -437,25 +437,68 @@ export function ChatInterface() {
           </div>
         </div>
 
-        {/* Data Category Buttons */}
-        <div className="border-b border-border p-4">
-          <h4 className="text-sm font-medium mb-3 text-foreground">Tutustu dataan kategorioittain:</h4>
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            {dataCategories.map((category) => {
-              const IconComponent = category.icon;
+        {/* MCP Section - TÄRKEÄ! */}
+        <div className="border-b border-border p-4 bg-emerald-50 dark:bg-emerald-950">
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="h-5 w-5 text-emerald-600" />
+            <h4 className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
+          </div>
+          <p className="text-xs text-emerald-700 dark:text-emerald-300 mb-3">
+            MCP mahdollistaa turvallisen AI-integraation yritysjärjestelmiin
+          </p>
+          <div className="grid grid-cols-1 gap-2">
+            {mcpQuestions.map((question) => {
+              const IconComponent = question.icon;
               return (
                 <Button
-                  key={category.id}
+                  key={question.id}
                   variant="outline"
                   size="sm"
-                  className={`h-12 text-xs flex flex-col items-center justify-center gap-1 hover:${category.color} hover:text-white transition-colors`}
-                  onClick={() => handleCategoryClick(category.id)}
-                  disabled={categorySummaryMutation.isPending}
-                  data-testid={`category-${category.id}`}
+                  className="h-auto p-3 text-xs text-left justify-start border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-900"
+                  onClick={() => handleQuestionClick(question.id)}
+                  disabled={questionMutation.isPending}
+                  data-testid={`question-${question.id}`}
                 >
-                  <IconComponent className="h-4 w-4" />
-                  <span className="text-center leading-tight">{category.label}</span>
+                  <IconComponent className="h-4 w-4 mr-2 text-emerald-600 flex-shrink-0" />
+                  <span className="leading-tight">{question.question}</span>
                 </Button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* AI Kysymykset aiheittain */}
+        <div className="border-b border-border p-4 max-h-80 overflow-y-auto">
+          <h4 className="text-sm font-medium mb-3 text-foreground">AI-asiakaspalvelu kysymykset:</h4>
+          <div className="space-y-4">
+            {topicAreas.map((topic) => {
+              const TopicIcon = topic.icon;
+              return (
+                <div key={topic.id} className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <TopicIcon className={`h-4 w-4 ${topic.color.replace('bg-', 'text-')}`} />
+                    <h5 className="text-xs font-medium text-foreground">{topic.title}</h5>
+                  </div>
+                  <div className="grid grid-cols-1 gap-1 ml-6">
+                    {topic.questions.map((question) => {
+                      const QuestionIcon = question.icon;
+                      return (
+                        <Button
+                          key={question.id}
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-2 text-xs text-left justify-start hover:bg-muted"
+                          onClick={() => handleQuestionClick(question.id)}
+                          disabled={questionMutation.isPending}
+                          data-testid={`question-${question.id}`}
+                        >
+                          <QuestionIcon className="h-3 w-3 mr-2 text-muted-foreground flex-shrink-0" />
+                          <span className="leading-tight text-muted-foreground">{question.question}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
               );
             })}
           </div>

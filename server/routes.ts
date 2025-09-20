@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { questionAnswers, mcpContent } from "./question-answers";
 import OpenAI from "openai";
 import { z } from "zod";
 
@@ -26,7 +27,7 @@ const GPT_MODEL = "gpt-5";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
-  context_type: z.enum(["strategic", "practical", "finnish", "planning", "general"]).default("general")
+  context_type: z.enum(["strategic", "practical", "finnish", "planning", "technical", "general"]).default("general")
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -50,6 +51,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(case_);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch case" });
+    }
+  });
+
+  // Get question answer - NEW STRUCTURE!
+  app.get("/api/questions/:questionId/answer", async (req, res) => {
+    try {
+      const { questionId } = req.params;
+      
+      // Check if answer exists in our question bank
+      const questionAnswer = questionAnswers[questionId];
+      if (questionAnswer) {
+        return res.json({ answer: questionAnswer.answer });
+      }
+      
+      // If not found, return error
+      return res.status(404).json({ error: "Question not found" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch answer" });
+    }
+  });
+
+  // Get MCP content
+  app.get("/api/mcp/content", async (req, res) => {
+    try {
+      res.json(mcpContent);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch MCP content" });
     }
   });
 

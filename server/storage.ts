@@ -9,21 +9,29 @@ export interface IStorage {
   getTrendsByCategory(category: string): Promise<Trend[]>;
   saveChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
   getChatHistory(): Promise<ChatMessage[]>;
+  // getQuestionAnswer(questionId: string): Promise<{ answer: string } | undefined>;
+  // getAllMcpContent(): Promise<{ title: string; content: string; security: string; benefits: string }[]>;
 }
 
 export class MemStorage implements IStorage {
   private cases: Map<string, Case>;
   private trends: Map<string, Trend>;
   private chatMessages: Map<string, ChatMessage>;
+  private questionAnswers: Map<string, { answer: string }>;
+  private mcpContent: { title: string; content: string; security: string; benefits: string }[];
 
   constructor() {
     this.cases = new Map();
     this.trends = new Map();
     this.chatMessages = new Map();
+    this.questionAnswers = new Map();
+    this.mcpContent = [];
     
     // Initialize with the case data and trend data
     this.initializeCases();
     this.initializeTrends();
+    // this.initializeQuestionAnswers(); // TODO: implement method
+    // this.initializeMcpContent(); // TODO: implement method
   }
 
   private initializeCases() {
