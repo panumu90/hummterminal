@@ -460,7 +460,9 @@ export function ChatInterface() {
         </div>
 
         {/* MCP Section - TÄRKEÄ! */}
-        <div className="border-b border-border p-4 bg-emerald-50 dark:bg-emerald-950">
+        <div className={`border-b border-border bg-emerald-50 dark:bg-emerald-950 transition-all duration-300 ${
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-96 opacity-100'
+        }`}>
           <div className="flex items-center gap-2 mb-3">
             <Shield className="h-5 w-5 text-emerald-600" />
             <h4 className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
@@ -490,7 +492,9 @@ export function ChatInterface() {
         </div>
 
         {/* AI Kysymykset aiheittain */}
-        <div className="border-b border-border p-4 max-h-80 overflow-y-auto">
+        <div className={`border-b border-border transition-all duration-300 ${
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-80 overflow-y-auto opacity-100'
+        }`}>
           <h4 className="text-sm font-medium mb-3 text-foreground">AI-asiakaspalvelu kysymykset:</h4>
           <div className="space-y-4">
             {topicAreas.map((topic) => {
@@ -527,7 +531,9 @@ export function ChatInterface() {
         </div>
 
         {/* Context Selection */}
-        <div className="border-b border-border p-4">
+        <div className={`border-b border-border transition-all duration-300 ${
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-96 opacity-100'
+        }`}>
           <h4 className="text-sm font-medium mb-2 text-foreground">Kysymystyyppi:</h4>
           <div className="flex flex-wrap gap-2">
             {Object.entries(contextConfig).map(([key, config]) => {
@@ -553,7 +559,9 @@ export function ChatInterface() {
         </div>
 
         {/* Chat Messages */}
-        <div className="h-80 overflow-y-auto p-4 space-y-4" data-testid="chat-messages">
+        <div className={`overflow-y-auto p-4 space-y-4 transition-all duration-300 ${
+          isExpanded ? 'h-96' : 'h-80'
+        }`} data-testid="chat-messages">
           {messages.map((message, index) => (
             <div key={index} className="chat-message" data-testid={`message-${index}`}>
               <div className={`flex items-start space-x-3 ${message.isUser ? 'flex-row-reverse' : ''}`}>
