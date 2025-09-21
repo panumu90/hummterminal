@@ -337,7 +337,7 @@ TÄRKEÄ MCP-MÄÄRITELMÄ: MCP (Model Context Protocol) on avoin standardi, jok
 MCP-hyödyt: Roolipohjainen pääsynhallinta, eksplisiittinen kontekstin rajaus, audit-jäljet, reaaliaikainen järjestelmäintegraatio, monivaiheiset prosessit.
 MCP:llä AI voi hakea tietoa CRM:stä, ERP:stä ja muista järjestelmistä turvallisesti samassa keskustelussa.`;
 
-        systemPrompt = `VAROITUS: MCP = Model Context Protocol. ÄLÄ KOSKAAN tarkoita Microsoft Certified Professional tai muuta.
+        systemPrompt = `${attachedContent}VAROITUS: MCP = Model Context Protocol. ÄLÄ KOSKAAN tarkoita Microsoft Certified Professional tai muuta.
 
 MCP (Model Context Protocol) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja ulkoisten tietolähteiden välillä. MCP:n hyödyt:
 - Roolipohjainen pääsynhallinta
@@ -361,7 +361,7 @@ Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään 2025 AI-trendej
           return `${company} (${country}, ${industry}): ${metrics}. ${normalizeText(c.full_text.substring(0, 300))}...`;
         }).join('\n\n');
         
-        systemPrompt = `You are an AI expert helping humm.fi team understand practical AI implementations.
+        systemPrompt = `${attachedContent}You are an AI expert helping humm.fi team understand practical AI implementations.
 
 You have 6 proven case studies:
 
@@ -388,7 +388,7 @@ Keep answers practical and actionable (max 200 words).`;
           `${normalizeText(c.company)} (${normalizeText(c.country)}): ${normalizeText(c.description.substring(0, 150))}...`
         ).join("\n\n");
         
-        systemPrompt = `Olet AI-asiantuntija joka auttaa humm.fi:tä ymmärtämään AI-toteutuksia erityisesti Suomen markkinoille.
+        systemPrompt = `${attachedContent}Olet AI-asiantuntija joka auttaa humm.fi:tä ymmärtämään AI-toteutuksia erityisesti Suomen markkinoille.
 
 ## Suomalaiset esimerkit:
 ${finnishContent}
@@ -407,7 +407,7 @@ Pidä vastaukset Suomi-keskeisinä (max 200 sanaa).`;
         
       } else if (context_type === "mcp") {
         // Dedicated MCP context to ensure correct understanding
-        systemPrompt = `You are an AI expert explaining Model Context Protocol to humm.fi team.
+        systemPrompt = `${attachedContent}You are an AI expert explaining Model Context Protocol to humm.fi team.
 
 CRITICAL: MCP stands for Model Context Protocol - an open standard for secure connections between AI models and external data sources.
 
@@ -439,7 +439,7 @@ MCP-hyödyt: Roolipohjainen pääsynhallinta, eksplisiittinen kontekstin rajaus,
 MCP:llä AI voi hakea tietoa CRM:stä, ERP:stä ja muista järjestelmistä turvallisesti samassa keskustelussa.
 Turvallisuus: AI saa vain tarvittavat oikeudet, asiakaskohtainen rajaus, keskitetty hallinta, jokainen toimenpide lokiin.`;
 
-        systemPrompt = `Olet AI-strategiaavustaja joka auttaa humm.fi:tä suunnittelemaan seuraavia askelia AI-asiakaspalvelussa.
+        systemPrompt = `${attachedContent}Olet AI-strategiaavustaja joka auttaa humm.fi:tä suunnittelemaan seuraavia askelia AI-asiakaspalvelussa.
 
 **TÄRKEÄ SÄÄNTÖ:** Kun käyttäjä kysyy MCP:stä, MCP tarkoittaa AINA Model Context Protocol -käsitettä. ÄLÄ KOSKAAN tarkoita Microsoft Certified Professional tai muuta MCP-lyhenteen merkitystä.
 
@@ -466,40 +466,15 @@ ${keyLearnings}
         const topTrends = trends.slice(0, 2).map(t => `${normalizeText(t.title)}: ${normalizeText(t.description)}`).join("\n\n");
         const topCases = cases.slice(0, 3).map(c => `${normalizeText(c.company)}: ${normalizeText(c.description)}`).join("\n\n");
         
-        // Check attached_assets for additional data
-        let attachedContent = "";
-        try {
-          const fs = await import('fs').then(m => m.promises);
-          const path = await import('path');
-          const assetsDir = path.join(process.cwd(), 'attached_assets');
-          
-          try {
-            const files = await fs.readdir(assetsDir, { recursive: true });
-            const textFiles = files.filter(f => f.endsWith('.txt') || f.endsWith('.md') || f.endsWith('.json'));
-            
-            if (textFiles.length > 0) {
-              const contents = await Promise.all(
-                textFiles.slice(0, 3).map(async f => {
-                  const content = await fs.readFile(path.join(assetsDir, f), 'utf-8');
-                  return `${f}: ${content.substring(0, 500)}`;
-                })
-              );
-              attachedContent = `\n\nLisätiedot attached_assets kansiosta:\n${contents.join('\n\n')}`;
-            }
-          } catch (err) {
-            // attached_assets directory doesn't exist or is empty
-          }
-        } catch (err) {
-          // Import failed
-        }
+        // Using shared attached_assets content already loaded above
         
-        systemPrompt = `Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään AI-asiakaspalvelun toteutuksia.
+        systemPrompt = `${attachedContent}Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään AI-asiakaspalvelun toteutuksia.
 
 ## Tärkeimmät trendit:
 ${topTrends}
 
 ## Esimerkkitapaukset:
-${topCases}${attachedContent}
+${topCases}
 
 **Vastaa aina suomeksi** käyttäen **Markdown-muotoilua** (otsikot, listat, korostukset). Anna konkreettisia, hyödyllisiä tietoja ja käytännön näkemyksiä yllä olevien tietojen perusteella.
 
