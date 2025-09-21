@@ -261,14 +261,15 @@ Tiivistä olennainen niin, että vastaus on:
         try {
           const fs = await import('fs').then(m => m.promises);
           const path = await import('path');
+          const pdfParse = await import('pdf-parse');
           const assetsDir = path.join(process.cwd(), 'attached_assets');
           
           try {
-            const files = await fs.readdir(assetsDir, { recursive: true });
-            const textFiles = files.filter(f => 
+            const files = await fs.readdir(assetsDir);
+            const supportedFiles = files.filter(f => 
               f.endsWith('.txt') || f.endsWith('.md') || f.endsWith('.json') || 
               f.endsWith('.csv') || f.endsWith('.xml') || f.endsWith('.yaml') ||
-              f.endsWith('.yml') || f.endsWith('.tsv')
+              f.endsWith('.yml') || f.endsWith('.tsv') || f.endsWith('.pdf')
             );
             
             if (textFiles.length > 0) {
