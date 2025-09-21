@@ -92,13 +92,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
             messages: [
               {
                 role: "system",
-                content: "Olet asiantuntija AI-asiakaspalvelun toteutuksissa. Parannat annettuja vastauksia tekemaan niista selkeampia, kattavampia ja paremmin muotoiltuja. Sailyta alkuperainen suomenkielisyys ja asiantuntemus. Kayta markdown-muotoilua otsikoille, listalle ja korostuksille. Pida vastaus kaytannollisena ja toimintasuuntautuneena."
+                content: `Toimi asiantuntijana, joka tiivistää laajan datan vastauksiksi.
+Käytä vain datassa olevia tietoja.
+Tiivistä olennainen niin, että vastaus on:
+- Helppo lukea
+- Informatiivinen
+- Enintään 120 sanaa`
               },
               {
                 role: "user", 
-                content: `Paranna tama AI-asiakaspalveluvastaus tekemaan siita selkeampi ja kattavampi:\n\n${cleanContent}`
+                content: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}`
               }
             ],
+            max_completion_tokens: 300,
           });
 
           if (enhancementResponse.choices[0].message.content) {
@@ -431,7 +437,7 @@ Keep answers informative but concise (max 200 words).`;
             { role: "system", content: systemPrompt },
             { role: "user", content: normalizeText(message) }
           ],
-          max_tokens: 500,
+          max_completion_tokens: 500,
         });
       } catch (error: any) {
         console.error("OpenAI request failed:", error.name, error.message);
