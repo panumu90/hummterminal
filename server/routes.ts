@@ -255,6 +255,59 @@ Tiivistä olennainen niin, että vastaus on:
           .replace(/\s+/g, ' ')
           .trim();
       };
+
+      // Shared function to read attached_assets for all contexts  
+      const readAttachedAssets = async (): Promise<string> => {
+        try {
+          const fs = await import('fs').then(m => m.promises);
+          const path = await import('path');
+          const assetsDir = path.join(process.cwd(), 'attached_assets');
+          
+          try {
+            const files = await fs.readdir(assetsDir, { recursive: true });
+            const textFiles = files.filter(f => 
+              f.endsWith('.txt') || f.endsWith('.md') || f.endsWith('.json') || 
+              f.endsWith('.csv') || f.endsWith('.xml') || f.endsWith('.yaml') ||
+              f.endsWith('.yml') || f.endsWith('.tsv')
+            );
+            
+            if (textFiles.length > 0) {
+              console.log(`📁 Using attached_assets: ${textFiles.length} files found (${textFiles.join(', ')})`);
+              
+              const contents = await Promise.all(
+                textFiles.slice(0, 8).map(async f => {
+                  const content = await fs.readFile(path.join(assetsDir, f), 'utf-8');
+                  return `📋 **${f}**:\n${content.substring(0, 1500)}${content.length > 1500 ? '...' : ''}`;
+                })
+              );
+              
+              return `
+
+🎯 **ENSISIJAINEN TIETOLÄHDE - Käyttäjän lataamat tiedostot:**
+
+${contents.join('\n\n')}
+
+⚠️ **TÄRKEÄ OHJE**: Jos yllä olevista käyttäjän lataamista tiedostoista löytyy vastaus kysymykseen, käytä ENSISIJAISESTI näitä tietoja. Nämä ovat tuoreempia ja relevantimpia kuin alla olevat yleiset tiedot.
+
+---
+
+`;
+            } else {
+              console.log("📁 No attached_assets files found");
+              return "";
+            }
+          } catch (err) {
+            console.log("📁 attached_assets directory not found or empty");
+            return "";
+          }
+        } catch (err) {
+          console.log("📁 Failed to import fs/path modules for attached_assets");
+          return "";
+        }
+      };
+      
+      // Read attached assets for all contexts
+      const attachedContent = await readAttachedAssets();
       
       // Create content based on context type
       let systemPrompt = "";
