@@ -16,7 +16,7 @@ interface ChatMessage {
   timestamp: number;
 }
 
-type ContextType = "strategic" | "practical" | "finnish" | "planning" | "technical" | "general";
+type ContextType = "strategic" | "practical" | "finnish" | "planning" | "technical" | "mcp" | "general";
 
 interface QuestionButton {
   id: string;
@@ -320,6 +320,12 @@ const contextConfig = {
     color: "bg-emerald-500 hover:bg-emerald-600",
     description: "MCP ja teknologiset ratkaisut"
   },
+  mcp: {
+    label: "Model Context Protocol",
+    icon: Shield,
+    color: "bg-emerald-600 hover:bg-emerald-700",
+    description: "MCP-spesifinen tieto ja ohjeistus"
+  },
   general: {
     label: "Yleinen",
     icon: Bot,
@@ -395,7 +401,7 @@ export function ChatInterface() {
 
       // Send question as chat message to get enhanced markdown response with appropriate context
       const isMcpQuestion = question.id.includes('mcp-') || question.question.toLowerCase().includes('mcp');
-      const contextType = isMcpQuestion ? 'strategic' : 
+      const contextType = isMcpQuestion ? 'mcp' : 
                          question.category.includes('roi') || question.category.includes('strategy') ? 'strategic' :
                          question.category.includes('automation') || question.category.includes('practical') ? 'practical' : 'general';
       console.log("Question clicked:", question.question, "ID:", question.id, "Context:", contextType);

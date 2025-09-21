@@ -27,7 +27,7 @@ const GPT_MODEL = "gpt-3.5-turbo";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
-  context_type: z.enum(["strategic", "practical", "finnish", "planning", "technical", "general"]).default("general")
+  context_type: z.enum(["strategic", "practical", "finnish", "planning", "technical", "mcp", "general"]).default("general")
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -278,20 +278,26 @@ Tiivistä olennainen niin, että vastaus on:
           return `${title}: ${description} - ${keyPoints}`;
         }).join("\n\n");
         
-        systemPrompt = `You are an AI expert helping humm.fi team understand 2025 AI trends in customer experience.
+        // Add critical MCP knowledge for strategic context
+        const mcpKnowledge = `
+TÄRKEÄ MCP-MÄÄRITELMÄ: MCP (Model Context Protocol) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja ulkoisten tietolähteiden välillä. 
+MCP-hyödyt: Roolipohjainen pääsynhallinta, eksplisiittinen kontekstin rajaus, audit-jäljet, reaaliaikainen järjestelmäintegraatio, monivaiheiset prosessit.
+MCP:llä AI voi hakea tietoa CRM:stä, ERP:stä ja muista järjestelmistä turvallisesti samassa keskustelussa.`;
 
-You have comprehensive Finnish market analysis from latest research:
+        systemPrompt = `VAROITUS: MCP = Model Context Protocol. ÄLÄ KOSKAAN tarkoita Microsoft Certified Professional tai muuta.
 
-${trendsContent}
+MCP (Model Context Protocol) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja ulkoisten tietolähteiden välillä. MCP:n hyödyt:
+- Roolipohjainen pääsynhallinta
+- Eksplisiittinen kontekstin rajaus  
+- Audit-jäljet
+- Reaaliaikainen järjestelmäintegraatio
+- Monivaiheiset prosessit
 
-Always respond in Finnish and focus on:
-1. 2025 AI trends and future developments
-2. Strategic implications for businesses
-3. Market opportunities and innovations
-4. Implementation roadmaps
-5. Technology evolution predictions
+Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään 2025 AI-trendejä.
 
-Keep answers strategic and forward-looking (max 200 words).`;
+2025 AI-trendit: ${trendsContent}
+
+**Vastaa aina suomeksi käyttäen Markdown-muotoilua.** Jos kysytään MCP:stä, selitä Model Context Protocol yllä olevan tiedon mukaan. Keskity strategisiin näkökulmiin (max 200 sanaa).`;
         
       } else if (context_type === "practical") {
         const compactCases = cases.map(c => {
@@ -346,7 +352,24 @@ ${globalContent}
 
 Pidä vastaukset Suomi-keskeisinä (max 200 sanaa).`;
         
-      } else if (context_type === "planning") {
+      } else if (context_type === "mcp") {
+        // Dedicated MCP context to ensure correct understanding
+        systemPrompt = `You are an AI expert explaining Model Context Protocol to humm.fi team.
+
+CRITICAL: MCP stands for Model Context Protocol - an open standard for secure connections between AI models and external data sources.
+
+MCP enables:
+- Role-based access control (RBAC)
+- Explicit context boundaries
+- Audit trails and monitoring  
+- Real-time system integration
+- Multi-step automated processes
+
+MCP allows AI to safely access CRM, ERP and other systems during conversations.
+
+Respond in Finnish using Markdown formatting. Focus on strategic benefits for humm.fi (max 200 words).`;
+
+      } else if (context_type === "planning" || context_type === "strategic") {
         const planningTrends = trends.filter(t => t.category === "automation" || t.category === "strategic");
         const trendsContent = planningTrends.map(t => 
           `${normalizeText(t.title)}: ${Array.isArray(t.key_points) ? (t.key_points as string[]).slice(0, 2).map(p => normalizeText(p)).join("; ") : ""}`
@@ -365,7 +388,9 @@ Turvallisuus: AI saa vain tarvittavat oikeudet, asiakaskohtainen rajaus, keskite
 
         systemPrompt = `Olet AI-strategiaavustaja joka auttaa humm.fi:tä suunnittelemaan seuraavia askelia AI-asiakaspalvelussa.
 
-## Model Context Protocol (MCP) - TÄRKEÄ:
+**TÄRKEÄ SÄÄNTÖ:** Kun käyttäjä kysyy MCP:stä, MCP tarkoittaa AINA Model Context Protocol -käsitettä. ÄLÄ KOSKAAN tarkoita Microsoft Certified Professional tai muuta MCP-lyhenteen merkitystä.
+
+## Model Context Protocol (MCP) - MÄÄRITELMÄ:
 ${mcpKnowledge}
 
 ## 2025 Trendit:
@@ -381,7 +406,7 @@ ${keyLearnings}
 4. **Riskiarviointiin** ja lieventämisstrategioihin
 5. **Menestyksen mittareihin** ja seurattaviin KPI:hin
 
-Jos kysytään MCP:stä, käytä yllä olevaa MCP-tietoa vastauksessasi. Pidä vastaukset strategisina ja toimintasuuntautuneina humm.fi:lle (max 200 sanaa).`;
+**PAKOLLINEN:** Jos kysymys sisältää sanan "MCP", käytä VAIN yllä olevaa Model Context Protocol -määritelmää vastauksessasi. Pidä vastaukset strategisina ja toimintasuuntautuneina humm.fi:lle (max 200 sanaa).`;
         
       } else {
         // general context - mix of everything
