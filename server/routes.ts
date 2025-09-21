@@ -22,8 +22,8 @@ const openai = new OpenAI({
   }
 });
 
-// the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-const GPT_MODEL = "gpt-5";
+// Use GPT-3.5-turbo which should be available on most API keys
+const GPT_MODEL = "gpt-3.5-turbo";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
@@ -92,8 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             messages: [
               {
                 role: "system",
-                content: `Toimi asiantuntijana, joka tiivistää laajan datan vastauksiksi.
-Käytä vain datassa olevia tietoja.
+                content: `Toimi asiantuntijana, joka auttaa humm.fi yritystä ottamaan tekoäly käyttöön organisaatiossa.
 Tiivistä olennainen niin, että vastaus on:
 - Helppo lukea
 - Informatiivinen
@@ -379,42 +378,58 @@ Keep answers strategic and actionable for humm.fi (max 200 words).`;
         const topTrends = trends.slice(0, 2).map(t => `${normalizeText(t.title)}: ${normalizeText(t.description)}`).join("\n\n");
         const topCases = cases.slice(0, 3).map(c => `${normalizeText(c.company)}: ${normalizeText(c.description)}`).join("\n\n");
         
-        systemPrompt = `You are an AI expert helping humm.fi team understand AI customer service implementations.
+        // Check attached_assets for additional data
+        let attachedContent = "";
+        try {
+          const fs = await import('fs').then(m => m.promises);
+          const path = await import('path');
+          const assetsDir = path.join(process.cwd(), 'attached_assets');
+          
+          try {
+            const files = await fs.readdir(assetsDir, { recursive: true });
+            const textFiles = files.filter(f => f.endsWith('.txt') || f.endsWith('.md') || f.endsWith('.json'));
+            
+            if (textFiles.length > 0) {
+              const contents = await Promise.all(
+                textFiles.slice(0, 3).map(async f => {
+                  const content = await fs.readFile(path.join(assetsDir, f), 'utf-8');
+                  return `${f}: ${content.substring(0, 500)}`;
+                })
+              );
+              attachedContent = `\n\nLisätiedot attached_assets kansiosta:\n${contents.join('\n\n')}`;
+            }
+          } catch (err) {
+            // attached_assets directory doesn't exist or is empty
+          }
+        } catch (err) {
+          // Import failed
+        }
+        
+        systemPrompt = `Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään AI-asiakaspalvelun toteutuksia.
 
-Top Trends:
+Tärkeimmät trendit:
 ${topTrends}
 
-Example Cases:
-${topCases}
+Esimerkkitapaukset:
+${topCases}${attachedContent}
 
-Always respond in Finnish and provide balanced information about AI customer service implementations, trends, and practical applications.
+Vastaa aina suomeksi ja anna konkreettisia, hyödyllisiä tietoja. Anna käytännön näkemyksiä yllä olevien tietojen perusteella.
 
-Keep answers informative but concise (max 200 words).`;
+Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
       }
 
-      // Final aggressive sanitization to prevent ByteString errors
+      // Light sanitization to keep Finnish content while preventing ByteString errors
       systemPrompt = systemPrompt
-        .replace(/[^\x00-\x7F]/g, (char) => {
-          // Replace common Unicode characters with ASCII equivalents
-          const replacements: Record<string, string> = {
-            "\u2013": "-", // en dash
-            "\u2014": "-", // em dash  
-            "\u2018": "'", // left single quotation mark
-            "\u2019": "'", // right single quotation mark
-            "\u201C": '"', // left double quotation mark
-            "\u201D": '"', // right double quotation mark
-            "\u2026": "...",// horizontal ellipsis
-            "\u00A0": " ", // non-breaking space
-            "\u202F": " ", // narrow no-break space
-            "\u2022": "-", // bullet point
-            // Keep Finnish characters for quality
-            "ä": "ä", "ö": "ö", "å": "å",
-            "Ä": "Ä", "Ö": "Ö", "Å": "Å"
-          };
-          return replacements[char] || "";
-        })
-        .replace(/\s+/g, ' ')
+        .replace(/[\u2013\u2014]/g, '-')           // en-dash, em-dash
+        .replace(/[\u201C\u201D]/g, '"')          // smart quotes  
+        .replace(/[\u2018\u2019]/g, "'")          // smart apostrophes
+        .replace(/[\u2026]/g, '...')              // ellipsis
+        .replace(/[\u00A0\u202F]/g, ' ')          // non-breaking spaces
+        .replace(/[\u2022]/g, '-')                // bullet points
+        .replace(/\s+/g, ' ')                     // normalize whitespace
         .trim();
+      
+      // Keep Finnish characters intact - they are essential for quality responses
       
       // Debug logging for encoding issues
       const problematicChars = [];
@@ -447,7 +462,10 @@ Keep answers informative but concise (max 200 words).`;
         });
       }
 
-      const aiResponse = response.choices[0].message.content || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
+      const rawResponse = response.choices[0].message.content;
+      console.log("GPT-5 raw response:", rawResponse ? `"${rawResponse.substring(0, 100)}..."` : "null/empty");
+      
+      const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
 
       // Save chat message
       await storage.saveChatMessage({
