@@ -259,9 +259,19 @@ Tiivistä olennainen niin, että vastaus on:
       // Shared function to read attached_assets for all contexts  
       const readAttachedAssets = async (): Promise<string> => {
         try {
-          const fs = await import('fs').then(m => m.promises);
+          const { promises: fs } = await import('fs');
           const path = await import('path');
-          const pdfParse = await import('pdf-parse');
+          let pdfParse: any = null;
+          try {
+            const mod = await import('pdf-parse');
+            pdfParse = (mod as any).default || (mod as any);
+            if (typeof pdfParse !== 'function') {
+              pdfParse = null;
+              console.log("📋 PDF-parse not a valid function, skipping PDF files");
+            }
+          } catch (err) {
+            console.log("📋 PDF-parse not available, skipping PDF files");
+          }
           const assetsDir = path.join(process.cwd(), 'attached_assets');
           
           try {
@@ -272,12 +282,33 @@ Tiivistä olennainen niin, että vastaus on:
               f.endsWith('.yml') || f.endsWith('.tsv') || f.endsWith('.pdf')
             );
             
-            if (textFiles.length > 0) {
-              console.log(`📁 Using attached_assets: ${textFiles.length} files found (${textFiles.join(', ')})`);
+            if (supportedFiles.length > 0) {
+              console.log(`📁 Using attached_assets: ${supportedFiles.length} files found (${supportedFiles.join(', ')})`);
               
               const contents = await Promise.all(
-                textFiles.slice(0, 8).map(async f => {
-                  const content = await fs.readFile(path.join(assetsDir, f), 'utf-8');
+                supportedFiles.slice(0, 8).map(async f => {
+                  const filePath = path.join(assetsDir, f);
+                  let content = "";
+                  
+                  try {
+                    if (f.endsWith('.pdf') && pdfParse) {
+                      // Parse PDF file
+                      const buffer = await fs.readFile(filePath);
+                      const pdfData = await pdfParse(buffer);
+                      content = pdfData.text || "";
+                      console.log(`📋 PDF parsed: ${f} (${content.length} characters)`);
+                    } else if (f.endsWith('.pdf') && !pdfParse) {
+                      content = `[PDF-tiedosto ${f} - tarvitsee pdf-parse kirjastoa]`;
+                      console.log(`⚠️ Skipping PDF ${f} - pdf-parse not available`);
+                    } else {
+                      // Read text file
+                      content = await fs.readFile(filePath, 'utf-8');
+                    }
+                  } catch (pdfError) {
+                    console.error(`❌ Failed to read ${f}:`, pdfError);
+                    content = `[Virhe luettaessa tiedostoa ${f}]`;
+                  }
+                  
                   return `📋 **${f}**:\n${content.substring(0, 1500)}${content.length > 1500 ? '...' : ''}`;
                 })
               );
