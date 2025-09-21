@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2 } from "lucide-react";
+import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -36,6 +36,13 @@ interface TopicArea {
 
 // MCP (Model Context Protocol) - TÄRKEÄ!
 const mcpQuestions: QuestionButton[] = [
+  {
+    id: "mcp-what-is",
+    question: "Mikä on MCP?",
+    category: "mcp",
+    icon: HelpCircle,
+    color: "bg-emerald-500"
+  },
   {
     id: "mcp-security",
     question: "Miten MCP parantaa AI-integraatioiden turvallisuutta?",
@@ -373,7 +380,7 @@ export function ChatInterface() {
     
     // Find question text
     const allQuestions = [
-      ...mcpQuestions.map(q => ({ ...q, id: `mcp-${q.id}` })),
+      ...mcpQuestions,
       ...topicAreas.flatMap(topic => topic.questions)
     ];
     const question = allQuestions.find(q => q.id === questionId);
@@ -385,9 +392,15 @@ export function ChatInterface() {
         isUser: true,
         timestamp: Date.now()
       }]);
+
+      // Send question as chat message to get enhanced markdown response with appropriate context
+      const isMcpQuestion = question.id.includes('mcp-') || question.question.toLowerCase().includes('mcp');
+      const contextType = isMcpQuestion ? 'strategic' : 
+                         question.category.includes('roi') || question.category.includes('strategy') ? 'strategic' :
+                         question.category.includes('automation') || question.category.includes('practical') ? 'practical' : 'general';
+      console.log("Question clicked:", question.question, "ID:", question.id, "Context:", contextType);
+      chatMutation.mutate({ message: question.question, context_type: contextType });
     }
-    
-    questionMutation.mutate(questionId);
   };
 
   const toggleExpanded = () => {
@@ -403,14 +416,17 @@ export function ChatInterface() {
   }, [messages]);
 
   const chatMutation = useMutation({
-    mutationFn: async (message: string) => {
+    mutationFn: async (data: { message: string, context_type?: ContextType }) => {
       const response = await apiRequest("POST", "/api/chat", { 
-        message,
-        context_type: selectedContext
+        message: data.message || data,
+        context_type: data.context_type || selectedContext
       });
       return response.json();
     },
     onSuccess: (data) => {
+      console.log("Chat response received:", data.response);
+      console.log("Has markdown headers:", data.response.includes('##') || data.response.includes('###'));
+      console.log("Has markdown bold:", data.response.includes('**'));
       setMessages(prev => [...prev, {
         content: data.response,
         isUser: false,
@@ -438,7 +454,7 @@ export function ChatInterface() {
     }]);
 
     setInputValue("");
-    chatMutation.mutate(message);
+    chatMutation.mutate({ message: message });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

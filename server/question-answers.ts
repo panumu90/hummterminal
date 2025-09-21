@@ -2,6 +2,9 @@
 
 export const questionAnswers: Record<string, { answer: string }> = {
   // MCP Questions - TÄRKEÄ!
+  "mcp-what-is": {
+    answer: "## 🤖 **Model Context Protocol (MCP)**\n\n**MCP** on avoin standardi, joka mahdollistaa **turvallisen yhteyden** AI-mallien ja ulkoisten tietolähteiden välillä.\n\n### **Mitä MCP tekee:**\n- 🔗 **Yhdistää AI:n reaaliaikaiseen dataan** (CRM, ERP, tietokannat)\n- 🛡️ **Hallitsee pääsyoikeudet** roolipohjaisesti\n- 📊 **Mahdollistaa monivaiheiset prosessit** asiakaspalvelussa\n- 🔍 **Tarjoaa läpinäkyvän audit-jäljen** kaikista toimista\n\n### **Yksinkertaisesti:**\nMCP on \"tulkki\" joka antaa AI:lle luvan käyttää yrityksen järjestelmiä turvallisesti - ei enempää eikä vähempää kuin tarvitaan.\n\n**Esimerkki:** Asiakaspalvelu-AI voi hakea tilauksen tiedot mutta ei muokata niitä ilman lupaa."
+  },
   "mcp-security": {
     answer: "🔒 **MCP parantaa AI-integraatioiden turvallisuutta merkittävästi**\n\n• **Roolipohjainen pääsynhallinta (RBAC)**: AI-agentti saa vain ne oikeudet, joita sen tehtävän hoitamiseen tarvitaan\n• **Eksplisiittinen kontekstin rajaus**: Tekoäly pääsee käsiksi vain kulloinkin tarpeelliseen tietoon\n• **Audit-jäljet ja valvonta**: Kaikki AI:n toimet tallennetaan läpinäkyvästi\n• **Automaattinen tietoturva**: MCP-palvelin hallitsee pääsyoikeudet keskitetysti\n\nTämä estää AI:ta ylittämästä valtuuksiaan ja vuotamasta arkaluontoista tietoa. MCP toimii 'hiekkalaatikkona' joka pitää tekoälyn kontrollissa."
   },

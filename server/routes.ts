@@ -329,22 +329,22 @@ Keep answers practical and actionable (max 200 words).`;
           `${normalizeText(c.company)} (${normalizeText(c.country)}): ${normalizeText(c.description.substring(0, 150))}...`
         ).join("\n\n");
         
-        systemPrompt = `You are an AI expert helping humm.fi understand AI implementations specifically for Finnish market.
+        systemPrompt = `Olet AI-asiantuntija joka auttaa humm.fi:tä ymmärtämään AI-toteutuksia erityisesti Suomen markkinoille.
 
-Suomalaiset esimerkit:
+## Suomalaiset esimerkit:
 ${finnishContent}
 
-Kansainväliset vertailukohteet:
+## Kansainväliset vertailukohteet:
 ${globalContent}
 
-Always respond in Finnish and focus on:
-1. How these solutions work in Finnish market context
-2. Comparison between Finnish and international approaches
-3. Cultural and regulatory considerations for Finland
-4. Market-specific opportunities and challenges
-5. Recommendations for Finnish companies
+**Vastaa aina suomeksi** käyttäen **Markdown-muotoilua** ja keskity:
+1. **Miten ratkaisut toimivat** Suomen markkinakontekstissa
+2. **Vertailu** suomalaisten ja kansainvälisten lähestymistapojen välillä
+3. **Kulttuuriset ja sääntelytekijät** Suomessa
+4. **Markkinakohtaiset mahdollisuudet** ja haasteet
+5. **Suositukset suomalaisille yrityksille**
 
-Keep answers Finland-focused (max 200 words).`;
+Pidä vastaukset Suomi-keskeisinä (max 200 sanaa).`;
         
       } else if (context_type === "planning") {
         const planningTrends = trends.filter(t => t.category === "automation" || t.category === "strategic");
@@ -356,22 +356,32 @@ Keep answers Finland-focused (max 200 words).`;
           `${normalizeText(c.company)}: ${Array.isArray(c.learning_points) ? c.learning_points.map(p => normalizeText(p)).slice(0, 2).join("; ") : ""}`
         ).join("\n\n");
         
-        systemPrompt = `You are an AI strategic advisor helping humm.fi plan their next steps in AI customer service.
+        // Add MCP-specific knowledge for strategic context
+        const mcpKnowledge = `
+MCP (Model Context Protocol) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja ulkoisten tietolähteiden välillä.
+MCP-hyödyt: Roolipohjainen pääsynhallinta, eksplisiittinen kontekstin rajaus, audit-jäljet, reaaliaikainen järjestelmäintegraatio, monivaiheiset prosessit.
+MCP:llä AI voi hakea tietoa CRM:stä, ERP:stä ja muista järjestelmistä turvallisesti samassa keskustelussa.
+Turvallisuus: AI saa vain tarvittavat oikeudet, asiakaskohtainen rajaus, keskitetty hallinta, jokainen toimenpide lokiin.`;
 
-2025 Trends:
+        systemPrompt = `Olet AI-strategiaavustaja joka auttaa humm.fi:tä suunnittelemaan seuraavia askelia AI-asiakaspalvelussa.
+
+## Model Context Protocol (MCP) - TÄRKEÄ:
+${mcpKnowledge}
+
+## 2025 Trendit:
 ${trendsContent}
 
-Key Learnings from Cases:
+## Tärkeimmät opit tapauksista:
 ${keyLearnings}
 
-Always respond in Finnish and focus on:
-1. Strategic recommendations specifically for humm.fi
-2. Implementation roadmap and priorities
-3. Resource requirements and timeline
-4. Risk assessment and mitigation strategies
-5. Success metrics and KPIs to track
+**Vastaa aina suomeksi** käyttäen **Markdown-muotoilua** ja keskity:
+1. **Strategisiin suosituksiin** erityisesti humm.fi:lle
+2. **Toteutuksen tiekartaan** ja prioriteetteihin
+3. **Resurssitarpeisiin** ja aikatauluun
+4. **Riskiarviointiin** ja lieventämisstrategioihin
+5. **Menestyksen mittareihin** ja seurattaviin KPI:hin
 
-Keep answers strategic and actionable for humm.fi (max 200 words).`;
+Jos kysytään MCP:stä, käytä yllä olevaa MCP-tietoa vastauksessasi. Pidä vastaukset strategisina ja toimintasuuntautuneina humm.fi:lle (max 200 sanaa).`;
         
       } else {
         // general context - mix of everything
@@ -407,13 +417,13 @@ Keep answers strategic and actionable for humm.fi (max 200 words).`;
         
         systemPrompt = `Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään AI-asiakaspalvelun toteutuksia.
 
-Tärkeimmät trendit:
+## Tärkeimmät trendit:
 ${topTrends}
 
-Esimerkkitapaukset:
+## Esimerkkitapaukset:
 ${topCases}${attachedContent}
 
-Vastaa aina suomeksi ja anna konkreettisia, hyödyllisiä tietoja. Anna käytännön näkemyksiä yllä olevien tietojen perusteella.
+**Vastaa aina suomeksi** käyttäen **Markdown-muotoilua** (otsikot, listat, korostukset). Anna konkreettisia, hyödyllisiä tietoja ja käytännön näkemyksiä yllä olevien tietojen perusteella.
 
 Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
       }
