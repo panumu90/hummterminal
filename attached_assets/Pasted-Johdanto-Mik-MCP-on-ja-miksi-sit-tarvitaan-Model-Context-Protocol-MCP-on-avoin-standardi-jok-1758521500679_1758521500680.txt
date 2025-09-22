@@ -1,0 +1,173 @@
+Johdanto: Mikä MCP on ja miksi sitä tarvitaan?
+Model Context Protocol (MCP) on avoin standardi, joka määrittelee tavan liittää suuria kielimalleja ja tekoälyagentteja ulkoisiin tieto- ja työkalulähteisiin
+cerbos.dev
+. Sen avulla AI-avustajat eivät enää ole eristyksissä vain omien koulutusdatojensa varassa, vaan ne voivat päästä käsiksi reaaliaikaiseen tietoon ja järjestelmiin turvallisesti. MCP toimii kuin eräänlainen erikoistunut API-rajapinta tekoälylle: AI-agentti voi sen kautta "keskustella" yrityksen tietokantojen, sovellusten tai palveluiden kanssa yhtenäisellä tavalla
+cerbos.dev
+. Tämä avaa uusia käyttömahdollisuuksia – esimerkiksi AI voi hakea tietoa yrityksen sisäisistä järjestelmistä, päivittää tietueita tai suorittaa toimintoja, mikä tekstiin perustuvilta malleilta ei muuten onnistuisi
+cerbos.dev
+. Miksi MCP on tärkeä? Perinteisesti suurten kielimallien tuottamat vastaukset rajoittuvat niiden opetusvaiheessa nähtyyn dataan. MCP ratkaisee tämän rajoituksen tarjoamalla standardoidun tavan integroida ulkoisia tietolähteitä ja työkaluja osaksi AI:n toimintaa
+cyberark.com
+. Esimerkiksi asiakaspalvelussa AI-agentti voi MCP:n avulla tarkistaa asiakkaan kalenterin tai tilaukset taustajärjestelmästä – tehtäviä, joihin pelkkä kielimalli ei ilman yhteyttä järjestelmiin pystyisi
+cyberark.com
+. Tuloksena on merkittävästi osuvammat ja kontekstuaalisemmat vastaukset käyttäjille, kun AI pystyy hyödyntämään ajantasaista dataa päätöstensä tukena
+cyberark.com
+cyberark.com
+. On kuitenkin huomattava, että MCP on vain rajapinta – se itsessään ei sisällä automaattisesti turvamekanismeja kuten autentikointia tai pääsynhallintaa
+cyberark.com
+. Voidaan ajatella, että MCP “avaa ovia” AI:lle, mutta organisaation tehtävä on päättää, mitkä ovet ovat auki ja kenelle. Ilman asianmukaisia rajoituksia ja suojauksia MCP:n tuomat laajentuneet kyvyt voivat kääntyä riskeiksi. Jos MCP-yhteydellä varustettua mallia ei hallita oikein, se voisi vahingossa vuotaa arkaluontoista tietoa tai tehdä tahattomia (jopa haitallisia) toimenpiteitä käyttäjän puolesta
+medium.com
+. Siksi MCP:n käyttöönotossa korostuvat tietoturva, pääsynhallinta ja kontekstin huolellinen rajaus – erityisesti ympäristöissä, joissa käsitellään luottamuksellista dataa. Seuraavaksi tarkastelemme, kuinka MCP:stä saadaan maksimaalinen hyöty käyttöön ilman tietoturvakompromisseja. Keskitymme sen keskeisiin ominaisuuksiin ja etuihin käytön ja tietoturvan näkökulmasta, kuten roolipohjaiseen pääsyyn, eksplisiittiseen kontekstin rajaukseen sekä audit-jälkien hyödyntämiseen. Nämä periaatteet auttavat organisaatioita hallitsemaan tekoälyn käyttöä niin, että se täyttää sekä liiketoiminnan tarpeet että sääntelyn ja luottamuksen vaatimukset.
+MCP:n hyödyt käytön näkökulmasta
+Käyttöympäristön kannalta MCP:n suurin etu on, että se parantaa tekoälyn kykyä antaa relevantteja vastauksia ja suorittaa tehtäviä käyttämällä organisaation omaa dataa ja työkaluja. Yhtenäisen protokollan ansiosta AI-agentti voi joustavasti yhdistellä eri tietolähteitä ja palveluita ilman räätälöityjä integraatioita jokaista varten
+anthropic.com
+cyberark.com
+. Tämä yksinkertaistaa kehitystyötä ja nopeuttaa AI-ratkaisujen käyttöönottoa, kun erilaiset järjestelmät voidaan liittää tekoälyyn yhdenmukaisella tavalla MCP:n kautta
+anthropic.com
+. Käytännön esimerkki: Asiakaspalveluchatbot voi MCP:n avulla hakea tietoa useista lähteistä asiakkaan kysymyksen ratkaisemiseksi. Samassa keskustelussa botti pystyy vaikkapa tarkistamaan asiakkaan tilauksen tilan ERP-järjestelmästä, hakemaan tuotetietoja tietokannasta ja luomaan tukipyynnön tiketöintijärjestelmään. Ilman MCP:tä tämä edellyttäisi monimutkaisia erillisintegrointeja tai ennaltaluotua tietopohjaa, mutta MCP:n standardi rajapinta tekee yhdistämisestä suoraviivaista. Tuloksena asiakas saa nopeammin oikean vastauksen, koska AI:lla on suora pääsy tarvittavaan kontekstitietoon. CyberArkin mukaan MCP:n avulla asiakastuki-chatbotit voivatkin suoraan hyödyntää tietopankkeja ja antaa tarkkoja, asiayhteyteen sopivia vastauksia
+cyberark.com
+ – tämä parantaa sekä ratkaisuajan että asiakaskokemuksen laatua. Lisäksi MCP mahdollistaa automaation ja monivaiheiset prosessit AI-agenttien avulla. Esimerkiksi AI voisi aloittaa asiakkaan puolesta palautusprosessin heti tilauksen tietoja haettuaan, tai työntekijän apuriagentti voisi luoda kalenterikutsun ja lähettää sen sähköpostilla – kaikki yhdestä käyttäjän pyynnöstä. Tällainen agenttien kyvykkyys vähentää manuaalista työtä ja nopeuttaa palvelua. Organisaation näkökulmasta MCP:n käyttö voi tuoda tehokkuusetuja: rutiinitehtävät hoituvat automatisoidusti, ja henkilöstö voi keskittyä vaativampiin tehtäviin. Samalla varmistetaan, että AI:n toimet perustuvat ajantasaiseen ja oikeaan tietoon, mikä vähentää virheellisten vastausten riskiä. Yhteenvetona käyttöhyödyistä: MCP:n avulla tekoäly voidaan valjastaa organisaation tietovarantojen ja järjestelmien päälle tuottamaan älykkäitä, kontekstissaan täsmällisiä vastauksia ja toimintoja. Tämä nostaa sekä asiakaspalvelun laatua että sisäisten prosessien tehokkuutta uudelle tasolle – kuitenkaan unohtamatta, että nämä hyödyt realisoituvat turvallisesti vain, jos tietoturva-asiat on hoidettu huolella.
+Tietoturva ja pääsynhallinta MCP:ssä
+MCP:n tuoma voimakas integraatiokyky asettaa tietoturvalle erityisvaatimuksia. Koska AI-agentti voi MCP:n kautta toimia ikään kuin käyttäjänä eri järjestelmissä, on välttämätöntä varmistaa, että se pääsee käsiksi vain siihen dataan ja niihin toimintoihin, joihin sillä kuuluu olla pääsy. MCP itsessään ei määritä käyttöoikeussääntöjä, joten organisaation tulee toteuttaa pääsynhallinta, tietoturva ja valvonta MCP-kerroksessa
+cyberark.com
+zenity.io
+. Alla on keskeisiä periaatteita, joilla MCP-ympäristö pidetään turvallisena:
+Roolipohjainen pääsy (RBAC): MCP:n avulla voidaan toteuttaa tarkka käyttöoikeuksien rajaus roolin tai käyttäjän perusteella. Käytännössä AI-agentille annetaan vain ne oikeudet, jotka sen tehtävän hoitamiseen tarvitaan – ei enempää. Esimerkiksi asiakaspalvelubotin MCP-palvelin voi olla toteutettu niin, että botti pystyy hakemaan vain kyseisen asiakkaan tiedot CRM-järjestelmästä, muttei koskaan muiden asiakkaiden tietoja. Samoin, jos botti toimii asiakaspalvelijalle apurina, sen toimivaltuudet voidaan rajata vastaamaan tuon asiakaspalvelijan roolia yrityksen järjestelmissä. Periaatteena on vähimmän oikeuden periaate: AI saa tehdä ainoastaan sen, mihin ihmiskäyttäjälläkin olisi lupa. Cerbos-asiantuntijat korostavat, että AI-agentin toiminnat tulee alentaa alkuperäisen käyttäjän oikeustasoon tai vielä rajatumpaan kontekstiin – näin estetään agenttia ylittämästä valtuuksiaan
+cerbos.dev
+cerbos.dev
+. Esimerkkinä mainitaan sisäinen AI-avustaja, jolla on pääsy talousdatan MCP-työkaluun: tavallisen työntekijän avustaja voisi vain lukea tietoja, kun taas esimiehen avustaja saisi aloittaa tilauksen mutta vain tiettyyn summaariseen rajaan asti; ilman tällaisia roolikohtaisia rajoituksia AI voisi ylittää toimivaltansa
+cerbos.dev
+. Roolipohjainen pääsy MCP:ssä varmistaa, että jokainen AI-toiminto tapahtuu asianmukaisin käyttöoikeuksin.
+Eksplisiittinen kontekstin rajaus: MCP mahdollistaa tarkan kontekstin määrittelyn kullekin AI-toiminnolle. Tämä tarkoittaa, että tekoälylle syötetään vain kulloinkin tarpeellinen tieto tai päästään käsiksi vain rajattuun resurssiin, sen sijaan että AI:lla olisi avoin näkyvyys koko tietovarastoon. Konteksti voidaan rajata esim. tiettyyn asiakkaaseen, tukipyyntöön tai tehtäväalueeseen liittyväksi. Käytännössä MCP-palvelimelle rakennetaan työkalut, jotka palauttavat vain kyselyn kannalta relevantin datan. Jos asiakas kysyy vaikkapa omaa laskutustaan, AI-agentti kutsuu MCP-työkalua “hae lasku asiakkaalle X”, joka palauttaa vain kyseisen asiakkaan laskutiedot – ei mitään muuta. Näin tekoälyn saama informaatio on eksplisiittisesti kontrolloitua. Tietoturvan kannalta tämä on kriittistä: AI ei voi vahingossakaan lipsauttaa tietoja kontekstin ulkopuolelta, koska se ei yksinkertaisesti pääse niihin käsiksi. Organisaation näkökulmasta tällainen kontekstin minimointi tukee myös datan minimoinnin periaatetta (esim. GDPR:n vaatimus käsitellä vain kulloinkin tarpeellisia tietoja). Zenityn turvallisuusasiantuntijat suosittelevatkin MCP-työkalujen suunnittelussa rajoittamaan kunkin työkalun toiminta-alueen tarkasti – esimerkiksi työkaluilla tulisi olla selkeät rajat, mitä tietoja ne voivat käsitellä, ja mahdollisuuksien mukaan sidottuna sekä AI-mallin identiteettiin että kulloiseenkin kontekstiin
+usdm.com
+. Näin jokainen AI:n tekemä kutsu tapahtuu esimäärätyssä hiekkalaatikossa, eivätkä eri asiayhteydet pääse sekoittumaan keskenään.
+Audit-jäljet ja valvonta: Koska tekoälyagentti voi MCP:n kautta suorittaa toimenpiteitä automaattisesti, on elintärkeää, että kaikesta sen toiminnasta jää läpinäkyvä loki. Audit-jäljet tarkoittavat, että järjestelmä kirjaa ylös kuka/ mikä agentti teki mitä, mihin aikaan, ja oliko toimi sallittu. Nämä lokit mahdollistavat myöhemmin tapahtumien tarkastamisen, virheiden selvittämisen ja sen varmistamisen, että tekoäly noudattaa annettuja oikeuksiaan. Erityisesti säädellyillä aloilla audit-lokit ovat usein lakisääteisiä: esimerkiksi finanssi- tai terveysalalla pitää pystyä jälkikäteen osoittamaan kaikki tietoihin kohdistuneet toimet. MCP-ympäristössä tämä tarkoittaa, että jokainen AI-agentin MCP-palvelimelle tekemä kutsu tulisi logata niin, että siitä käy ilmi ainakin mikä agentti (ja kenen puolesta) kutsun teki, mitä tietoa haettiin tai muokattiin, sekä tuliko kutsu hyväksytyksi vai estetyksi. Cerbos-alustan asiantuntijoiden mukaan vahva auktorisointijärjestelmä kirjaa jokaisen päätöksen ja toimeksiannon, mikä on ratkaisevaa sekä turvallisuuden että vaatimustenmukaisuuden kannalta
+cerbos.dev
+. Tällaiset yksityiskohtaiset lokit todentavat, että tekoälyn käyttö on hallinnassa ja luotettavaa, ja ne ovat korvaamattomia myös mahdollisten poikkeamien selvittämisessä
+cerbos.dev
+. Audit-jälkien avulla organisaation tietoturvatiimi voi esimerkiksi todentaa, että "AI-agentti X haki asiakkaan Y osoitetiedot CRM:stä 21.9.2025 klo 14:05 käyttäjän Z pyynnöstä", ja tarvittaessa puuttua asiaan, jos haku oli asiaton. Ilman tällaista läpinäkyvyyttä AI:n tekemät virheet tai väärinkäytökset voisivat jäädä huomaamatta
+zenity.io
+zenity.io
+, joten kattava lokitus on MCP:n turvallisen käytön kulmakiviä.
+Edellä mainittujen lisäksi organisaation on syytä toteuttaa muitakin turvatoimia MCP-yhteyksilleen: autentikointi ja salaus (esim. varmistaa MCP-kutsujen tapahtuvan vahvasti tunnistettuna ja TLS-suojattuna)
+cyberark.com
+, syötevalidointi (ettei AI:ta johdeta harhaan haitallisilla syötteillä), nopeusrajoitukset (estetään ylikuormitus tai automatisoidut väärinkäytökset)
+cyberark.com
+ sekä hätätapauksien esto (kuten työkalujen valkolistat ja hälytykset epätavallisesta toiminnasta). MCP itsessään ei pakota näitä, mutta turvallinen käyttö edellyttää niiden lisäämistä. Kuten eräässä alan katsauksessa todetaan: MCP:n spesifikaatio ei itsessään sisällä auditointia, hiekkalaatikkorajoja tai validointia – vastuu on organisaatiolla itsellään huolehtia luottamushallinnasta
+zenity.io
+. Toisin sanoen, MCP on mahdollistaja, mutta turvallisuus on rakennettava protokollan päälle huolellisesti suunnitellen.
+Sääntely- ja luottamusnäkökulma
+Organisaatioille MCP:n käyttöönotto merkitsee myös uudenlaista vastuuta sääntelyn noudattamisesta ja interessiryhmien (asiakkaat, kumppanit) luottamuksen säilyttämisestä tekoälyn aikakaudella. Koska MCP:n kautta AI pääsee käsiksi potentiaalisesti arkaluonteiseen dataan ja voi tehdä päätöksiä autonomisesti, läpinäkyvyys ja kontrolli korostuvat. Yritysten on pystyttävä osoittamaan sekä viranomaisille että asiakkaille, että tekoälyn käyttö on hallittua, turvallista ja eettistä. Useilla toimialoilla on tiukkoja tietosuoja- ja tietoturvavaatimuksia. Esimerkiksi Euroopan unionin GDPR edellyttää, että henkilötietoja käsitellään asianmukaisin suojamekanismein ja vain käyttötarkoituksiinsa rajatusti. MCP:llä varustetun AI-agentin on siis toimittava näiden periaatteiden mukaisesti: roolipohjainen pääsy ja kontekstin rajaus tukevat käyttötarkoitussidonnaisuutta ja tietojen minimointia, ja audit-lokit auttavat osoittamaan noudattamista. Mikäli AI tekee vaikkapa asiakkaan puolesta toimenpiteitä (kuten tietojen päivittämistä), nämä toimet on voitava auditoida aivan kuten ihmiskäyttäjänkin tekemät – muuten syntyy vaatimustenmukaisuusaukkoja
+usdm.com
+usdm.com
+. Life sciences -sektorilla on jo tuotu esiin, että ilman kunnollisia auditointi- ja kontrollimekanismeja MCP-agentin toimet voisivat rikkoa esimerkiksi FDA:n 21 CFR Part 11 -säädöksen vaatimuksia kirjausjäljestä
+usdm.com
+. Niinpä organisaatioiden on suunniteltava MCP:n käyttö “compliance ensin” -asenteella: jokainen tekoälytoiminto on nähtävä kuin mikä tahansa liiketoimintatapahtuma, joka pitää tarvittaessa voida tarkastaa jälkikäteen. Asiakkaiden luottamus on yhtä lailla ansaittava ja säilytettävä. Tekoälyratkaisujen kohdalla asiakkaat ovat entistä tietoisempia datan käytöstä ja mahdollisista tietosuojariskeistä. Tutkimusten mukaan jopa 66 % asiakkaista on huolissaan tietosuojasta ja -turvasta asioidessaan tekoälyä hyödyntävien palveluiden kanssa. Jos asiakkaalle jää epäselväksi, mihin hänen tietojaan käytetään, tai jos AI:n toiminta vaikuttaa liian tungettelevalta, luottamus voi murentua nopeasti. MCP:llä on tässä kaksoisrooli: toisaalta se mahdollistaa paremmin personoidun ja nopeamman palvelun, mikä voi parantaa asiakastyytyväisyyttä, mutta toisaalta ilman rajoja se voisi teoriassa johtaa tietojen väärinkäyttöön. Siksi yrityksen on oltava läpinäkyvä MCP:n avulla toimivan tekoälyn tekemisistä. Käytännössä tämä tarkoittaa esimerkiksi, että asiakkaalle voidaan viestiä, mitä tietoja AI haki hänen kysymyksensä ratkaisemiseksi ja että sillä ei ole pääsyä mihinkään muuhun. Myös sisäisesti on huolehdittava, että henkilötietojen käsittely MCP:n kautta dokumentoidaan ja suojataan kuten muutkin käsittelyt. Näillä toimilla yritys voi osoittaa, että tekoäly toimii organisaation arvojen ja sääntöjen mukaisesti, mikä on pohja luottamukselle. On hyvä huomata, että johtavien teknologiayritysten (kuten Anthropic, OpenAI, Microsoft) piirissä kehitetään parhaillaan ratkaisuja MCP:n turvallisuuden parantamiseksi juuri näistä syistä
+medium.com
+. Alalle on muodostumassa parhaiden käytäntöjen joukko, johon kuuluu mm. vahva autentikointi, hienojakoiset OAuth-oikeudet AI:lle, kontekstitietojen huolellinen suodatus ja AI-hallintamallit organisaatioissa
+digitalapi.ai
+usdm.com
+. Myös riippumattomat turvallisuusarvioinnit (esim. OWASP MCP Top 10 -projekti) tuovat esiin yleisimmät uhat ja ohjeet niiden torjumiseen
+cerbos.dev
+. Organisaatioiden kannattaa hyödyntää näitä oppeja ja työkaluja rakentaessaan MCP-yhteensopivia palveluja.
+Johtopäätökset
+Model Context Protocol tarjoaa uuden tehokkaan tavan integroida tekoäly osaksi yrityksen tietojärjestelmiä ja prosesseja. Sen avulla AI pystyy hyödyntämään vain haluttua osajoukkoa tietoa tuottaakseen parempia vastauksia ja hoitaakseen tehtäviä automaattisesti. Kuitenkin MCP:n käyttöönotto on tehtävä harkitusti: selkeät rajat ja valvonta ovat onnistuneen toteutuksen edellytys. Roolipohjainen pääsynhallinta varmistaa, että tekoäly toimii vain niillä oikeuksilla, jotka sille on tarkoitettu, ja eksplisiittinen kontekstin rajaus pitää AI:n "tietokuplan" kurissa estäen tarpeettoman datan lipsumisen mukaan. Kaiken tämän kattava audit-lokitus luo läpinäkyvyyden, jota niin sääntelyelimet kuin yritysjohdot ja asiakkaatkin edellyttävät. Organisaation näkökulmasta MCP:ssä kiteytyy tekoälyn potentiaali yhdistettynä perinteisen IT-hallinnon vaatimuksiin: innovaatio ja hallittavuus voidaan saavuttaa samanaikaisesti. Kun MCP-ympäristö on oikein suojattu ja hallittu, yritys voi luottavaisin mielin hyödyntää tekoälyagentteja esimerkiksi asiakaspalvelussa – tietäen, että AI pääsee käsiksi vain sallittuun dataan, kaikki sen toimet ovat jäljitettävissä, ja että ratkaisu täyttää sekä liiketoiminnan tehokkuustavoitteet että tietoturvan ja tietosuojan asettamat velvoitteet. Tämä luo pohjan kestävälle luottamukselle tekoälyn hyödyntämisessä osana organisaation toimintaa. Lopulta MCP:n arvo on kaksijakoinen: se on yhtä paljon mahdollistaja – tuoden tekoälyn osaksi arkea ennennäkemättömillä tavoilla – kuin se on hallinnan työväline – tarjoten keinot rajata ja seurata tekoälyn toimintaa. Hyödyntämällä MCP:tä vastuullisesti organisaatiot voivat nousta tekoälyn seuraavalle tasolle ilman, että kontrolli tai luottamus karkaa käsistä. Lähteet: Kaikki raportissa esitetyt tiedot ja esimerkit pohjautuvat ajantasaiseen kirjallisuuteen ja asiantuntijalähteisiin, mm. Anthropicin ja kumppanien julkaisuihin MCP-standardista
+anthropic.com
+cyberark.com
+, tietoturvayhtiöiden analyyseihin MCP:n riskeistä ja parhaista käytännöistä
+medium.com
+cerbos.dev
+ sekä alan tutkimuksiin organisaatioiden ja asiakkaiden näkemyksistä tekoälyn käytöstä. Näiden pohjalta on pyritty luomaan kattava kuva MCP:n hyödyistä ja sen turvallisesta soveltamisesta käytäntöön.
+Sitaatit
+
+MCP Authorization: Securing Model Context Protocol Servers With Fine-Grained Access Control | Cerbos
+
+https://www.cerbos.dev/blog/mcp-authorization
+
+MCP Authorization: Securing Model Context Protocol Servers With Fine-Grained Access Control | Cerbos
+
+https://www.cerbos.dev/blog/mcp-authorization
+
+What is Model Context Protocol (MCP)? | CyberArk
+
+https://www.cyberark.com/what-is/model-context-protocol/
+
+What is Model Context Protocol (MCP)? | CyberArk
+
+https://www.cyberark.com/what-is/model-context-protocol/
+
+What is Model Context Protocol (MCP)? | CyberArk
+
+https://www.cyberark.com/what-is/model-context-protocol/
+
+What is Model Context Protocol (MCP)? | CyberArk
+
+https://www.cyberark.com/what-is/model-context-protocol/
+
+What is Model Context Protocol (MCP)? | CyberArk
+
+https://www.cyberark.com/what-is/model-context-protocol/
+
+Safety and Security in the Model Context Protocol (MCP) | by Carlos Monteiro | Medium
+
+https://medium.com/@carlosm0303/safety-and-security-in-the-model-context-protocol-mcp-c6319778b150
+
+Introducing the Model Context Protocol \ Anthropic
+
+https://www.anthropic.com/news/model-context-protocol
+
+Introducing the Model Context Protocol \ Anthropic
+
+https://www.anthropic.com/news/model-context-protocol
+
+AI Agent Security | Securing the Model Context Protocol (MCP): A Deep Dive into Emerging AI Risks | Zenity
+
+https://zenity.io/blog/security/securing-the-model-context-protocol-mcp
+
+MCP Authorization: Securing Model Context Protocol Servers With Fine-Grained Access Control | Cerbos
+
+https://www.cerbos.dev/blog/mcp-authorization
+
+MCP Authorization: Securing Model Context Protocol Servers With Fine-Grained Access Control | Cerbos
+
+https://www.cerbos.dev/blog/mcp-authorization
+
+The Model Context Protocol (MCP) in Life Sciences | USDM
+
+https://usdm.com/resources/blogs/the-model-context-protocol-mcp-in-life-sciences
+
+MCP Authorization: Securing Model Context Protocol Servers With Fine-Grained Access Control | Cerbos
+
+https://www.cerbos.dev/blog/mcp-authorization
+
+AI Agent Security | Securing the Model Context Protocol (MCP): A Deep Dive into Emerging AI Risks | Zenity
+
+https://zenity.io/blog/security/securing-the-model-context-protocol-mcp
+
+What is Model Context Protocol (MCP)? | CyberArk
+
+https://www.cyberark.com/what-is/model-context-protocol/
+
+The Model Context Protocol (MCP) in Life Sciences | USDM
+
+https://usdm.com/resources/blogs/the-model-context-protocol-mcp-in-life-sciences
+
+The Model Context Protocol (MCP) in Life Sciences | USDM
+
+https://usdm.com/resources/blogs/the-model-context-protocol-mcp-in-life-sciences
+Vuoden 2025 tekoälytrendit asiakaskokemuksessa (CX) (1).pdf
+
+file://file-3pvsshR6uenBAKkWJG8BtW
+Vuoden 2025 tekoälytrendit asiakaskokemuksessa (CX) (1).pdf
+
+file://file-3pvsshR6uenBAKkWJG8BtW
+
+What are the essential security policies to implement in MCP?
+
+https://www.digitalapi.ai/blogs/essential-security-policies-to-implement-in-mcp
+
+MCP Authorization: Securing Model Context Protocol Servers With Fine-Grained Access Control | Cerbos
+
+https://www.cerbos.dev/blog/mcp-authorization
+Vuoden 2025 tekoälytrendit asiakaskokemuksessa (CX) (1).pdf
+
+file://file-3pvsshR6uenBAKkWJG8BtW

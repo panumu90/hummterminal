@@ -5,7 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle } from "lucide-react";
+import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle, FileText, ExternalLink } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -704,6 +706,229 @@ export function ChatInterface() {
           </div>
         </div>
       </Card>
+
+      {/* MCP Deep Analysis Button */}
+      <div className="mt-6">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button 
+              variant="outline" 
+              className="w-full bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300"
+              data-testid="mcp-deep-analysis-button"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              Syväanalyysi MCP
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh]">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Model Context Protocol (MCP) - Syväanalyysi
+              </DialogTitle>
+              <DialogDescription>
+                Kattava analyysi MCP:n käytöstä ja tietoturvaeduista AI-integraatioissa
+              </DialogDescription>
+            </DialogHeader>
+            <ScrollArea className="h-[70vh] pr-4">
+              <div className="space-y-6">
+                {/* Johdanto */}
+                <section>
+                  <h3 className="text-lg font-semibold mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                    <HelpCircle className="h-4 w-4" />
+                    Mikä on MCP ja miksi sitä tarvitaan?
+                  </h3>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <p className="mb-3">
+                      <strong>Model Context Protocol (MCP)</strong> on avoin standardi, joka määrittelee tavan liittää suuria kielimalleja ja tekoälyagentteja ulkoisiin tieto- ja työkalulähteisiin. Sen avulla AI-avustajat eivät enää ole eristyksissa vain omien koulutusdatojensa varassa, vaan ne voivat päästä käsiksi reaaliaikaiseen tietoon ja järjestelmiin turvallisesti.
+                    </p>
+                    <p className="mb-3">
+                      MCP toimii kuin eräänlainen erikoistunut API-rajapinta tekoälylle: AI-agentti voi sen kautta "keskustella" yrityksen tietokantojen, sovellusten tai palveluiden kanssa yhtenäisellä tavalla. Tämä avaa uusia käyttömahdollisuuksia – esimerkiksi AI voi hakea tietoa yrityksen sisäisistä järjestelmistä, päivittää tietueita tai suorittaa toimintoja.
+                    </p>
+                    <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-3">
+                      <p className="text-sm">
+                        <strong>Huomio:</strong> MCP on vain rajapinta – se itsessään ei sisällä automaattisesti turvamekanismeja kuten autentikointia tai pääsynhallintaa. Organisaation tehtävä on päättää, mitkä "ovet ovat auki ja kenelle".
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Käyttöhyödyt */}
+                <section>
+                  <h3 className="text-lg font-semibold mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4" />
+                    MCP:n hyödyt käytön näkökulmasta
+                  </h3>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <p className="mb-3">
+                      Käyttöympäristön kannalta MCP:n suurin etu on, että se parantaa tekoälyn kykyä antaa relevantteja vastauksia ja suorittaa tehtäviä käyttämällä organisaation omaa dataa ja työkaluja.
+                    </p>
+                    
+                    <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                      <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">Käytännön esimerkki: Asiakaspalveluchatbot</h4>
+                      <p className="text-sm mb-2">
+                        MCP:n avulla asiakaspalvelubot voi hakea tietoa useista lähteistä asiakkaan kysymyksen ratkaisemiseksi:
+                      </p>
+                      <ul className="text-sm list-disc pl-4 space-y-1">
+                        <li>Tarkistaa tilauksen tilan ERP-järjestelmästä</li>
+                        <li>Hakee tuotetietoja tietokannasta</li>
+                        <li>Luo tukipyynnön tiketöintijärjestelmään</li>
+                        <li>Aloittaa palautusprosessin automaattisesti</li>
+                      </ul>
+                    </div>
+
+                    <p className="mb-3">
+                      <strong>Organisaation hyödyt:</strong> Rutiinitehtävät hoituvat automatisoidusti, henkilöstö voi keskittyä vaativampiin tehtäviin, ja AI:n toimet perustuvat ajantasaiseen ja oikeaan tietoon.
+                    </p>
+                  </div>
+                </section>
+
+                {/* Tietoturva */}
+                <section>
+                  <h3 className="text-lg font-semibold mb-3 text-red-600 dark:text-red-400 flex items-center gap-2">
+                    <Shield className="h-4 w-4" />
+                    Tietoturva ja pääsynhallinta
+                  </h3>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <p className="mb-4">
+                      MCP:n tuoma voimakas integraatiokyky asettaa tietoturvalle erityisvaatimuksia. Koska AI-agentti voi MCP:n kautta toimia ikään kuin käyttäjänä eri järjestelmissä, on välttämätöntä varmistaa asianmukainen pääsynhallinta.
+                    </p>
+
+                    <div className="grid gap-4 mb-4">
+                      <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                        <h4 className="font-semibold mb-2 text-red-800 dark:text-red-200 flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          1. Roolipohjainen pääsy (RBAC)
+                        </h4>
+                        <p className="text-sm mb-2">
+                          AI-agentille annetaan vain ne oikeudet, jotka sen tehtävän hoitamiseen tarvitaan – ei enempää. Periaatteena on <strong>vähimmän oikeuden periaate</strong>.
+                        </p>
+                        <p className="text-sm">
+                          <em>Esimerkki:</em> Asiakaspalvelubotin MCP-palvelin voidaan toteuttaa niin, että botti pystyy hakemaan vain kyseisen asiakkaan tiedot CRM:stä, ei koskaan muiden asiakkaiden tietoja.
+                        </p>
+                      </div>
+
+                      <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                        <h4 className="font-semibold mb-2 text-orange-800 dark:text-orange-200 flex items-center gap-2">
+                          <Target className="h-4 w-4" />
+                          2. Eksplisiittinen kontekstin rajaus
+                        </h4>
+                        <p className="text-sm mb-2">
+                          Tekoälylle syötetään vain kulloinkin tarpeellinen tieto tai päästään käsiksi vain rajattuun resurssiin. Konteksti voidaan rajata tiettyyn asiakkaaseen, tukipyyntöön tai tehtäväalueeseen.
+                        </p>
+                        <p className="text-sm">
+                          <em>Hyöty:</em> AI ei voi vahingossakaan lipsauttaa tietoja kontekstin ulkopuolelta, koska se ei pääse niihin käsiksi.
+                        </p>
+                      </div>
+
+                      <div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                        <h4 className="font-semibold mb-2 text-purple-800 dark:text-purple-200 flex items-center gap-2">
+                          <Database className="h-4 w-4" />
+                          3. Audit-jäljet ja valvonta
+                        </h4>
+                        <p className="text-sm mb-2">
+                          Kaikesta AI:n toiminnasta jää läpinäkyvä loki. Järjestelmä kirjaa ylös kuka/mikä agentti teki mitä, mihin aikaan, ja oliko toimi sallittu.
+                        </p>
+                        <p className="text-sm">
+                          <em>Esimerkki lokimerkinnästä:</em> "AI-agentti X haki asiakkaan Y osoitetiedot CRM:stä 21.9.2025 klo 14:05 käyttäjän Z pyynnöstä"
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                      <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Lisäturvatoimet:</h4>
+                      <ul className="text-sm list-disc pl-4 space-y-1">
+                        <li>Autentikointi ja salaus (TLS-suojatut MCP-kutsut)</li>
+                        <li>Syötevalidointi (estää haitallisten syötteiden johdattelun)</li>
+                        <li>Nopeusrajoitukset (estetään ylikuormitus)</li>
+                        <li>Hätätapauksien esto (työkalujen valkolistat, hälytykset)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Sääntely ja luottamus */}
+                <section>
+                  <h3 className="text-lg font-semibold mb-3 text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                    <Scale className="h-4 w-4" />
+                    Sääntely- ja luottamusnäkökulma
+                  </h3>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <p className="mb-3">
+                      MCP:n käyttöönotto merkitsee uudenlaista vastuuta sääntelyn noudattamisesta ja interessiryhmien luottamuksen säilyttämisestä. Koska AI pääsee käsiksi potentiaalisesti arkaluonteiseen dataan, läpinäkyvyys ja kontrolli korostuvat.
+                    </p>
+
+                    <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                      <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">GDPR ja vaatimustenmukaisuus</h4>
+                      <p className="text-sm mb-2">
+                        EU:n GDPR edellyttää, että henkilötietoja käsitellään asianmukaisin suojamekanismein ja vain käyttötarkoituksiinsa rajatusti. MCP:n roolipohjainen pääsy ja kontekstin rajaus tukevat näitä vaatimuksia.
+                      </p>
+                      <p className="text-sm">
+                        <strong>Compliance-periaate:</strong> Jokainen tekoälytoiminto on nähtävä kuin mikä tahansa liiketoimintatapahtuma, joka pitää tarvittaessa voida tarkastaa jälkikäteen.
+                      </p>
+                    </div>
+
+                    <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                      <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">Asiakkaiden luottamus</h4>
+                      <p className="text-sm mb-2">
+                        Tutkimusten mukaan jopa 66% asiakkaista on huolissaan tietosuojasta asioidessaan tekoälyä hyödyntävien palveluiden kanssa.
+                      </p>
+                      <p className="text-sm">
+                        <strong>Ratkaisu:</strong> Läpinäkyvä viestintä siitä, mitä tietoja AI haki asiakkaan kysymyksen ratkaisemiseksi ja että sillä ei ole pääsyä mihinkään muuhun.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Johtopäätökset */}
+                <section>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                    <Star className="h-4 w-4" />
+                    Johtopäätökset
+                  </h3>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <p className="mb-3">
+                      Model Context Protocol tarjoaa uuden tehokkaan tavan integroida tekoäly osaksi yrityksen tietojärjestelmiä ja prosesseja. Sen avulla AI pystyy hyödyntämään vain haluttua osajoukkoa tietoa tuottaakseen parempia vastauksia ja hoitaakseen tehtäviä automaattisesti.
+                    </p>
+                    
+                    <div className="bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
+                      <h4 className="font-semibold mb-2 text-emerald-800 dark:text-emerald-200">MCP:n arvon kaksijako:</h4>
+                      <div className="text-sm space-y-2">
+                        <p><strong>Mahdollistaja:</strong> Tuo tekoälyn osaksi arkea ennennäkemättömillä tavoilla</p>
+                        <p><strong>Hallinnan työväline:</strong> Tarjoaa keinot rajata ja seurata tekoälyn toimintaa</p>
+                      </div>
+                    </div>
+
+                    <p className="mt-4">
+                      <strong>Lopputulos:</strong> Hyödyntämällä MCP:tä vastuullisesti organisaatiot voivat nousta tekoälyn seuraavalle tasolle ilman, että kontrolli tai luottamus karkaa käsistä.
+                    </p>
+                  </div>
+                </section>
+
+                {/* Lähteet */}
+                <section>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                    <ExternalLink className="h-4 w-4" />
+                    Lähteet ja lisätietoa
+                  </h3>
+                  <div className="text-xs text-muted-foreground space-y-2">
+                    <div>
+                      <p className="font-medium">Keskeiset lähteet:</p>
+                      <ul className="list-disc pl-4 mt-1 space-y-1">
+                        <li>Anthropic: Introducing the Model Context Protocol</li>
+                        <li>CyberArk: What is Model Context Protocol (MCP)?</li>
+                        <li>Cerbos: MCP Authorization with Fine-Grained Access Control</li>
+                        <li>Zenity: Securing the Model Context Protocol</li>
+                        <li>USDM: The Model Context Protocol in Life Sciences</li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </ScrollArea>
+          </DialogContent>
+        </Dialog>
+      </div>
 
       {/* Quick Stats */}
       <Card className="mt-6" data-testid="quick-stats">
