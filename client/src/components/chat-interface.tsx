@@ -65,6 +65,13 @@ const mcpQuestions: QuestionButton[] = [
     category: "mcp",
     icon: Scale,
     color: "bg-emerald-500"
+  },
+  {
+    id: "mcp-deep-analysis",
+    question: "📊 Syväanalyysi MCP",
+    category: "mcp",
+    icon: FileText,
+    color: "bg-emerald-500"
   }
 ];
 
@@ -347,6 +354,7 @@ export function ChatInterface() {
   const [inputValue, setInputValue] = useState("");
   const [selectedContext, setSelectedContext] = useState<ContextType>("general");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [mcpModalOpen, setMcpModalOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -384,6 +392,12 @@ export function ChatInterface() {
   });
 
   const handleQuestionClick = (questionId: string) => {
+    // Special handling for MCP deep analysis - open modal instead of chat
+    if (questionId === "mcp-deep-analysis") {
+      setMcpModalOpen(true);
+      return;
+    }
+
     setIsExpanded(true); // Auto-expand chat when question is clicked
     
     // Find question text
