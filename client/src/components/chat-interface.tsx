@@ -755,16 +755,16 @@ export function ChatInterface() {
                     <HelpCircle className="h-4 w-4" />
                     Mikä on MCP ja miksi sitä tarvitaan?
                   </h3>
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <p className="mb-3">
-                      <strong>Model Context Protocol (MCP)</strong> on avoin standardi, joka määrittelee tavan liittää suuria kielimalleja ja tekoälyagentteja ulkoisiin tieto- ja työkalulähteisiin. Sen avulla AI-avustajat eivät enää ole eristyksissa vain omien koulutusdatojensa varassa, vaan ne voivat päästä käsiksi reaaliaikaiseen tietoon ja järjestelmiin turvallisesti.
+                  <div className="max-w-none text-gray-100">
+                    <p className="mb-3 text-gray-100">
+                      <strong className="text-white">Model Context Protocol (MCP)</strong> on avoin standardi, joka määrittelee tavan liittää suuria kielimalleja ja tekoälyagentteja ulkoisiin tieto- ja työkalulähteisiin. Sen avulla AI-avustajat eivät enää ole eristyksissa vain omien koulutusdatojensa varassa, vaan ne voivat päästä käsiksi reaaliaikaiseen tietoon ja järjestelmiin turvallisesti.
                     </p>
-                    <p className="mb-3">
+                    <p className="mb-3 text-gray-100">
                       MCP toimii kuin eräänlainen erikoistunut API-rajapinta tekoälylle: AI-agentti voi sen kautta "keskustella" yrityksen tietokantojen, sovellusten tai palveluiden kanssa yhtenäisellä tavalla. Tämä avaa uusia käyttömahdollisuuksia – esimerkiksi AI voi hakea tietoa yrityksen sisäisistä järjestelmistä, päivittää tietueita tai suorittaa toimintoja.
                     </p>
                     <div className="bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-3">
-                      <p className="text-sm">
-                        <strong>Huomio:</strong> MCP on vain rajapinta – se itsessään ei sisällä automaattisesti turvamekanismeja kuten autentikointia tai pääsynhallintaa. Organisaation tehtävä on päättää, mitkä "ovet ovat auki ja kenelle".
+                      <p className="text-sm text-yellow-100">
+                        <strong className="text-yellow-50">Huomio:</strong> MCP on vain rajapinta – se itsessään ei sisällä automaattisesti turvamekanismeja kuten autentikointia tai pääsynhallintaa. Organisaation tehtävä on päättää, mitkä "ovet ovat auki ja kenelle".
                       </p>
                     </div>
                   </div>
@@ -776,17 +776,17 @@ export function ChatInterface() {
                     <TrendingUp className="h-4 w-4" />
                     MCP:n hyödyt käytön näkökulmasta
                   </h3>
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <p className="mb-3">
+                  <div className="max-w-none text-gray-100">
+                    <p className="mb-3 text-gray-100">
                       Käyttöympäristön kannalta MCP:n suurin etu on, että se parantaa tekoälyn kykyä antaa relevantteja vastauksia ja suorittaa tehtäviä käyttämällä organisaation omaa dataa ja työkaluja.
                     </p>
                     
                     <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 mb-4">
                       <h4 className="font-semibold mb-2 text-white">Käytännön esimerkki: Asiakaspalveluchatbot</h4>
-                      <p className="text-sm mb-2">
+                      <p className="text-sm mb-2 text-gray-100">
                         MCP:n avulla asiakaspalvelubot voi hakea tietoa useista lähteistä asiakkaan kysymyksen ratkaisemiseksi:
                       </p>
-                      <ul className="text-sm list-disc pl-4 space-y-1">
+                      <ul className="text-sm list-disc pl-4 space-y-1 text-gray-100">
                         <li>Tarkistaa tilauksen tilan ERP-järjestelmästä</li>
                         <li>Hakee tuotetietoja tietokannasta</li>
                         <li>Luo tukipyynnön tiketöintijärjestelmään</li>
@@ -794,8 +794,8 @@ export function ChatInterface() {
                       </ul>
                     </div>
 
-                    <p className="mb-3">
-                      <strong>Organisaation hyödyt:</strong> Rutiinitehtävät hoituvat automatisoidusti, henkilöstö voi keskittyä vaativampiin tehtäviin, ja AI:n toimet perustuvat ajantasaiseen ja oikeaan tietoon.
+                    <p className="mb-3 text-gray-100">
+                      <strong className="text-white">Organisaation hyödyt:</strong> Rutiinitehtävät hoituvat automatisoidusti, henkilöstö voi keskittyä vaativampiin tehtäviin, ja AI:n toimet perustuvat ajantasaiseen ja oikeaan tietoon.
                     </p>
                   </div>
                 </section>
@@ -806,8 +806,8 @@ export function ChatInterface() {
                     <Shield className="h-4 w-4" />
                     Tietoturva ja pääsynhallinta
                   </h3>
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <p className="mb-4">
+                  <div className="max-w-none text-gray-100">
+                    <p className="mb-4 text-gray-100">
                       MCP:n tuoma voimakas integraatiokyky asettaa tietoturvalle erityisvaatimuksia. Koska AI-agentti voi MCP:n kautta toimia ikään kuin käyttäjänä eri järjestelmissä, on välttämätöntä varmistaa asianmukainen pääsynhallinta.
                     </p>
 
@@ -817,10 +817,10 @@ export function ChatInterface() {
                           <Users className="h-4 w-4" />
                           1. Roolipohjainen pääsy (RBAC)
                         </h4>
-                        <p className="text-sm mb-2">
-                          AI-agentille annetaan vain ne oikeudet, jotka sen tehtävän hoitamiseen tarvitaan – ei enempää. Periaatteena on <strong>vähimmän oikeuden periaate</strong>.
+                        <p className="text-sm mb-2 text-red-100">
+                          AI-agentille annetaan vain ne oikeudet, jotka sen tehtävän hoitamiseen tarvitaan – ei enempää. Periaatteena on <strong className="text-red-50">vähimmän oikeuden periaate</strong>.
                         </p>
-                        <p className="text-sm">
+                        <p className="text-sm text-red-100">
                           <em>Esimerkki:</em> Asiakaspalvelubotin MCP-palvelin voidaan toteuttaa niin, että botti pystyy hakemaan vain kyseisen asiakkaan tiedot CRM:stä, ei koskaan muiden asiakkaiden tietoja.
                         </p>
                       </div>
@@ -830,10 +830,10 @@ export function ChatInterface() {
                           <Target className="h-4 w-4" />
                           2. Eksplisiittinen kontekstin rajaus
                         </h4>
-                        <p className="text-sm mb-2">
+                        <p className="text-sm mb-2 text-orange-100">
                           Tekoälylle syötetään vain kulloinkin tarpeellinen tieto tai päästään käsiksi vain rajattuun resurssiin. Konteksti voidaan rajata tiettyyn asiakkaaseen, tukipyyntöön tai tehtäväalueeseen.
                         </p>
-                        <p className="text-sm">
+                        <p className="text-sm text-orange-100">
                           <em>Hyöty:</em> AI ei voi vahingossakaan lipsauttaa tietoja kontekstin ulkopuolelta, koska se ei pääse niihin käsiksi.
                         </p>
                       </div>
@@ -843,10 +843,10 @@ export function ChatInterface() {
                           <Database className="h-4 w-4" />
                           3. Audit-jäljet ja valvonta
                         </h4>
-                        <p className="text-sm mb-2">
+                        <p className="text-sm mb-2 text-purple-100">
                           Kaikesta AI:n toiminnasta jää läpinäkyvä loki. Järjestelmä kirjaa ylös kuka/mikä agentti teki mitä, mihin aikaan, ja oliko toimi sallittu.
                         </p>
-                        <p className="text-sm">
+                        <p className="text-sm text-purple-100">
                           <em>Esimerkki lokimerkinnästä:</em> "AI-agentti X haki asiakkaan Y osoitetiedot CRM:stä 21.9.2025 klo 14:05 käyttäjän Z pyynnöstä"
                         </p>
                       </div>
@@ -854,7 +854,7 @@ export function ChatInterface() {
 
                     <div className="bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
                       <h4 className="font-semibold mb-2 text-white">Lisäturvatoimet:</h4>
-                      <ul className="text-sm list-disc pl-4 space-y-1">
+                      <ul className="text-sm list-disc pl-4 space-y-1 text-gray-100">
                         <li>Autentikointi ja salaus (TLS-suojatut MCP-kutsut)</li>
                         <li>Syötevalidointi (estää haitallisten syötteiden johdattelun)</li>
                         <li>Nopeusrajoitukset (estetään ylikuormitus)</li>
