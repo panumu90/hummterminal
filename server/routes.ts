@@ -22,8 +22,8 @@ const openai = new OpenAI({
   }
 });
 
-// Use GPT-4o which is the newest OpenAI model
-const GPT_MODEL = "gpt-4o";
+// Use GPT-3.5 turbo which is widely available
+const GPT_MODEL = "gpt-3.5-turbo";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
