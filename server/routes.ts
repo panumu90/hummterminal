@@ -22,8 +22,8 @@ const openai = new OpenAI({
   }
 });
 
-// Use GPT-3.5 turbo which is widely available
-const GPT_MODEL = "gpt-3.5-turbo";
+// Use GPT-5 mini which is more stable than full GPT-5
+const GPT_MODEL = "gpt-5-mini";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
