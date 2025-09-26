@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertCircle, Bot, Building, Rocket, Users, Mail, Phone, Linkedin, TrendingUp, BarChart, Target, CheckCircle } from "lucide-react";
+import { AlertCircle, Bot, Building, Rocket, Users, Mail, Phone, Linkedin, TrendingUp, BarChart, Target, CheckCircle, Zap, Clock, PiggyBank, Headphones, Wrench, LineChart, Heart, MessageSquare, Brain, Star, ShoppingBag, Shield, Award } from "lucide-react";
 import type { Case } from "@/lib/types";
 
 export default function Home() {
@@ -248,142 +248,143 @@ export default function Home() {
                       Kattava analyysi todellisista liiketoimintahyödyistä ja mitattavista tuloksista
                     </DialogDescription>
                   </DialogHeader>
-                  <ScrollArea className="h-[75vh] pr-4">
-                    <div className="space-y-6">
-                      {/* ROI ja säästöt */}
-                      <section>
-                        <h3 className="text-lg font-semibold mb-4 text-green-600 dark:text-green-400 flex items-center gap-2">
-                          <BarChart className="h-5 w-5" />
-                          Mitattavat liiketoimintahyödyt
-                        </h3>
-                        <div className="grid gap-4 mb-6">
-                          <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-6">
-                            <h4 className="font-semibold mb-3 text-green-800 dark:text-green-200 text-xl">💰 Kustannussäästöt</h4>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div>
-                                <p className="text-3xl font-bold text-green-700 dark:text-green-300 mb-1">65%</p>
-                                <p className="text-sm text-green-600 dark:text-green-400">Asiakaspalvelukustannusten vähennys</p>
-                              </div>
-                              <div>
-                                <p className="text-3xl font-bold text-green-700 dark:text-green-300 mb-1">€2.4M</p>
-                                <p className="text-sm text-green-600 dark:text-green-400">Vuosittaiset säästöt henkilöstökuluissa</p>
-                              </div>
-                            </div>
-                          </div>
+                  <div className="h-[75vh] flex flex-col">
+                    {/* Modern Header */}
+                    <div className="bg-slate-800 text-white p-6 rounded-t-lg mb-6">
+                      <h1 className="text-3xl font-bold mb-2">Tekoälyn käyttöönoton vaikutus</h1>
+                      <p className="text-slate-200 text-lg">Arvioitu parannus suorituskyvyssä ja kilpailuasemassa</p>
+                    </div>
 
-                          <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
-                            <h4 className="font-semibold mb-3 text-blue-800 dark:text-blue-200 text-xl">⚡ Tehokkuuden parannus</h4>
-                            <div className="grid md:grid-cols-3 gap-4">
-                              <div>
-                                <p className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">85%</p>
-                                <p className="text-sm text-blue-600 dark:text-blue-400">Rutiinitehtävien automatisointi</p>
-                              </div>
-                              <div>
-                                <p className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">3 min</p>
-                                <p className="text-sm text-blue-600 dark:text-blue-400">Keskimääräinen vastausaika</p>
-                              </div>
-                              <div>
-                                <p className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">24/7</p>
-                                <p className="text-sm text-blue-600 dark:text-blue-400">Keskeytymätön palvelu</p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-6">
-                            <h4 className="font-semibold mb-3 text-purple-800 dark:text-purple-200 text-xl">📊 Asiakastyytyväisyys</h4>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div>
-                                <p className="text-3xl font-bold text-purple-700 dark:text-purple-300 mb-1">92%</p>
-                                <p className="text-sm text-purple-600 dark:text-purple-400">Asiakastyytyväisyysindeksi (CSAT)</p>
-                              </div>
-                              <div>
-                                <p className="text-3xl font-bold text-purple-700 dark:text-purple-300 mb-1">+18pp</p>
-                                <p className="text-sm text-purple-600 dark:text-purple-400">Parannus ennen AI-käyttöönottoa</p>
-                              </div>
+                    <ScrollArea className="flex-1 px-4">
+                      <div className="space-y-6">
+                        {/* Financial Impact Chart Placeholder */}
+                        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
+                          <h3 className="text-xl font-semibold text-center mb-4 text-slate-800 dark:text-slate-200">
+                            Arvioitu taloudellinen vaikutus 3 vuoden aikana
+                          </h3>
+                          <div className="h-32 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-lg flex items-center justify-center">
+                            <div className="text-center text-slate-600 dark:text-slate-400">
+                              <BarChart className="h-12 w-12 mx-auto mb-2" />
+                              <p className="text-sm">Liikevaihdon kasvu, kustannussäästöt ja kannattavuuden parannus</p>
                             </div>
                           </div>
                         </div>
-                      </section>
 
-                      {/* Implementaatio aikajana */}
-                      <section>
-                        <h3 className="text-lg font-semibold mb-4 text-blue-600 dark:text-blue-400 flex items-center gap-2">
-                          <Target className="h-5 w-5" />
-                          Implementaation vaiheet ja tulokset
-                        </h3>
-                        <div className="space-y-4">
-                          <div className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <div className="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
-                            <div>
-                              <h4 className="font-semibold mb-2">Kartoitusvaihe (2 viikkoa)</h4>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Analysoitiin nykyiset prosessit ja tunnistettiin automaation potentiaali
-                              </p>
-                              <div className="flex items-center gap-2 text-xs">
-                                <CheckCircle className="h-3 w-3 text-green-500" />
-                                <span>95% asiakaskontakteista soveltui automaatioon</span>
+                        {/* Impact Grid - 2x2 Layout */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                          {/* Operational Efficiency Card */}
+                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+                            <div className="flex items-center mb-4">
+                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
+                                <Zap className="h-6 w-6 text-slate-800 dark:text-slate-200" />
                               </div>
+                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Operatiivinen tehokkuus</h3>
+                            </div>
+                            <div className="flex-1">
+                              <ul className="space-y-3 mb-4">
+                                <li className="flex items-start">
+                                  <TrendingUp className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Prosessien automaatio</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <Clock className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Vastausaikojen lyhentyminen</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <Users className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Resurssien optimointi</span>
+                                </li>
+                              </ul>
+                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">+25-30% tehokkuuden parannus</div>
                             </div>
                           </div>
 
-                          <div className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <div className="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
-                            <div>
-                              <h4 className="font-semibold mb-2">Pilottivaihe (6 viikkoa)</h4>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Toteutettiin chatbot 20% asiakaskontakteista käsiteltäväksi
-                              </p>
-                              <div className="flex items-center gap-2 text-xs">
-                                <CheckCircle className="h-3 w-3 text-green-500" />
-                                <span>78% resoluutioaste ensimmäisellä yrityksellä</span>
+                          {/* Cost Reduction Card */}
+                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+                            <div className="flex items-center mb-4">
+                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
+                                <PiggyBank className="h-6 w-6 text-slate-800 dark:text-slate-200" />
                               </div>
+                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Kustannussäästöt</h3>
+                            </div>
+                            <div className="flex-1">
+                              <ul className="space-y-3 mb-4">
+                                <li className="flex items-start">
+                                  <Headphones className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Asiakaspalvelukustannusten alennus</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <Wrench className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Manuaalisen työn väheneminen</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <LineChart className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Parempi resurssisuunnittelu</span>
+                                </li>
+                              </ul>
+                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">15-20% kustannussäästö</div>
                             </div>
                           </div>
 
-                          <div className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <div className="flex-shrink-0 w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
-                            <div>
-                              <h4 className="font-semibold mb-2">Täysimittainen käyttöönotto (4 viikkoa)</h4>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                Laajennettiin 80% kaikista asiakaskontakteista AI:n käsiteltäväksi
-                              </p>
-                              <div className="flex items-center gap-2 text-xs">
-                                <CheckCircle className="h-3 w-3 text-green-500" />
-                                <span>85% automaatioaste saavutettu kuuden kuukauden kuluessa</span>
+                          {/* Customer Experience Card */}
+                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+                            <div className="flex items-center mb-4">
+                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
+                                <Heart className="h-6 w-6 text-slate-800 dark:text-slate-200" />
                               </div>
+                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Asiakaskokemus</h3>
+                            </div>
+                            <div className="flex-1">
+                              <ul className="space-y-3 mb-4">
+                                <li className="flex items-start">
+                                  <MessageSquare className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">24/7 AI-tuki</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <Brain className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Personoitu vuorovaikutus</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <Star className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Ennakoiva palvelu</span>
+                                </li>
+                              </ul>
+                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">+35-40% tyytyväisyys</div>
+                            </div>
+                          </div>
+
+                          {/* Revenue Growth Card */}
+                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
+                            <div className="flex items-center mb-4">
+                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
+                                <TrendingUp className="h-6 w-6 text-slate-800 dark:text-slate-200" />
+                              </div>
+                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Liikevaihdon kasvu</h3>
+                            </div>
+                            <div className="flex-1">
+                              <ul className="space-y-3 mb-4">
+                                <li className="flex items-start">
+                                  <ShoppingBag className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Uudet AI-palvelut</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <Shield className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Asiakassäilyvyyden parannus</span>
+                                </li>
+                                <li className="flex items-start">
+                                  <Award className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
+                                  <span className="text-slate-700 dark:text-slate-300">Kilpailuedun saavuttaminen</span>
+                                </li>
+                              </ul>
+                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">+20-25% liikevaihdon kasvu</div>
                             </div>
                           </div>
                         </div>
-                      </section>
-
-                      {/* Teknologiastack */}
-                      <section>
-                        <h3 className="text-lg font-semibold mb-4 text-purple-600 dark:text-purple-400 flex items-center gap-2">
-                          <Building className="h-5 w-5" />
-                          Käytetyt teknologiat ja integraatiot
-                        </h3>
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                            <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">🤖 AI-teknologiat</h4>
-                            <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-300">
-                              <li>• GPT-4 Turbo kielimalli</li>
-                              <li>• Omistaja-data fine-tuning</li>
-                              <li>• Sentimenttianalyysi</li>
-                              <li>• Intent recognition</li>
-                            </ul>
-                          </div>
-
-                          <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950 dark:to-teal-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                            <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">🔗 Integraatiot</h4>
-                            <ul className="text-sm space-y-1 text-green-700 dark:text-green-300">
-                              <li>• Salesforce CRM</li>
-                              <li>• Zendesk tikettijärjestelmä</li>
-                              <li>• Slack sisäinen viestintä</li>
-                              <li>• Microsoft Teams</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </section>
+                      </div>
+                    </ScrollArea>
+                </DialogContent>
+              </Dialog>
+            </div>
 
                       {/* Opetukset */}
                       <section>
