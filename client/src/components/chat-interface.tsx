@@ -603,11 +603,11 @@ export function ChatInterface() {
                   )}
                 </div>
                 <div className={`${message.isUser ? 'bg-primary text-primary-foreground max-w-xs' : 'bg-muted max-w-2xl'} rounded-lg p-3`}>
-                  <div className={`text-sm ${message.isUser ? '' : 'text-muted-foreground'}`}>
+                  <div className={`text-sm ${message.isUser ? '' : 'text-foreground'}`}>
                     {message.isUser ? (
                       <span className="whitespace-pre-wrap">{message.content}</span>
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert">
+                      <div className="prose prose-sm dark:prose-invert text-foreground">
                         <ReactMarkdown 
                           remarkPlugins={[remarkGfm]}
                           components={{
