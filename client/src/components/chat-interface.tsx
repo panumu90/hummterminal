@@ -587,33 +587,6 @@ export function ChatInterface() {
           </div>
         </div>
 
-        {/* Context Selection */}
-        <div className={`border-b border-border transition-all duration-300 ${
-          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-96 opacity-100'
-        }`}>
-          <h4 className="text-sm font-medium mb-2 text-foreground">Kysymystyyppi:</h4>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(contextConfig).map(([key, config]) => {
-              const IconComponent = config.icon;
-              return (
-                <Button
-                  key={key}
-                  variant={selectedContext === key ? "default" : "outline"}
-                  size="sm"
-                  className={`h-8 text-xs ${selectedContext === key ? config.color : ""}`}
-                  onClick={() => setSelectedContext(key as ContextType)}
-                  data-testid={`context-${key}`}
-                >
-                  <IconComponent className="h-3 w-3 mr-1" />
-                  {config.label}
-                </Button>
-              );
-            })}
-          </div>
-          <p className="text-xs text-muted-foreground mt-2">
-            Valittu: {contextConfig[selectedContext].description}
-          </p>
-        </div>
 
         {/* Chat Messages */}
         <div className={`overflow-y-auto p-4 space-y-4 transition-all duration-300 ${
