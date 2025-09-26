@@ -91,7 +91,7 @@ export default function Home() {
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl max-h-[80vh]">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-blue-300 flex items-center gap-3">
+                    <DialogTitle className="text-2xl font-bold text-slate-300 flex items-center gap-3">
                       <Building className="h-6 w-6" />
                       Tech Lead ja humm group oy - Minun visio roolista
                     </DialogTitle>
@@ -102,7 +102,7 @@ export default function Home() {
                   <ScrollArea className="h-[60vh] pr-4">
                     <div className="space-y-6">
                       <section>
-                        <h3 className="text-lg font-semibold mb-3 text-blue-400 flex items-center gap-2">
+                        <h3 className="text-lg font-semibold mb-3 text-slate-400 flex items-center gap-2">
                           <Rocket className="h-4 w-4" />
                           Miksi hakea Tech Lead -roolia?
                         </h3>
@@ -122,8 +122,8 @@ export default function Home() {
                           Visioni roolista
                         </h3>
                         <div className="grid gap-3">
-                          <div className="bg-blue-950 border border-blue-800 rounded-lg p-4">
-                            <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">Strateginen teknologiajohtajuus</h4>
+                          <div className="bg-slate-800 border border-slate-600 rounded-lg p-4">
+                            <h4 className="font-semibold mb-2 text-slate-300">Strateginen teknologiajohtajuus</h4>
                             <p className="text-sm">Yhdistän teknisen osaamisen liiketoimintaymmärrykseen ja luon selkeät roadmapit AI-toteutuksille.</p>
                           </div>
                           <div className="bg-green-950 border border-green-800 rounded-lg p-4">
@@ -145,7 +145,7 @@ export default function Home() {
                         <div className="bg-gray-900 border border-gray-700 rounded-lg p-4">
                           <div className="space-y-3">
                             <div className="flex items-center gap-3">
-                              <Mail className="h-4 w-4 text-blue-400" />
+                              <Mail className="h-4 w-4 text-slate-400" />
                               <span className="text-sm">info@humm.fi</span>
                             </div>
                             <div className="flex items-center gap-3">
@@ -153,7 +153,7 @@ export default function Home() {
                               <span className="text-sm">+358 XX XXX XXXX</span>
                             </div>
                             <div className="flex items-center gap-3">
-                              <Linkedin className="h-4 w-4 text-blue-400" />
+                              <Linkedin className="h-4 w-4 text-slate-400" />
                               <span className="text-sm">LinkedIn: /company/humm-group</span>
                             </div>
                           </div>
@@ -161,8 +161,8 @@ export default function Home() {
                       </section>
 
                       <section>
-                        <div className="bg-gradient-to-r from-blue-950 to-purple-950 border border-blue-800 rounded-lg p-4">
-                          <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">💡 Valmis rakentamaan tulevaisuutta?</h4>
+                        <div className="bg-gradient-to-r from-blue-950 to-purple-950 border border-slate-600 rounded-lg p-4">
+                          <h4 className="font-semibold mb-2 text-slate-300">💡 Valmis rakentamaan tulevaisuutta?</h4>
                           <p className="text-sm mb-3">
                             Ota yhteyttä ja keskustellaan, miten voin auttaa humm group oy:tä saavuttamaan seuraavan tason AI-teknologiajohtajuudessa.
                           </p>

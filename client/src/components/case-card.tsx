@@ -39,7 +39,7 @@ function getBadgeClass(type: string) {
 function getCategoryColor(category: string) {
   const colorMap: Record<string, string> = {
     "Maailmanluokka": "bg-green-500",
-    "B2B Malli": "bg-blue-500",
+    "B2B Malli": "bg-slate-600",
     "Pankkisektori": "bg-yellow-500",
     "Kotimainen": "bg-emerald-500",
     "Pohjoismainen": "bg-orange-500",

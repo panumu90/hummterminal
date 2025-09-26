@@ -80,21 +80,21 @@ const topicAreas: TopicArea[] = [
     id: "strategy-roi",
     title: "Strategia & ROI",
     icon: TrendingUp,
-    color: "bg-blue-500",
+    color: "bg-slate-600",
     questions: [
       {
         id: "roi-measurement",
         question: "Miten AI-investoinnista saa mitattavaa arvoa asiakaspalvelussa?",
         category: "strategy-roi",
         icon: DollarSign,
-        color: "bg-blue-500"
+        color: "bg-slate-600"
       },
       {
         id: "cx-trends-2025",
         question: "Mitkä ovat vuoden 2025 suurimmat CX-trendit?",
         category: "strategy-roi",
         icon: TrendingUp,
-        color: "bg-blue-500"
+        color: "bg-slate-600"
       }
     ]
   },
@@ -302,7 +302,7 @@ const contextConfig = {
   strategic: {
     label: "Strategiset trendit",
     icon: TrendingUp,
-    color: "bg-blue-500 hover:bg-blue-600",
+    color: "bg-slate-600 hover:bg-slate-700",
     description: "2025 AI-trendit ja tulevaisuuden näkymät"
   },
   practical: {
@@ -751,8 +751,8 @@ export function ChatInterface() {
                       Käyttöympäristön kannalta MCP:n suurin etu on, että se parantaa tekoälyn kykyä antaa relevantteja vastauksia ja suorittaa tehtäviä käyttämällä organisaation omaa dataa ja työkaluja.
                     </p>
                     
-                    <div className="bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
-                      <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">Käytännön esimerkki: Asiakaspalveluchatbot</h4>
+                    <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 mb-4">
+                      <h4 className="font-semibold mb-2 text-slate-300">Käytännön esimerkki: Asiakaspalveluchatbot</h4>
                       <p className="text-sm mb-2">
                         MCP:n avulla asiakaspalvelubot voi hakea tietoa useista lähteistä asiakkaan kysymyksen ratkaisemiseksi:
                       </p>
@@ -836,7 +836,7 @@ export function ChatInterface() {
 
                 {/* Sääntely ja luottamus */}
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-blue-400 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold mb-3 text-slate-400 flex items-center gap-2">
                     <Scale className="h-4 w-4" />
                     Sääntely- ja luottamusnäkökulma
                   </h3>
@@ -845,8 +845,8 @@ export function ChatInterface() {
                       MCP:n käyttöönotto merkitsee uudenlaista vastuuta sääntelyn noudattamisesta ja interessiryhmien luottamuksen säilyttämisestä. Koska AI pääsee käsiksi potentiaalisesti arkaluonteiseen dataan, läpinäkyvyys ja kontrolli korostuvat.
                     </p>
 
-                    <div className="bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
-                      <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">GDPR ja vaatimustenmukaisuus</h4>
+                    <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 mb-4">
+                      <h4 className="font-semibold mb-2 text-slate-300">GDPR ja vaatimustenmukaisuus</h4>
                       <p className="text-sm mb-2">
                         EU:n GDPR edellyttää, että henkilötietoja käsitellään asianmukaisin suojamekanismein ja vain käyttötarkoituksiinsa rajatusti. MCP:n roolipohjainen pääsy ja kontekstin rajaus tukevat näitä vaatimuksia.
                       </p>

@@ -52,7 +52,7 @@ export default function ImpactAnalysis() {
             <div className="space-y-4">
               <div className="bg-slate-700 rounded-lg p-4">
                 <div className="flex items-center space-x-2 mb-2">
-                  <Building2 className="h-5 w-5 text-blue-400" />
+                  <Building2 className="h-5 w-5 text-slate-400" />
                   <span className="font-semibold">Liiketoiminta</span>
                 </div>
                 <p className="text-sm text-slate-300">Customer Experience Consulting & Outsourcing</p>
@@ -98,12 +98,12 @@ export default function ImpactAnalysis() {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center space-x-2 text-lg">
-                    <TrendingUp className="h-5 w-5 text-blue-400" />
+                    <TrendingUp className="h-5 w-5 text-slate-400" />
                     <span>Liikevaihto (2024)</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-blue-400 mb-2" data-testid="text-revenue-2024">€2.1M</div>
+                  <div className="text-3xl font-bold text-slate-400 mb-2" data-testid="text-revenue-2024">€2.1M</div>
                   <div className="flex items-center space-x-1">
                     <TrendingDown className="h-4 w-4 text-red-500" />
                     <span className="text-red-500 font-medium">-7.7%</span>
@@ -190,7 +190,7 @@ export default function ImpactAnalysis() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="border-b bg-blue-900/20" data-testid="row-humm-group">
+                      <tr className="border-b bg-slate-800/30" data-testid="row-humm-group">
                         <td className="py-3 px-4 font-medium">Humm Group Oy</td>
                         <td className="text-right py-3 px-4">2.1</td>
                         <td className="text-right py-3 px-4 text-red-600">-7.7%</td>
@@ -265,7 +265,7 @@ export default function ImpactAnalysis() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
-                    <Rocket className="h-5 w-5 text-blue-400" />
+                    <Rocket className="h-5 w-5 text-slate-400" />
                     <span>Nykyiset AI-projektit</span>
                   </CardTitle>
                 </CardHeader>
@@ -302,7 +302,7 @@ export default function ImpactAnalysis() {
                     <span>Aktiivinen Technology Lead -rekrytointi</span>
                   </div>
                   <div className="flex items-start space-x-3" data-testid="item-ai-transformation">
-                    <TrendingUp className="h-5 w-5 text-blue-400 mt-0.5" />
+                    <TrendingUp className="h-5 w-5 text-slate-400 mt-0.5" />
                     <span>Painopiste AI-transformaatioaloitteissa</span>
                   </div>
                   <div className="flex items-start space-x-3" data-testid="item-testing-solutions">
@@ -326,9 +326,9 @@ export default function ImpactAnalysis() {
               AI-toteutuksen potentiaalinen vaikutus
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="border-blue-200 dark:border-blue-800">
+              <Card className="border-slate-600">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-blue-400">
+                  <CardTitle className="flex items-center space-x-2 text-slate-400">
                     <TrendingUp className="h-6 w-6" />
                     <span>Operatiivinen tehokkuus</span>
                   </CardTitle>
@@ -346,7 +346,7 @@ export default function ImpactAnalysis() {
                     <CheckCircle className="h-4 w-4 text-green-600" />
                     <span className="text-sm">Optimoitu resurssien allokaatio</span>
                   </div>
-                  <div className="text-2xl font-bold text-blue-400 mt-4" data-testid="text-efficiency-gain">
+                  <div className="text-2xl font-bold text-slate-400 mt-4" data-testid="text-efficiency-gain">
                     +25-30% tehokkuuden parannus
                   </div>
                 </CardContent>
@@ -443,7 +443,7 @@ export default function ImpactAnalysis() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
-                    <Target className="h-5 w-5 text-blue-400" />
+                    <Target className="h-5 w-5 text-slate-400" />
                     <span>Strategiset prioriteetit</span>
                   </CardTitle>
                 </CardHeader>
@@ -476,7 +476,7 @@ export default function ImpactAnalysis() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-start space-x-3">
-                    <Users className="h-5 w-5 text-blue-400 mt-0.5" />
+                    <Users className="h-5 w-5 text-slate-400 mt-0.5" />
                     <span>Palkkaa Technology Lead ja AI-asiantuntijoita</span>
                   </div>
                   <div className="flex items-start space-x-3">
@@ -499,15 +499,15 @@ export default function ImpactAnalysis() {
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Calendar className="h-5 w-5 text-blue-400" />
+                  <Calendar className="h-5 w-5 text-slate-400" />
                   <span>AI-toteutuksen aikataulu</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
-                    <div className="bg-blue-100 dark:bg-blue-900 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                      <span className="text-blue-400 font-bold">1</span>
+                    <div className="bg-slate-700 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-slate-400 font-bold">1</span>
                     </div>
                     <h3 className="font-semibold mb-2" data-testid="text-foundation-phase">Perusta</h3>
                     <p className="text-sm text-slate-300 text-slate-300">
