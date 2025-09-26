@@ -17,7 +17,7 @@ export function PageHeader() {
         </div>
         <div className="flex items-center space-x-2">
           <Clock className="h-4 w-4 text-primary" />
-          <span>Päivitetty 2024</span>
+          <span>Päivitetty 2025</span>
         </div>
         <div className="flex items-center space-x-2">
           <Globe className="h-4 w-4 text-primary" />
