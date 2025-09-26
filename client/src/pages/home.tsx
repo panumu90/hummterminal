@@ -7,11 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertCircle, Bot, Building, Rocket, Users, Mail, Phone, Linkedin } from "lucide-react";
+import { AlertCircle, Bot, Building, Rocket, Users, Mail, Phone, Linkedin, TrendingUp, BarChart, Target, CheckCircle } from "lucide-react";
 import type { Case } from "@/lib/types";
 
 export default function Home() {
   const [techLeadModalOpen, setTechLeadModalOpen] = useState(false);
+  const [impactModalOpen, setImpactModalOpen] = useState(false);
   const { data: cases, isLoading, error } = useQuery<Case[]>({
     queryKey: ["/api/cases"],
   });
@@ -67,50 +68,8 @@ export default function Home() {
           <div className="lg:col-span-2">
             <PageHeader />
 
-            {/* Case Cards Grid */}
-            {isLoading ? (
-              <div className="space-y-6">
-                {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="animate-pulse" data-testid={`skeleton-card-${i}`}>
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-muted rounded-lg"></div>
-                          <div>
-                            <div className="h-6 bg-muted rounded w-32 mb-2"></div>
-                            <div className="h-4 bg-muted rounded w-24"></div>
-                          </div>
-                        </div>
-                        <div className="h-6 bg-muted rounded w-20"></div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="h-4 bg-muted rounded w-full"></div>
-                        <div className="h-4 bg-muted rounded w-3/4"></div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : cases?.length ? (
-              <div className="space-y-6" data-testid="cases-grid">
-                {cases.map((case_) => (
-                  <CaseCard key={case_.id} case_={case_} />
-                ))}
-              </div>
-            ) : (
-              <Card data-testid="no-cases">
-                <CardContent className="pt-6 text-center">
-                  <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Ei caseja saatavilla</h3>
-                  <p className="text-muted-foreground">
-                    Caseja ei löytynyt tai ne ovat väliaikaisesti poissa käytöstä.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
             {/* Tech Lead CTA Section */}
-            <div className="mt-12 mb-8">
+            <div className="mb-8">
               <Dialog open={techLeadModalOpen} onOpenChange={setTechLeadModalOpen}>
                 <DialogTrigger asChild>
                   <Button 
@@ -141,7 +100,6 @@ export default function Home() {
                   </DialogHeader>
                   <ScrollArea className="h-[60vh] pr-4">
                     <div className="space-y-6">
-                      {/* Placeholder content - will be expanded later */}
                       <section>
                         <h3 className="text-lg font-semibold mb-3 text-blue-600 dark:text-blue-400 flex items-center gap-2">
                           <Rocket className="h-4 w-4" />
@@ -210,6 +168,274 @@ export default function Home() {
                           <p className="text-xs text-muted-foreground">
                             Tarjoamme ilmaisen konsultaation, jossa kartoitamme yrityksesi tarpeet ja AI:n potentiaalin.
                           </p>
+                        </div>
+                      </section>
+                    </div>
+                  </ScrollArea>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {/* Case Cards Grid */}
+            {isLoading ? (
+              <div className="space-y-6">
+                {[...Array(6)].map((_, i) => (
+                  <Card key={i} className="animate-pulse" data-testid={`skeleton-card-${i}`}>
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-muted rounded-lg"></div>
+                          <div>
+                            <div className="h-6 bg-muted rounded w-32 mb-2"></div>
+                            <div className="h-4 bg-muted rounded w-24"></div>
+                          </div>
+                        </div>
+                        <div className="h-6 bg-muted rounded w-20"></div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-4 bg-muted rounded w-full"></div>
+                        <div className="h-4 bg-muted rounded w-3/4"></div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : cases?.length ? (
+              <div className="space-y-6" data-testid="cases-grid">
+                {cases.map((case_) => (
+                  <CaseCard key={case_.id} case_={case_} />
+                ))}
+              </div>
+            ) : (
+              <Card data-testid="no-cases">
+                <CardContent className="pt-6 text-center">
+                  <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Ei caseja saatavilla</h3>
+                  <p className="text-muted-foreground">
+                    Caseja ei löytynyt tai ne ovat väliaikaisesti poissa käytöstä.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* AI Project Impact Analysis Section */}
+            <div className="mt-12 mb-8">
+              <Dialog open={impactModalOpen} onOpenChange={setImpactModalOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    size="lg"
+                    className="w-full h-16 bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 hover:from-green-700 hover:via-teal-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
+                    data-testid="impact-analysis-cta"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div className="flex items-center justify-center space-x-3 relative z-10">
+                      <TrendingUp className="h-6 w-6" />
+                      <div className="text-center">
+                        <div className="text-lg font-bold">📈 Humm group oy onnistuneen AI-projektin vaikutus</div>
+                        <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
+                      </div>
+                      <BarChart className="h-6 w-6" />
+                    </div>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh]">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-green-700 dark:text-green-300 flex items-center gap-3">
+                      <TrendingUp className="h-6 w-6" />
+                      Onnistuneen AI-projektin vaikutus tehokkuuteen ja säästöihin
+                    </DialogTitle>
+                    <DialogDescription className="text-base">
+                      Kattava analyysi todellisista liiketoimintahyödyistä ja mitattavista tuloksista
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ScrollArea className="h-[75vh] pr-4">
+                    <div className="space-y-6">
+                      {/* ROI ja säästöt */}
+                      <section>
+                        <h3 className="text-lg font-semibold mb-4 text-green-600 dark:text-green-400 flex items-center gap-2">
+                          <BarChart className="h-5 w-5" />
+                          Mitattavat liiketoimintahyödyt
+                        </h3>
+                        <div className="grid gap-4 mb-6">
+                          <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-6">
+                            <h4 className="font-semibold mb-3 text-green-800 dark:text-green-200 text-xl">💰 Kustannussäästöt</h4>
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-3xl font-bold text-green-700 dark:text-green-300 mb-1">65%</p>
+                                <p className="text-sm text-green-600 dark:text-green-400">Asiakaspalvelukustannusten vähennys</p>
+                              </div>
+                              <div>
+                                <p className="text-3xl font-bold text-green-700 dark:text-green-300 mb-1">€2.4M</p>
+                                <p className="text-sm text-green-600 dark:text-green-400">Vuosittaiset säästöt henkilöstökuluissa</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                            <h4 className="font-semibold mb-3 text-blue-800 dark:text-blue-200 text-xl">⚡ Tehokkuuden parannus</h4>
+                            <div className="grid md:grid-cols-3 gap-4">
+                              <div>
+                                <p className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">85%</p>
+                                <p className="text-sm text-blue-600 dark:text-blue-400">Rutiinitehtävien automatisointi</p>
+                              </div>
+                              <div>
+                                <p className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">3 min</p>
+                                <p className="text-sm text-blue-600 dark:text-blue-400">Keskimääräinen vastausaika</p>
+                              </div>
+                              <div>
+                                <p className="text-3xl font-bold text-blue-700 dark:text-blue-300 mb-1">24/7</p>
+                                <p className="text-sm text-blue-600 dark:text-blue-400">Keskeytymätön palvelu</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-6">
+                            <h4 className="font-semibold mb-3 text-purple-800 dark:text-purple-200 text-xl">📊 Asiakastyytyväisyys</h4>
+                            <div className="grid md:grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-3xl font-bold text-purple-700 dark:text-purple-300 mb-1">92%</p>
+                                <p className="text-sm text-purple-600 dark:text-purple-400">Asiakastyytyväisyysindeksi (CSAT)</p>
+                              </div>
+                              <div>
+                                <p className="text-3xl font-bold text-purple-700 dark:text-purple-300 mb-1">+18pp</p>
+                                <p className="text-sm text-purple-600 dark:text-purple-400">Parannus ennen AI-käyttöönottoa</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      {/* Implementaatio aikajana */}
+                      <section>
+                        <h3 className="text-lg font-semibold mb-4 text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                          <Target className="h-5 w-5" />
+                          Implementaation vaiheet ja tulokset
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div className="flex-shrink-0 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                            <div>
+                              <h4 className="font-semibold mb-2">Kartoitusvaihe (2 viikkoa)</h4>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Analysoitiin nykyiset prosessit ja tunnistettiin automaation potentiaali
+                              </p>
+                              <div className="flex items-center gap-2 text-xs">
+                                <CheckCircle className="h-3 w-3 text-green-500" />
+                                <span>95% asiakaskontakteista soveltui automaatioon</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div className="flex-shrink-0 w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                            <div>
+                              <h4 className="font-semibold mb-2">Pilottivaihe (6 viikkoa)</h4>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Toteutettiin chatbot 20% asiakaskontakteista käsiteltäväksi
+                              </p>
+                              <div className="flex items-center gap-2 text-xs">
+                                <CheckCircle className="h-3 w-3 text-green-500" />
+                                <span>78% resoluutioaste ensimmäisellä yrityksellä</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <div className="flex-shrink-0 w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                            <div>
+                              <h4 className="font-semibold mb-2">Täysimittainen käyttöönotto (4 viikkoa)</h4>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                Laajennettiin 80% kaikista asiakaskontakteista AI:n käsiteltäväksi
+                              </p>
+                              <div className="flex items-center gap-2 text-xs">
+                                <CheckCircle className="h-3 w-3 text-green-500" />
+                                <span>85% automaatioaste saavutettu kuuden kuukauden kuluessa</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      {/* Teknologiastack */}
+                      <section>
+                        <h3 className="text-lg font-semibold mb-4 text-purple-600 dark:text-purple-400 flex items-center gap-2">
+                          <Building className="h-5 w-5" />
+                          Käytetyt teknologiat ja integraatiot
+                        </h3>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                            <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">🤖 AI-teknologiat</h4>
+                            <ul className="text-sm space-y-1 text-blue-700 dark:text-blue-300">
+                              <li>• GPT-4 Turbo kielimalli</li>
+                              <li>• Omistaja-data fine-tuning</li>
+                              <li>• Sentimenttianalyysi</li>
+                              <li>• Intent recognition</li>
+                            </ul>
+                          </div>
+
+                          <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950 dark:to-teal-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                            <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">🔗 Integraatiot</h4>
+                            <ul className="text-sm space-y-1 text-green-700 dark:text-green-300">
+                              <li>• Salesforce CRM</li>
+                              <li>• Zendesk tikettijärjestelmä</li>
+                              <li>• Slack sisäinen viestintä</li>
+                              <li>• Microsoft Teams</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </section>
+
+                      {/* Opetukset */}
+                      <section>
+                        <h3 className="text-lg font-semibold mb-4 text-orange-600 dark:text-orange-400 flex items-center gap-2">
+                          <Target className="h-5 w-5" />
+                          Keskeiset opetukset ja suositukset
+                        </h3>
+                        <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-6">
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-semibold mb-2 text-orange-800 dark:text-orange-200">✅ Onnistumistekijät</h4>
+                              <ul className="text-sm space-y-1 text-orange-700 dark:text-orange-300">
+                                <li>• Vaiheittainen käyttöönotto minimoi riskejä</li>
+                                <li>• Henkilöstön koulutus AI-työkalujen käyttöön</li>
+                                <li>• Jatkuva datan laadun monitorointi</li>
+                                <li>• Asiakaspalaute ohjasi kehitystä</li>
+                              </ul>
+                            </div>
+                            <div>
+                              <h4 className="font-semibold mb-2 text-orange-800 dark:text-orange-200">⚠️ Huomioonotettavaa</h4>
+                              <ul className="text-sm space-y-1 text-orange-700 dark:text-orange-300">
+                                <li>• Aluksi asiakkaat skeptisiä AI-palvelua kohtaan</li>
+                                <li>• Kompleksiset tapaukset vaativat edelleen ihmistä</li>
+                                <li>• Mallin suorituskyky riippuu datan laadusta</li>
+                                <li>• Säännöllinen uudelleenkoulutus tarpeen</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      {/* Call to action */}
+                      <section>
+                        <div className="bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950 border border-green-200 dark:border-green-800 rounded-lg p-6 text-center">
+                          <h4 className="text-xl font-bold mb-3 text-green-800 dark:text-green-200">🚀 Valmis aloittamaan oman AI-projektisi?</h4>
+                          <p className="mb-4 text-green-700 dark:text-green-300">
+                            Saavuta vastaavat tulokset omassa organisaatiossasi. Tutustu case-esimerkkeihin ja ota yhteyttä asiantuntijoihimme!
+                          </p>
+                          <div className="flex justify-center gap-4">
+                            <div className="text-center">
+                              <p className="text-2xl font-bold text-green-700 dark:text-green-300">€2.4M+</p>
+                              <p className="text-xs text-green-600 dark:text-green-400">Vuosittaiset säästöt</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">85%</p>
+                              <p className="text-xs text-blue-600 dark:text-blue-400">Automaatioaste</p>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">+18pp</p>
+                              <p className="text-xs text-purple-600 dark:text-purple-400">CSAT parannus</p>
+                            </div>
+                          </div>
                         </div>
                       </section>
                     </div>
