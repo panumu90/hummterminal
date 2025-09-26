@@ -517,14 +517,14 @@ export function ChatInterface() {
         </div>
 
         {/* MCP Section - TÄRKEÄ! */}
-        <div className={`border-b border-border bg-emerald-50 dark:bg-emerald-950 transition-all duration-300 ${
+        <div className={`border-b border-border bg-emerald-950 transition-all duration-300 ${
           isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-96 opacity-100'
         }`}>
           <div className="flex items-center gap-2 mb-3">
             <Shield className="h-5 w-5 text-emerald-600" />
-            <h4 className="text-sm font-semibold text-emerald-800 dark:text-emerald-200">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
+            <h4 className="text-sm font-semibold text-emerald-200">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
           </div>
-          <p className="text-xs text-emerald-700 dark:text-emerald-300 mb-3">
+          <p className="text-xs text-emerald-300 mb-3">
             MCP mahdollistaa turvallisen AI-integraation yritysjärjestelmiin
           </p>
           <div className="grid grid-cols-1 gap-2">
@@ -535,7 +535,7 @@ export function ChatInterface() {
                   key={question.id}
                   variant="outline"
                   size="sm"
-                  className="h-auto p-3 text-xs text-left justify-start border-emerald-200 hover:bg-emerald-100 hover:border-emerald-300 dark:border-emerald-800 dark:hover:bg-emerald-900"
+                  className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700"
                   onClick={() => handleQuestionClick(question.id)}
                   disabled={questionMutation.isPending}
                   data-testid={`question-${question.id}`}
@@ -700,7 +700,7 @@ export function ChatInterface() {
           <DialogTrigger asChild>
             <Button 
               variant="outline" 
-              className="w-full bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-emerald-700 dark:text-emerald-300"
+              className="w-full bg-emerald-950 border-emerald-800 hover:bg-emerald-900 text-emerald-300"
               data-testid="mcp-deep-analysis-button"
             >
               <FileText className="h-4 w-4 mr-2" />
@@ -709,7 +709,7 @@ export function ChatInterface() {
           </DialogTrigger>
           <DialogContent className="max-w-4xl max-h-[90vh]">
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+              <DialogTitle className="text-xl font-bold text-emerald-300 flex items-center gap-2">
                 <Shield className="h-5 w-5" />
                 Model Context Protocol (MCP) - Syväanalyysi
               </DialogTitle>
@@ -732,7 +732,7 @@ export function ChatInterface() {
                     <p className="mb-3">
                       MCP toimii kuin eräänlainen erikoistunut API-rajapinta tekoälylle: AI-agentti voi sen kautta "keskustella" yrityksen tietokantojen, sovellusten tai palveluiden kanssa yhtenäisellä tavalla. Tämä avaa uusia käyttömahdollisuuksia – esimerkiksi AI voi hakea tietoa yrityksen sisäisistä järjestelmistä, päivittää tietueita tai suorittaa toimintoja.
                     </p>
-                    <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-3">
+                    <div className="bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-3">
                       <p className="text-sm">
                         <strong>Huomio:</strong> MCP on vain rajapinta – se itsessään ei sisällä automaattisesti turvamekanismeja kuten autentikointia tai pääsynhallintaa. Organisaation tehtävä on päättää, mitkä "ovet ovat auki ja kenelle".
                       </p>
@@ -751,7 +751,7 @@ export function ChatInterface() {
                       Käyttöympäristön kannalta MCP:n suurin etu on, että se parantaa tekoälyn kykyä antaa relevantteja vastauksia ja suorittaa tehtäviä käyttämällä organisaation omaa dataa ja työkaluja.
                     </p>
                     
-                    <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                    <div className="bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
                       <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">Käytännön esimerkki: Asiakaspalveluchatbot</h4>
                       <p className="text-sm mb-2">
                         MCP:n avulla asiakaspalvelubot voi hakea tietoa useista lähteistä asiakkaan kysymyksen ratkaisemiseksi:
@@ -782,7 +782,7 @@ export function ChatInterface() {
                     </p>
 
                     <div className="grid gap-4 mb-4">
-                      <div className="bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
+                      <div className="bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
                         <h4 className="font-semibold mb-2 text-red-800 dark:text-red-200 flex items-center gap-2">
                           <Users className="h-4 w-4" />
                           1. Roolipohjainen pääsy (RBAC)
@@ -795,7 +795,7 @@ export function ChatInterface() {
                         </p>
                       </div>
 
-                      <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                      <div className="bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
                         <h4 className="font-semibold mb-2 text-orange-800 dark:text-orange-200 flex items-center gap-2">
                           <Target className="h-4 w-4" />
                           2. Eksplisiittinen kontekstin rajaus
@@ -808,7 +808,7 @@ export function ChatInterface() {
                         </p>
                       </div>
 
-                      <div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                      <div className="bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
                         <h4 className="font-semibold mb-2 text-purple-800 dark:text-purple-200 flex items-center gap-2">
                           <Database className="h-4 w-4" />
                           3. Audit-jäljet ja valvonta
@@ -822,7 +822,7 @@ export function ChatInterface() {
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+                    <div className="bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
                       <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Lisäturvatoimet:</h4>
                       <ul className="text-sm list-disc pl-4 space-y-1">
                         <li>Autentikointi ja salaus (TLS-suojatut MCP-kutsut)</li>
@@ -836,7 +836,7 @@ export function ChatInterface() {
 
                 {/* Sääntely ja luottamus */}
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold mb-3 text-blue-400 flex items-center gap-2">
                     <Scale className="h-4 w-4" />
                     Sääntely- ja luottamusnäkökulma
                   </h3>
@@ -845,7 +845,7 @@ export function ChatInterface() {
                       MCP:n käyttöönotto merkitsee uudenlaista vastuuta sääntelyn noudattamisesta ja interessiryhmien luottamuksen säilyttämisestä. Koska AI pääsee käsiksi potentiaalisesti arkaluonteiseen dataan, läpinäkyvyys ja kontrolli korostuvat.
                     </p>
 
-                    <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                    <div className="bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
                       <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">GDPR ja vaatimustenmukaisuus</h4>
                       <p className="text-sm mb-2">
                         EU:n GDPR edellyttää, että henkilötietoja käsitellään asianmukaisin suojamekanismein ja vain käyttötarkoituksiinsa rajatusti. MCP:n roolipohjainen pääsy ja kontekstin rajaus tukevat näitä vaatimuksia.
@@ -855,7 +855,7 @@ export function ChatInterface() {
                       </p>
                     </div>
 
-                    <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                    <div className="bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
                       <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">Asiakkaiden luottamus</h4>
                       <p className="text-sm mb-2">
                         Tutkimusten mukaan jopa 66% asiakkaista on huolissaan tietosuojasta asioidessaan tekoälyä hyödyntävien palveluiden kanssa.
@@ -869,7 +869,7 @@ export function ChatInterface() {
 
                 {/* Johtopäätökset */}
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold mb-3 text-gray-300 flex items-center gap-2">
                     <Star className="h-4 w-4" />
                     Johtopäätökset
                   </h3>
@@ -878,8 +878,8 @@ export function ChatInterface() {
                       Model Context Protocol tarjoaa uuden tehokkaan tavan integroida tekoäly osaksi yrityksen tietojärjestelmiä ja prosesseja. Sen avulla AI pystyy hyödyntämään vain haluttua osajoukkoa tietoa tuottaakseen parempia vastauksia ja hoitaakseen tehtäviä automaattisesti.
                     </p>
                     
-                    <div className="bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
-                      <h4 className="font-semibold mb-2 text-emerald-800 dark:text-emerald-200">MCP:n arvon kaksijako:</h4>
+                    <div className="bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
+                      <h4 className="font-semibold mb-2 text-emerald-200">MCP:n arvon kaksijako:</h4>
                       <div className="text-sm space-y-2">
                         <p><strong>Mahdollistaja:</strong> Tuo tekoälyn osaksi arkea ennennäkemättömillä tavoilla</p>
                         <p><strong>Hallinnan työväline:</strong> Tarjoaa keinot rajata ja seurata tekoälyn toimintaa</p>

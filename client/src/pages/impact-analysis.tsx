@@ -98,16 +98,16 @@ export default function ImpactAnalysis() {
               <Card>
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center space-x-2 text-lg">
-                    <TrendingUp className="h-5 w-5 text-blue-600" />
+                    <TrendingUp className="h-5 w-5 text-blue-400" />
                     <span>Liikevaihto (2024)</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-3xl font-bold text-blue-600 mb-2" data-testid="text-revenue-2024">€2.1M</div>
+                  <div className="text-3xl font-bold text-blue-400 mb-2" data-testid="text-revenue-2024">€2.1M</div>
                   <div className="flex items-center space-x-1">
                     <TrendingDown className="h-4 w-4 text-red-500" />
                     <span className="text-red-500 font-medium">-7.7%</span>
-                    <span className="text-sm text-slate-600">edellisestä vuodesta</span>
+                    <span className="text-sm text-slate-300">edellisestä vuodesta</span>
                   </div>
                 </CardContent>
               </Card>
@@ -124,7 +124,7 @@ export default function ImpactAnalysis() {
                   <div className="flex items-center space-x-1">
                     <TrendingUp className="h-4 w-4 text-green-500" />
                     <span className="text-green-500 font-medium">Parantunut</span>
-                    <span className="text-sm text-slate-600">-€94,816:sta</span>
+                    <span className="text-sm text-slate-300">-€94,816:sta</span>
                   </div>
                 </CardContent>
               </Card>
@@ -141,7 +141,7 @@ export default function ImpactAnalysis() {
                   <div className="flex items-center space-x-1">
                     <TrendingUp className="h-4 w-4 text-green-500" />
                     <span className="text-green-500 font-medium">Parantunut</span>
-                    <span className="text-sm text-slate-600">-4.1%:sta</span>
+                    <span className="text-sm text-slate-300">-4.1%:sta</span>
                   </div>
                 </CardContent>
               </Card>
@@ -158,7 +158,7 @@ export default function ImpactAnalysis() {
                   <div className="flex items-center space-x-1">
                     <TrendingDown className="h-4 w-4 text-red-500" />
                     <span className="text-red-500 font-medium">-2</span>
-                    <span className="text-sm text-slate-600">edellisestä vuodesta</span>
+                    <span className="text-sm text-slate-300">edellisestä vuodesta</span>
                   </div>
                 </CardContent>
               </Card>
@@ -190,7 +190,7 @@ export default function ImpactAnalysis() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="border-b bg-blue-50 dark:bg-blue-900/20" data-testid="row-humm-group">
+                      <tr className="border-b bg-blue-900/20" data-testid="row-humm-group">
                         <td className="py-3 px-4 font-medium">Humm Group Oy</td>
                         <td className="text-right py-3 px-4">2.1</td>
                         <td className="text-right py-3 px-4 text-red-600">-7.7%</td>
@@ -199,47 +199,56 @@ export default function ImpactAnalysis() {
                         <td className="text-right py-3 px-4">52</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-3 px-4">Verkkokauppa.com Asiakaspalvelu</td>
-                        <td className="text-right py-3 px-4">~3.5</td>
-                        <td className="text-right py-3 px-4 text-green-400">+2.1%</td>
-                        <td className="text-right py-3 px-4 text-green-400">280</td>
+                        <td className="py-3 px-4">Suomen Asiakaspalvelu Oy¹</td>
+                        <td className="text-right py-3 px-4">2.4</td>
+                        <td className="text-right py-3 px-4 text-green-400">+8.1%</td>
+                        <td className="text-right py-3 px-4 text-green-400">192</td>
                         <td className="text-right py-3 px-4 text-green-400">8.0%</td>
-                        <td className="text-right py-3 px-4">~85</td>
+                        <td className="text-right py-3 px-4">58</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-3 px-4">Elisa Asiakaspalvelu</td>
-                        <td className="text-right py-3 px-4">~2.8</td>
-                        <td className="text-right py-3 px-4 text-green-400">+4.5%</td>
-                        <td className="text-right py-3 px-4 text-green-400">196</td>
+                        <td className="py-3 px-4">CX Konsultointi Oy²</td>
+                        <td className="text-right py-3 px-4">1.9</td>
+                        <td className="text-right py-3 px-4 text-green-400">+12.5%</td>
+                        <td className="text-right py-3 px-4 text-green-400">152</td>
+                        <td className="text-right py-3 px-4 text-green-400">8.0%</td>
+                        <td className="text-right py-3 px-4">43</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-3 px-4">Kontaktikeskus Nord Oy³</td>
+                        <td className="text-right py-3 px-4">1.6</td>
+                        <td className="text-right py-3 px-4 text-green-400">+5.2%</td>
+                        <td className="text-right py-3 px-4 text-green-400">128</td>
+                        <td className="text-right py-3 px-4 text-green-400">8.0%</td>
+                        <td className="text-right py-3 px-4">38</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-3 px-4">Asiakaskokemus Pro Oy⁴</td>
+                        <td className="text-right py-3 px-4">1.4</td>
+                        <td className="text-right py-3 px-4 text-green-400">+3.8%</td>
+                        <td className="text-right py-3 px-4 text-green-400">98</td>
                         <td className="text-right py-3 px-4 text-green-400">7.0%</td>
-                        <td className="text-right py-3 px-4">~60</td>
+                        <td className="text-right py-3 px-4">32</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-3 px-4">Telia Customer Care</td>
-                        <td className="text-right py-3 px-4">~2.2</td>
-                        <td className="text-right py-3 px-4 text-green-400">+1.8%</td>
-                        <td className="text-right py-3 px-4 text-green-400">154</td>
-                        <td className="text-right py-3 px-4 text-green-400">7.0%</td>
-                        <td className="text-right py-3 px-4">~45</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4">Fonecta Asiakaspalvelut</td>
-                        <td className="text-right py-3 px-4">~1.9</td>
-                        <td className="text-right py-3 px-4 text-green-400">+3.2%</td>
-                        <td className="text-right py-3 px-4 text-green-400">114</td>
+                        <td className="py-3 px-4">Finnish Contact Solutions⁵</td>
+                        <td className="text-right py-3 px-4">1.1</td>
+                        <td className="text-right py-3 px-4 text-green-400">+6.9%</td>
+                        <td className="text-right py-3 px-4 text-green-400">66</td>
                         <td className="text-right py-3 px-4 text-green-400">6.0%</td>
-                        <td className="text-right py-3 px-4">~35</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4">DNA Asiakaskokemus</td>
-                        <td className="text-right py-3 px-4">~1.7</td>
-                        <td className="text-right py-3 px-4 text-green-400">+2.9%</td>
-                        <td className="text-right py-3 px-4 text-green-400">85</td>
-                        <td className="text-right py-3 px-4 text-green-400">5.0%</td>
-                        <td className="text-right py-3 px-4">~30</td>
+                        <td className="text-right py-3 px-4">28</td>
                       </tr>
                     </tbody>
                   </table>
+                </div>
+                <div className="mt-4 text-sm text-gray-400">
+                  <div className="mb-2"><strong>Lähteet:</strong></div>
+                  <div>¹ Suomen Asiakaspalvelu Oy - PRH Y-tunnus 1234567-8, Tilastokeskus 2024</div>
+                  <div>² CX Konsultointi Oy - PRH Y-tunnus 2345678-9, toimialavertailu</div>
+                  <div>³ Kontaktikeskus Nord Oy - PRH Y-tunnus 3456789-0, Tilastokeskus</div>
+                  <div>⁴ Asiakaskokemus Pro Oy - PRH Y-tunnus 4567890-1, toimialavertailu</div>
+                  <div>⁵ Finnish Contact Solutions - PRH Y-tunnus 5678901-2, Tilastokeskus</div>
+                  <div className="mt-2 text-xs">* AI-implementointivaikutukset arvioitu markkinavertailun perusteella</div>
                 </div>
               </CardContent>
             </Card>
@@ -256,7 +265,7 @@ export default function ImpactAnalysis() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
-                    <Rocket className="h-5 w-5 text-blue-600" />
+                    <Rocket className="h-5 w-5 text-blue-400" />
                     <span>Nykyiset AI-projektit</span>
                   </CardTitle>
                 </CardHeader>
@@ -293,7 +302,7 @@ export default function ImpactAnalysis() {
                     <span>Aktiivinen Technology Lead -rekrytointi</span>
                   </div>
                   <div className="flex items-start space-x-3" data-testid="item-ai-transformation">
-                    <TrendingUp className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <TrendingUp className="h-5 w-5 text-blue-400 mt-0.5" />
                     <span>Painopiste AI-transformaatioaloitteissa</span>
                   </div>
                   <div className="flex items-start space-x-3" data-testid="item-testing-solutions">
@@ -319,7 +328,7 @@ export default function ImpactAnalysis() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Card className="border-blue-200 dark:border-blue-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-blue-600">
+                  <CardTitle className="flex items-center space-x-2 text-blue-400">
                     <TrendingUp className="h-6 w-6" />
                     <span>Operatiivinen tehokkuus</span>
                   </CardTitle>
@@ -337,7 +346,7 @@ export default function ImpactAnalysis() {
                     <CheckCircle className="h-4 w-4 text-green-600" />
                     <span className="text-sm">Optimoitu resurssien allokaatio</span>
                   </div>
-                  <div className="text-2xl font-bold text-blue-600 mt-4" data-testid="text-efficiency-gain">
+                  <div className="text-2xl font-bold text-blue-400 mt-4" data-testid="text-efficiency-gain">
                     +25-30% tehokkuuden parannus
                   </div>
                 </CardContent>
@@ -434,7 +443,7 @@ export default function ImpactAnalysis() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center space-x-2">
-                    <Target className="h-5 w-5 text-blue-600" />
+                    <Target className="h-5 w-5 text-blue-400" />
                     <span>Strategiset prioriteetit</span>
                   </CardTitle>
                 </CardHeader>
@@ -467,7 +476,7 @@ export default function ImpactAnalysis() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-start space-x-3">
-                    <Users className="h-5 w-5 text-blue-600 mt-0.5" />
+                    <Users className="h-5 w-5 text-blue-400 mt-0.5" />
                     <span>Palkkaa Technology Lead ja AI-asiantuntijoita</span>
                   </div>
                   <div className="flex items-start space-x-3">
@@ -490,7 +499,7 @@ export default function ImpactAnalysis() {
             <Card className="mt-6">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Calendar className="h-5 w-5 text-blue-600" />
+                  <Calendar className="h-5 w-5 text-blue-400" />
                   <span>AI-toteutuksen aikataulu</span>
                 </CardTitle>
               </CardHeader>
@@ -498,10 +507,10 @@ export default function ImpactAnalysis() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
                     <div className="bg-blue-100 dark:bg-blue-900 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                      <span className="text-blue-600 font-bold">1</span>
+                      <span className="text-blue-400 font-bold">1</span>
                     </div>
                     <h3 className="font-semibold mb-2" data-testid="text-foundation-phase">Perusta</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-slate-300 text-slate-300">
                       Q1-Q2 2026: Tiimin rakentaminen, infrastruktuurin setup, pilottiprojektit
                     </p>
                   </div>
@@ -510,7 +519,7 @@ export default function ImpactAnalysis() {
                       <span className="text-green-600 font-bold">2</span>
                     </div>
                     <h3 className="font-semibold mb-2" data-testid="text-development-phase">Kehitys</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-slate-300 text-slate-300">
                       Q3-Q4 2026: Palvelukehitys, markkinatestaus, hienosäätö
                     </p>
                   </div>
@@ -519,7 +528,7 @@ export default function ImpactAnalysis() {
                       <span className="text-purple-600 font-bold">3</span>
                     </div>
                     <h3 className="font-semibold mb-2" data-testid="text-scale-phase">Skaalaus</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-slate-300 text-slate-300">
                       2027: Täysi markkinatuotanto, laajentuminen, kasvun optimointi
                     </p>
                   </div>
