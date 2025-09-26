@@ -385,7 +385,17 @@ export function ChatInterface() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [mcpModalOpen, setMcpModalOpen] = useState(false);
   const [followUpSuggestions, setFollowUpSuggestions] = useState<string[]>([]);
+  
+  // New modal state for AI responses
+  const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [modalMessages, setModalMessages] = useState<ChatMessage[]>([]);
+  const [modalInputValue, setModalInputValue] = useState("");
+  const [modalFollowUpSuggestions, setModalFollowUpSuggestions] = useState<string[]>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<string>("");
+  const [currentQuestionContext, setCurrentQuestionContext] = useState<ContextType>("general");
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const modalMessagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const questionMutation = useMutation({
@@ -428,8 +438,6 @@ export function ChatInterface() {
       return;
     }
 
-    setIsExpanded(true); // Auto-expand chat when question is clicked
-    
     // Find question text
     const allQuestions = [
       ...mcpQuestions,
@@ -438,20 +446,27 @@ export function ChatInterface() {
     const question = allQuestions.find(q => q.id === questionId);
     
     if (question) {
-      // Add user question first
-      setMessages(prev => [...prev, {
-        content: question.question,
-        isUser: true,
-        timestamp: Date.now()
-      }]);
-
-      // Send question as chat message to get enhanced markdown response with appropriate context
+      // Determine context based on question category
       const isMcpQuestion = question.id.includes('mcp-') || question.question.toLowerCase().includes('mcp');
       const contextType = isMcpQuestion ? 'mcp' : 
                          question.category.includes('roi') || question.category.includes('strategy') ? 'strategic' :
                          question.category.includes('automation') || question.category.includes('practical') ? 'practical' : 'general';
+      
+      // Set up modal with initial user message
+      setCurrentQuestion(question.question);
+      setCurrentQuestionContext(contextType);
+      setModalMessages([{
+        content: question.question,
+        isUser: true,
+        timestamp: Date.now()
+      }]);
+      setModalInputValue("");
+      setModalFollowUpSuggestions([]);
+      setAiModalOpen(true);
+      
       console.log("Question clicked:", question.question, "ID:", question.id, "Context:", contextType);
-      chatMutation.mutate({ message: question.question, context_type: contextType });
+      // Use modal mutation to get initial response
+      modalChatMutation.mutate({ message: question.question, context_type: contextType });
     }
   };
 
@@ -467,6 +482,12 @@ export function ChatInterface() {
   // useEffect(() => {
   //   scrollToBottom();
   // }, [messages]);
+  
+  useEffect(() => {
+    if (modalMessagesEndRef.current) {
+      modalMessagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [modalMessages]);
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string, context_type?: ContextType }) => {
@@ -493,6 +514,46 @@ export function ChatInterface() {
       toast({
         title: "Virhe",
         description: "Viestin lähettäminen epäonnistui. Yritä uudelleen.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  // Modal chat mutation for AI responses in modal
+  const modalChatMutation = useMutation({
+    mutationFn: async (data: { message: string, context_type?: ContextType }) => {
+      const response = await apiRequest("POST", "/api/chat", { 
+        message: data.message || data,
+        context_type: data.context_type || currentQuestionContext
+      });
+      return response.json();
+    },
+    onSuccess: (data) => {
+      console.log("Modal chat response received:", data.response);
+      console.log("Modal follow-up suggestions received:", data.followUpSuggestions);
+      
+      // Add AI response to modal messages
+      setModalMessages(prev => [...prev, {
+        content: data.response,
+        isUser: false,
+        timestamp: Date.now()
+      }]);
+      
+      // Update modal follow-up suggestions
+      if (data.followUpSuggestions && Array.isArray(data.followUpSuggestions)) {
+        setModalFollowUpSuggestions(data.followUpSuggestions);
+      }
+    },
+    onError: (error) => {
+      console.error("Modal chat error:", error);
+      setModalMessages(prev => [...prev, {
+        content: "Anteeksi, en pystynyt käsittelemään kysymystäsi.",
+        isUser: false,
+        timestamp: Date.now()
+      }]);
+      toast({
+        title: "Virhe",
+        description: "Vastauksen lataaminen epäonnistui.",
         variant: "destructive"
       });
     }
@@ -528,6 +589,44 @@ export function ChatInterface() {
     // Clear follow-up suggestions immediately when one is clicked
     setFollowUpSuggestions([]);
     chatMutation.mutate({ message: suggestion });
+  };
+
+  // Modal chat functions
+  const handleModalSend = () => {
+    const message = modalInputValue.trim();
+    if (!message || modalChatMutation.isPending) return;
+
+    // Add user message to modal
+    setModalMessages(prev => [...prev, {
+      content: message,
+      isUser: true,
+      timestamp: Date.now()
+    }]);
+
+    setModalInputValue("");
+    setModalFollowUpSuggestions([]);
+    modalChatMutation.mutate({ message: message, context_type: currentQuestionContext });
+  };
+
+  const handleModalFollowUpClick = (suggestion: string) => {
+    if (modalChatMutation.isPending) return;
+
+    // Add user message to modal
+    setModalMessages(prev => [...prev, {
+      content: suggestion,
+      isUser: true,
+      timestamp: Date.now()
+    }]);
+
+    setModalFollowUpSuggestions([]);
+    modalChatMutation.mutate({ message: suggestion, context_type: currentQuestionContext });
+  };
+
+  const handleModalKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleModalSend();
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -995,6 +1094,138 @@ export function ChatInterface() {
             </ScrollArea>
           </DialogContent>
         </Dialog>
+      
+      {/* AI Response Modal */}
+      <Dialog open={aiModalOpen} onOpenChange={setAiModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-primary flex items-center gap-2">
+              <Bot className="h-5 w-5" />
+              AI Assistentti
+            </DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              {currentQuestion}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {/* Modal Chat Messages */}
+          <ScrollArea className="h-[60vh] pr-4 border rounded-lg">
+            <div className="p-4 space-y-4">
+              {modalMessages.map((message, index) => (
+                <div key={index} className="chat-message" data-testid={`modal-message-${index}`}>
+                  <div className={`flex items-start space-x-3 ${message.isUser ? 'flex-row-reverse' : ''}`}>
+                    <div className={`w-8 h-8 ${message.isUser ? 'bg-secondary' : 'bg-primary'} rounded-full flex items-center justify-center flex-shrink-0`}>
+                      {message.isUser ? (
+                        <User className="h-4 w-4 text-secondary-foreground" />
+                      ) : (
+                        <Bot className="h-4 w-4 text-primary-foreground" />
+                      )}
+                    </div>
+                    <div className={`${message.isUser ? 'bg-primary text-primary-foreground max-w-xs' : 'bg-muted max-w-2xl'} rounded-lg p-3`}>
+                      <div className={`text-sm ${message.isUser ? '' : 'text-foreground'}`}>
+                        {message.isUser ? (
+                          <span className="whitespace-pre-wrap">{message.content}</span>
+                        ) : (
+                          <div className="max-w-none text-gray-100">
+                            <ReactMarkdown 
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                h1: ({children}) => <h1 className="text-lg font-bold mb-2 text-white">{children}</h1>,
+                                h2: ({children}) => <h2 className="text-base font-semibold mb-2 text-white">{children}</h2>,
+                                h3: ({children}) => <h3 className="text-sm font-medium mb-1 text-gray-100">{children}</h3>,
+                                p: ({children}) => <p className="mb-2 last:mb-0 text-gray-100">{children}</p>,
+                                ul: ({children}) => <ul className="list-disc pl-4 mb-2 text-gray-100">{children}</ul>,
+                                ol: ({children}) => <ol className="list-decimal pl-4 mb-2 text-gray-100">{children}</ol>,
+                                li: ({children}) => <li className="mb-1 text-gray-100">{children}</li>,
+                                strong: ({children}) => <strong className="font-semibold text-white">{children}</strong>,
+                                em: ({children}) => <em className="italic text-gray-200">{children}</em>,
+                                code: ({children}) => <code className="bg-slate-700 text-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>,
+                                blockquote: ({children}) => <blockquote className="border-l-2 border-slate-500 pl-3 italic text-gray-200">{children}</blockquote>
+                              }}
+                            >
+                              {message.content}
+                            </ReactMarkdown>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {modalChatMutation.isPending && (
+                <div className="chat-message" data-testid="modal-loading-message">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                      <Bot className="h-4 w-4 text-primary-foreground animate-pulse" />
+                    </div>
+                    <div className="bg-muted rounded-lg p-3 max-w-xs">
+                      <p className="text-sm text-muted-foreground">Kirjoittaa...</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Modal Follow-up Suggestions */}
+              {modalFollowUpSuggestions.length > 0 && (
+                <div className="chat-message" data-testid="modal-follow-up-suggestions">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                      <MessageCircle className="h-4 w-4 text-accent-foreground" />
+                    </div>
+                    <div className="bg-accent/50 rounded-lg p-3 max-w-2xl">
+                      <p className="text-sm font-medium mb-2 text-accent-foreground">Jatkokysymyksiä:</p>
+                      <div className="space-y-2">
+                        {modalFollowUpSuggestions.map((suggestion, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            size="sm"
+                            className="text-left h-auto py-2 px-3 justify-start whitespace-normal bg-background/80 hover:bg-background text-foreground"
+                            onClick={() => handleModalFollowUpClick(suggestion)}
+                            data-testid={`modal-follow-up-${index}`}
+                          >
+                            {suggestion}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div ref={modalMessagesEndRef} />
+            </div>
+          </ScrollArea>
+          
+          {/* Modal Chat Input */}
+          <div className="border-t border-border p-4 bg-background">
+            <div className="flex space-x-3">
+              <Input
+                type="text"
+                placeholder="Jatka keskustelua..."
+                value={modalInputValue}
+                onChange={(e) => setModalInputValue(e.target.value)}
+                onKeyPress={handleModalKeyPress}
+                disabled={modalChatMutation.isPending}
+                className="flex-1"
+                data-testid="modal-chat-input"
+              />
+              <Button
+                onClick={handleModalSend}
+                disabled={modalChatMutation.isPending || !modalInputValue.trim()}
+                size="icon"
+                data-testid="modal-send-button"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="mt-2 text-xs text-muted-foreground">
+              <span>Kysy tarkentavia kysymyksiä aiheesta tai valitse jatkokysymys yllä olevista ehdotuksista.</span>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       </div>
 
       {/* Quick Stats */}

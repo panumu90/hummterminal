@@ -76,11 +76,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const enhancementResponse = await gemini.models.generateContent({
             model: GEMINI_MODEL, // using Gemini 2.5 Pro for enhanced responses
             config: {
-              systemInstruction: `Toimi asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa.
-Tiivistä olennainen niin, että vastaus on:
-- Helppo lukea
-- Informatiivinen
-- Enintään 120 sanaa`,
+              systemInstruction: `Toimit asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. sinulta kysytään paljon asiakaspalvelu-alasta ja tehtäväsi on vastata täsmällisesti kysymyksiin, käyttäen dataa, joka sinulle on annettu, mutta myös omaa tietoasi. Olet proaktiivinen. Käyttäjäsi ovat asiakaspalvelualan ammattilaisia, mutta tekoälystä eillä on vain perusymmärrys. Yritä saada heissä "wau" efekti aikaan, kun vastaat kysymyksiin, anna aina lähdeviittaukset mukaan, jos mahdollista`,
               maxOutputTokens: 300,
               temperature: 0.7
             },
