@@ -531,12 +531,12 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
           model: GEMINI_MODEL,
           config: {
             systemInstruction: systemPrompt,
-            maxOutputTokens: 500,
+            maxOutputTokens: 2000,
             temperature: 0.8
           },
           contents: normalizeText(message)
         });
-        console.log("Gemini response object:", JSON.stringify(response, null, 2));
+        console.log("Gemini response candidates:", response.candidates?.length, "finish reason:", response.candidates?.[0]?.finishReason);
       } catch (error: any) {
         console.error("Gemini request failed:", error.name, error.message, error.stack);
         // Return graceful fallback instead of 500
@@ -545,8 +545,10 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
         });
       }
 
-      const rawResponse = response.text;
+      // Extract text from Gemini response properly
+      const rawResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || response.text;
       console.log("Gemini 2.5 Pro raw response:", rawResponse ? `"${rawResponse.substring(0, 100)}..."` : "null/empty");
+      console.log("Response extraction debug - candidates:", !!response.candidates, "content:", !!response.candidates?.[0]?.content, "parts:", !!response.candidates?.[0]?.content?.parts);
       
       const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
 
@@ -563,14 +565,14 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
 - Sopivat humm.fi:n asiantuntijatarpeisiin
 
 Vastaa vain JSON-muodossa: ["kysymys1", "kysymys2", "kysymys3"]`,
-            maxOutputTokens: 200,
+            maxOutputTokens: 500,
             temperature: 0.7
           },
           contents: `Käyttäjän kysymys: "${normalizeText(message)}"
 AI:n vastaus: "${aiResponse.substring(0, 200)}..."`
         });
 
-        const followUpContent = followUpResponse.text;
+        const followUpContent = followUpResponse.candidates?.[0]?.content?.parts?.[0]?.text || followUpResponse.text;
         if (followUpContent) {
           try {
             const parsedSuggestions = JSON.parse(followUpContent);
