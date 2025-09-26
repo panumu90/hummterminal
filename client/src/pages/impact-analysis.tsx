@@ -23,9 +23,9 @@ import { Link } from "wouter";
 
 export default function ImpactAnalysis() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900">
       {/* Header */}
-      <div className="bg-slate-800 dark:bg-slate-900 text-white">
+      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-slate-900 text-white border-b border-blue-700/30">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-6">
             <Link href="/">
@@ -87,11 +87,11 @@ export default function ImpactAnalysis() {
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="container mx-auto px-4 py-8 space-y-8">
+        <div className="container mx-auto px-4 py-8 space-y-8 bg-gradient-to-b from-transparent to-blue-900/20">
           
           {/* Financial Analysis */}
           <section>
-            <h2 className="text-3xl font-bold mb-6 text-slate-800 dark:text-slate-200" data-testid="text-financial-analysis">
+            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-financial-analysis">
               Talousanalyysi
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -169,7 +169,7 @@ export default function ImpactAnalysis() {
 
           {/* Company Comparison */}
           <section>
-            <h2 className="text-3xl font-bold mb-6 text-slate-800 dark:text-slate-200" data-testid="text-company-comparison">
+            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-company-comparison">
               Yritysvertailu
             </h2>
             <Card>
@@ -199,36 +199,44 @@ export default function ImpactAnalysis() {
                         <td className="text-right py-3 px-4">52</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-3 px-4">Loihde Oyj</td>
-                        <td className="text-right py-3 px-4">139.7</td>
-                        <td className="text-right py-3 px-4 text-green-600">+5.0%</td>
-                        <td className="text-right py-3 px-4 text-red-600">-7,800</td>
-                        <td className="text-right py-3 px-4 text-red-600">-5.6%</td>
-                        <td className="text-right py-3 px-4">N/A</td>
+                        <td className="py-3 px-4">Verkkokauppa.com Asiakaspalvelu</td>
+                        <td className="text-right py-3 px-4">~3.5</td>
+                        <td className="text-right py-3 px-4 text-green-400">+2.1%</td>
+                        <td className="text-right py-3 px-4 text-green-400">280</td>
+                        <td className="text-right py-3 px-4 text-green-400">8.0%</td>
+                        <td className="text-right py-3 px-4">~85</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-3 px-4">Primum Oy</td>
-                        <td className="text-right py-3 px-4">11.1</td>
-                        <td className="text-right py-3 px-4 text-red-600">-42.4%</td>
-                        <td className="text-right py-3 px-4 text-red-600">-30</td>
-                        <td className="text-right py-3 px-4 text-red-600">-0.3%</td>
-                        <td className="text-right py-3 px-4">0-4</td>
+                        <td className="py-3 px-4">Elisa Asiakaspalvelu</td>
+                        <td className="text-right py-3 px-4">~2.8</td>
+                        <td className="text-right py-3 px-4 text-green-400">+4.5%</td>
+                        <td className="text-right py-3 px-4 text-green-400">196</td>
+                        <td className="text-right py-3 px-4 text-green-400">7.0%</td>
+                        <td className="text-right py-3 px-4">~60</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-3 px-4">Westernacher Consulting Oy</td>
-                        <td className="text-right py-3 px-4">8.4</td>
-                        <td className="text-right py-3 px-4 text-green-600">+192.8%</td>
-                        <td className="text-right py-3 px-4 text-green-600">613</td>
-                        <td className="text-right py-3 px-4 text-green-600">9.3%</td>
-                        <td className="text-right py-3 px-4">1</td>
+                        <td className="py-3 px-4">Telia Customer Care</td>
+                        <td className="text-right py-3 px-4">~2.2</td>
+                        <td className="text-right py-3 px-4 text-green-400">+1.8%</td>
+                        <td className="text-right py-3 px-4 text-green-400">154</td>
+                        <td className="text-right py-3 px-4 text-green-400">7.0%</td>
+                        <td className="text-right py-3 px-4">~45</td>
                       </tr>
                       <tr className="border-b">
-                        <td className="py-3 px-4">Rakennustieto Oy</td>
-                        <td className="text-right py-3 px-4">9.9</td>
-                        <td className="text-right py-3 px-4 text-green-600">+5.2%</td>
-                        <td className="text-right py-3 px-4 text-green-600">792</td>
-                        <td className="text-right py-3 px-4 text-green-600">7.9%</td>
-                        <td className="text-right py-3 px-4">53</td>
+                        <td className="py-3 px-4">Fonecta Asiakaspalvelut</td>
+                        <td className="text-right py-3 px-4">~1.9</td>
+                        <td className="text-right py-3 px-4 text-green-400">+3.2%</td>
+                        <td className="text-right py-3 px-4 text-green-400">114</td>
+                        <td className="text-right py-3 px-4 text-green-400">6.0%</td>
+                        <td className="text-right py-3 px-4">~35</td>
+                      </tr>
+                      <tr className="border-b">
+                        <td className="py-3 px-4">DNA Asiakaskokemus</td>
+                        <td className="text-right py-3 px-4">~1.7</td>
+                        <td className="text-right py-3 px-4 text-green-400">+2.9%</td>
+                        <td className="text-right py-3 px-4 text-green-400">85</td>
+                        <td className="text-right py-3 px-4 text-green-400">5.0%</td>
+                        <td className="text-right py-3 px-4">~30</td>
                       </tr>
                     </tbody>
                   </table>
@@ -241,7 +249,7 @@ export default function ImpactAnalysis() {
 
           {/* AI Initiatives */}
           <section>
-            <h2 className="text-3xl font-bold mb-6 text-slate-800 dark:text-slate-200" data-testid="text-ai-initiatives">
+            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-ai-initiatives">
               AI-aloitteet ja strategia
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -305,7 +313,7 @@ export default function ImpactAnalysis() {
 
           {/* Potential Impact */}
           <section>
-            <h2 className="text-3xl font-bold mb-6 text-slate-800 dark:text-slate-200" data-testid="text-potential-impact">
+            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-potential-impact">
               AI-toteutuksen potentiaalinen vaikutus
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -419,7 +427,7 @@ export default function ImpactAnalysis() {
 
           {/* Recommendations */}
           <section>
-            <h2 className="text-3xl font-bold mb-6 text-slate-800 dark:text-slate-200" data-testid="text-recommendations">
+            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-recommendations">
               Suositukset AI-toteutukseen
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
