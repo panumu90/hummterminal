@@ -526,6 +526,7 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
       // Try Gemini request with retry for transient failures
       let response;
       try {
+        console.log(`Making Gemini API call with model: ${GEMINI_MODEL}, message length: ${normalizeText(message).length}`);
         response = await gemini.models.generateContent({
           model: GEMINI_MODEL,
           config: {
@@ -535,8 +536,9 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
           },
           contents: normalizeText(message)
         });
+        console.log("Gemini response object:", JSON.stringify(response, null, 2));
       } catch (error: any) {
-        console.error("Gemini request failed:", error.name, error.message);
+        console.error("Gemini request failed:", error.name, error.message, error.stack);
         // Return graceful fallback instead of 500
         return res.status(200).json({
           response: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit silti tarkastella case-esimerkkejä sivun vasemmasta reunasta ja kokeilla kysyä uudelleen hetken päästä.'
