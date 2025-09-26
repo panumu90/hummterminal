@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potential Impact of AI Implementation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            color: #333;
+            background-color: #f5f7fa;
+        }
+        .slide {
+            width: 1280px;
+            min-height: 720px;
+            position: relative;
+            overflow: hidden;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            padding: 40px 70px 20px;
+            background-color: #193764;
+            color: white;
+        }
+        .title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 20px;
+            color: #e0e0e0;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 30px 70px;
+            display: flex;
+            flex-direction: column;
+        }
+        .impact-grid {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 30px;
+            flex-grow: 1;
+        }
+        .impact-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .impact-card {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .impact-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .impact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(25, 55, 100, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+        .impact-icon i {
+            font-size: 28px;
+            color: #193764;
+        }
+        .impact-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #193764;
+        }
+        .impact-content {
+            flex-grow: 1;
+        }
+        .impact-list {
+            list-style: none;
+        }
+        .impact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .impact-item i {
+            color: #193764;
+            margin-right: 10px;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .key-stat {
+            font-weight: 700;
+            color: #193764;
+            font-size: 24px;
+            margin: 5px 0;
+        }
+        .chart-container {
+            background-color: #f5f7fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            height: 300px;
+            margin-bottom: 25px;
+        }
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #193764;
+            text-align: center;
+        }
+        .footer {
+            padding: 15px 70px;
+            background-color: #193764;
+            color: #e0e0e0;
+            font-size: 16px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide">
+        <div class="header">
+            <h1 class="title">Potential Impact of AI Implementation</h1>
+            <p class="subtitle">Projected improvements in performance and competitive position</p>
+        </div>
+        <div class="content">
+            <div class="chart-container">
+                <div class="chart-title">Projected Financial Impact Over 3 Years</div>
+                <canvas id="impactChart"></canvas>
+            </div>
+            
+            <div class="impact-grid">
+                <div class="impact-column">
+                    <div class="impact-card">
+                        <div class="impact-header">
+                            <div class="impact-icon">
+                                <i class="material-icons">speed</i>
+                            </div>
+                            <h2 class="impact-title">Operational Efficiency</h2>
+                        </div>
+                        <div class="impact-content">
+                            <ul class="impact-list">
+                                <li class="impact-item">
+                                    <i class="material-icons">trending_up</i>
+                                    <span>Process automation</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">schedule</i>
+                                    <span>Reduced response time</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">people</i>
+                                    <span>Optimized resource allocation</span>
+                                </li>
+                            </ul>
+                            <div class="key-stat">+25-30% efficiency gain</div>
+                        </div>
+                    </div>
+                    
+                    <div class="impact-card">
+                        <div class="impact-header">
+                            <div class="impact-icon">
+                                <i class="material-icons">savings</i>
+                            </div>
+                            <h2 class="impact-title">Cost Reduction</h2>
+                        </div>
+                        <div class="impact-content">
+                            <ul class="impact-list">
+                                <li class="impact-item">
+                                    <i class="material-icons">support_agent</i>
+                                    <span>Lower customer service costs</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">auto_fix_high</i>
+                                    <span>Reduced manual work</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">insights</i>
+                                    <span>Better resource planning</span>
+                                </li>
+                            </ul>
+                            <div class="key-stat">15-20% cost savings</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="impact-column">
+                    <div class="impact-card">
+                        <div class="impact-header">
+                            <div class="impact-icon">
+                                <i class="material-icons">thumb_up</i>
+                            </div>
+                            <h2 class="impact-title">Customer Experience</h2>
+                        </div>
+                        <div class="impact-content">
+                            <ul class="impact-list">
+                                <li class="impact-item">
+                                    <i class="material-icons">chat</i>
+                                    <span>24/7 AI-powered support</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">psychology</i>
+                                    <span>Personalized interactions</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">recommend</i>
+                                    <span>Proactive service</span>
+                                </li>
+                            </ul>
+                            <div class="key-stat">+35-40% satisfaction</div>
+                        </div>
+                    </div>
+                    
+                    <div class="impact-card">
+                        <div class="impact-header">
+                            <div class="impact-icon">
+                                <i class="material-icons">trending_up</i>
+                            </div>
+                            <h2 class="impact-title">Revenue Growth</h2>
+                        </div>
+                        <div class="impact-content">
+                            <ul class="impact-list">
+                                <li class="impact-item">
+                                    <i class="material-icons">add_business</i>
+                                    <span>New AI service offerings</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">loyalty</i>
+                                    <span>Improved customer retention</span>
+                                </li>
+                                <li class="impact-item">
+                                    <i class="material-icons">leaderboard</i>
+                                    <span>Competitive differentiation</span>
+                                </li>
+                            </ul>
+                            <div class="key-stat">+20-25% revenue growth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">Financial Analysis Report | September 2025</div>
+    </div>
+
+    <script>
+        // Impact Chart
+        const impactCtx = document.getElementById('impactChart').getContext('2d');
+        const impactChart = new Chart(impactCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Year 1', 'Year 2', 'Year 3'],
+                datasets: [
+                    {
+                        label: 'Revenue Growth (%)',
+                        data: [5, 12, 22],
+                        backgroundColor: 'rgba(25, 55, 100, 0.7)',
+                        borderColor: 'rgba(25, 55, 100, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Cost Reduction (%)',
+                        data: [5, 12, 18],
+                        backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                        borderColor: 'rgba(76, 175, 80, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Profit Margin Improvement (%)',
+                        data: [2, 8, 15],
+                        backgroundColor: 'rgba(255, 152, 0, 0.7)',
+                        borderColor: 'rgba(255, 152, 0, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 25
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
