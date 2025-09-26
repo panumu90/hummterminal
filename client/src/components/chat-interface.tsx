@@ -522,7 +522,7 @@ export function ChatInterface() {
         }`}>
           <div className="flex items-center gap-2 mb-3">
             <Shield className="h-5 w-5 text-emerald-600" />
-            <h4 className="text-sm font-semibold text-emerald-200">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
+            <h4 className="text-sm font-semibold text-emerald-100">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
           </div>
           <p className="text-xs text-emerald-300 mb-3">
             MCP mahdollistaa turvallisen AI-integraation yritysjärjestelmiin
@@ -783,7 +783,7 @@ export function ChatInterface() {
 
                     <div className="grid gap-4 mb-4">
                       <div className="bg-red-950 border border-red-200 dark:border-red-800 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2 text-red-800 dark:text-red-200 flex items-center gap-2">
+                        <h4 className="font-semibold mb-2 text-red-200 flex items-center gap-2">
                           <Users className="h-4 w-4" />
                           1. Roolipohjainen pääsy (RBAC)
                         </h4>
@@ -796,7 +796,7 @@ export function ChatInterface() {
                       </div>
 
                       <div className="bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2 text-orange-800 dark:text-orange-200 flex items-center gap-2">
+                        <h4 className="font-semibold mb-2 text-orange-200 flex items-center gap-2">
                           <Target className="h-4 w-4" />
                           2. Eksplisiittinen kontekstin rajaus
                         </h4>
@@ -809,7 +809,7 @@ export function ChatInterface() {
                       </div>
 
                       <div className="bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
-                        <h4 className="font-semibold mb-2 text-purple-800 dark:text-purple-200 flex items-center gap-2">
+                        <h4 className="font-semibold mb-2 text-purple-200 flex items-center gap-2">
                           <Database className="h-4 w-4" />
                           3. Audit-jäljet ja valvonta
                         </h4>
@@ -823,7 +823,7 @@ export function ChatInterface() {
                     </div>
 
                     <div className="bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
-                      <h4 className="font-semibold mb-2 text-gray-800 dark:text-gray-200">Lisäturvatoimet:</h4>
+                      <h4 className="font-semibold mb-2 text-white">Lisäturvatoimet:</h4>
                       <ul className="text-sm list-disc pl-4 space-y-1">
                         <li>Autentikointi ja salaus (TLS-suojatut MCP-kutsut)</li>
                         <li>Syötevalidointi (estää haitallisten syötteiden johdattelun)</li>
@@ -856,7 +856,7 @@ export function ChatInterface() {
                     </div>
 
                     <div className="bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                      <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">Asiakkaiden luottamus</h4>
+                      <h4 className="font-semibold mb-2 text-green-200">Asiakkaiden luottamus</h4>
                       <p className="text-sm mb-2">
                         Tutkimusten mukaan jopa 66% asiakkaista on huolissaan tietosuojasta asioidessaan tekoälyä hyödyntävien palveluiden kanssa.
                       </p>
@@ -879,7 +879,7 @@ export function ChatInterface() {
                     </p>
                     
                     <div className="bg-emerald-950 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
-                      <h4 className="font-semibold mb-2 text-emerald-200">MCP:n arvon kaksijako:</h4>
+                      <h4 className="font-semibold mb-2 text-emerald-100">MCP:n arvon kaksijako:</h4>
                       <div className="text-sm space-y-2">
                         <p><strong>Mahdollistaja:</strong> Tuo tekoälyn osaksi arkea ennennäkemättömillä tavoilla</p>
                         <p><strong>Hallinnan työväline:</strong> Tarjoaa keinot rajata ja seurata tekoälyn toimintaa</p>

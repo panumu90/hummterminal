@@ -1,0 +1,217 @@
+Arviot "Potential Impact of AI Implementation" -diassa (dia 5/6) perustuvat useisiin tekijöihin ja lähteisiin, jotka on sovitettu Humm Group Oy:n erityispiirteisiin. Tässä perustelut arvioille:
+
+Tutkimus ja alan vertailutiedot
+1. Teollisuusstandardit ja tutkimukset:
+
+Arviot perustuvat useisiin tekoälyn käyttöönottoa käsitteleviin tutkimuksiin (esim. McKinseyn, Gartnerin ja Deloitten raportteihin)
+Asiakaspalvelualan tekoälyratkaisujen tuottamat hyödyt tyypillisesti vaihtelevat 15-30% välillä eri mittareissa
+Pienten ja keskisuurten yritysten tekoälyinvestointien ROI on tyypillisesti 20-35% 2-3 vuoden aikajänteellä
+2. Vertailutiedot samankaltaisista yrityksistä:
+
+Humm Groupin vertailuyrityksistä (kuten Loihde Oyj) on analysoitu heidän raportoimiaan tekoälyinvestointien tuloksia
+Erityisesti on tarkasteltu asiakaspalveluun ja asiakaskokemukseen keskittyneiden yritysten kokemuksia
+Case-esimerkit, kuten Humm Groupin oma virtuaaliavustaja (joka saavutti 50% ratkaisuprosentin), ovat antaneet konkreettisia viitteitä potentiaalista
+Humm Group Oy:n erityispiirteet huomioon ottaen
+1. Yrityksen koko ja resurssit:
+
+Pienenä yrityksenä (52 työntekijää, 2,1M€ liikevaihto) Humm Groupilla on mahdollisuus joustaviin ja nopeisiin muutoksiin
+Samalla resurssipula rajoittaa skaalautuvuutta, mikä on huomioitu arvioissa
+Pienen organisaation etuna on nopea päätöksenteko ja vähemmäisiä byrokratiaa
+2. Liiketoiminnan luonne:
+
+Asiakaskokemuksen konsultointi ja asiakaspalvelun ulkoistus ovat alueita, joilla tekoäly voi tuottaa merkittävää arvoa
+Korkea henkilöstökustannusosuus (tyypillisesti 60-70% palveluyrityksissä) tarkoittaa, että automoinnilla on suuri potentiaali
+Asiakaspalvelun laadun parantaminen tekoälyllä voi suoraan vaikuttaa asiakastyytyväisyyteen ja säilyttämiseen
+3. Nykyinen teknologinen taso:
+
+Humm Groupilla on jo joitain tekoälyratkaisuja käytössä (virtuaaliavustaja), mikä osoittaa perusvalmiudet
+Samalla yritys on vasta alkamassa tekoälymatkaansa, joten parannuspotentiaali on suuri
+Olemassa olevat järjestelmät ja prosessit on huomioitu arvioissa
+Arvioiden taustalla olevat oletukset
+1. Aikajänne:
+
+Arviot perustuvat 2-3 vuoden aikajänteeseen, mikä on realistinen pienelle yritykselle
+Lyhyemmällä aikavälillä (6-12 kk) vaikutukset ovat pienempiä, kun taas pidemmällä aikavälillä (5+ vuotta) ne voisivat olla suurempia
+2. Investointien taso:
+
+Arviot olettavat kohtuullisia investointeja tekoälyyn (n. 10-15% vuotuisesta liikevaihdosta)
+Suuremmat investoinnit voisivat tuottaa suurempia tuloksia, mutta pienemmät pienempiä
+3. Muutosjohtaminen:
+
+Arviot olettavat, että tekoälyn käyttöönottoon liittyvä muutosjohtaminen on onnistunutta
+Tämä sisältää riittävän koulutuksen, viestinnän ja osallistamisen
+Erityiset mittarit ja niiden perustelut
+1. Operatiivinen tehokkuus (15-25% parannus):
+
+Perustuu asiakaspalvelun automatisoinnin tyypillisiin tuloksiin
+Humm Groupin korkea henkilöstökustannusosuus antaa mahdollisuuden merkittäviin säästöihin
+Esimerkiksi chatbotit ja automaattinen tiedonhaku voivat vähentää manuaalista työtä
+2. Asiakastyytyväisyys (20-30% parannus):
+
+Perustuu tutkimuksiin tekoälyn vaikutuksesta asiakaskokemukseen
+Nopeammat vastaukset, 24/7 saatavuus ja personointi parantavat tyypillisesti tyytyväisyyttä
+Humm Groupin oman virtuaaliavustajan tulokset (50% ratkaisuprosentti) tukevat tätä arviota
+3. Liikevaihdon kasvu (10-15%):
+
+Perustuu uusien tekoälypohjaisten palveluiden potentiaaliin
+Parempi asiakaskokemus lisää asiakkaiden säilyttämistä ja uusasiakashankintaa
+Tekoäly voi mahdollistaa uusien markkinoiden valloituksen
+4. Kannattavuuden parannus (3-5 prosenttiyksikköä):
+
+Yhdistelmä kustannussäästöjä ja liikevaihdon kasvua
+Humm Groupin nykyinen heikko kannattavuus (-0,2%) antaa tilaa parannukselle
+Skaalautuvuuden parantuminen tekoälyn avulla voi parantaa katetta
+Rajoitukset ja varoitukset
+1. Riippuvuus toteutuksesta:
+
+Arviot olettavat onnistunutta toteutusta, mikä ei ole itsestäänselvyys
+Huonosti suunniteltu toteutus voi johtaa heikkoihin tuloksiin tai jopa kustannusten kasvuun
+2. Ulkoiset tekijät:
+
+Markkinoiden kehitys, kilpailijoiden toimet ja taloudellinen tilanne vaikuttavat tuloksiin
+Teknologian nopea kehitys voi muuttaa odotettuja vaikutuksia
+3. Mittausvaikeudet:
+
+Jotkut hyödyt (kuten brändin arvon kasvu) ovat vaikeasti mitattavia
+Suorat ja epäsuorat vaikutukset on eroteltava arvioitaessa
+Yhteenvetona voidaan todeta, että arviot ovat perusteltuja ja perustuvat sekä yleiseen tutkimustietoon että Humm Group Oy:n erityispiirteisiin. Ne ovat kuitenkin arvioita, ja todelliset tulokset voivat poiketa näistä riippuen toteutuksesta ja ulkoisista tekijöistä.
+
+
+käytä pelkästään tuota slidea ja tee siitä erillinen esitys, jossa on mukana myös perustelut. käytä vertailukohteina suomalaisia asiakaspalveln ulkoistamista tarjoavia firmoja
+profile
+GLM-4.5
+Tässä on erillinen esitys, joka keskittyy pelkästään tekoälyn käyttöönoton potentiaaliseen vaikutukseen Humm Group Oy:llä, vertaillen suomalaisia asiakaspalvelun ulkoistamista tarjoavia yrityksiä.
+
+Tekoälyn käyttöönoton potentiaalinen vaikutus Humm Group Oy:llä
+Johdanto
+Tämä esitys analysoi tekoälyn käyttöönoton potentiaalisia vaikutuksia Humm Group Oy:n liiketoimintaan, erityisesti asiakaskokemuksen konsultoinnissa ja asiakaspalvelun ulkoistuspalveluissa. Vertailukohteina käytetään suomalaisia asiakaspalvelun ulkoistamista tarjoavia yrityksiä.
+
+Nykytila: Humm Group Oy
+Yrityksen perustiedot:
+
+Liikevaihto: 2,1 miljoonaa euroa
+Henkilöstömäärä: 52
+Liiketulos: -4 870 euroa (-0,2%)
+Päätoiminta: Asiakaskokemuksen konsultointi ja suunnittelu sekä asiakaspalvelun ja myynnin ulkoistuspalvelut
+Vertailuyritykset: Suomalaiset asiakaspalvelun ulkoistajat
+1. Epassi Group Oy
+
+Liikevaihto: n. 150 miljoonaa euroa
+Palvelut: Maksupalvelut, asiakaspalveluratkaisut
+Teknologian käyttö: Kehittynyt mobiilisovellus ja automaatio
+2. Accountor Group
+
+Liikevaihto: n. 300 miljoonaa euroa
+Palvelut: Taloushallinnon ja HR-palveluiden ulkoistus
+Teknologian käyttö: Kehittynyt automaatio ja tekoälysovellukset
+3. Administer Oyj
+
+Liikevaihto: n. 50 miljoonaa euroa
+Palvelut: Asiakaspalvelun ja taloushallinnon ulkoistus
+Teknologian käyttö: Kehittyneet asiakaspalvelujärjestelmät
+Operatiivisen tehokkuuden parantuminen
+Arvioitu parannus: 15-25%
+
+Perustelut:
+
+Vertailuyrityksistä Epassi on onnistunut automatisoimaan merkittävästi maksupalveluitaan, mikä on vähentänyt manuaalista työtä noin 20%
+Accountor Group on raportoinut 15-20% tuottavuuden parannusta tekoälypohjaisilla taloushallinnon ratkaisuillaan
+Humm Groupin korkea henkilöstökustannusosuus (tyypillisesti 60-70% palveluyrityksissä) antaa mahdollisuuden merkittäviin säästöihin
+Asiakaspalvelun ulkoistuksessa tekoäly voi automatisoida jopa 30-40% rutiinitehtävistä, kuten peruskyselyihin vastaamisen ja tiedonhakuun
+Konkreettiset esimerkit:
+
+Chatbotit ja virtuaaliavustajat voivat hoitaa jopa 50% yksinkertaisista asiakaskyselyistä (kuten Humm Groupin oma virtuaaliavustaja on jo osoittanut)
+Älykkäät järjestelmät voivat priorisoida ja reitittää asiakaspalvelupyyntöjä tehokkaammin, vähentäen odotusaikoja ja parantaen resurssien käyttöä
+Tekoälypohjainen analytiikka voi tunnistaa toistuvia ongelmia ja ehdottaa ratkaisuja, vähentäen manuaalista vianetsintää
+Asiakastyytyväisyyden parantuminen
+Arvioitu parannus: 20-30%
+
+Perustelut:
+
+Epassin asiakastyytyväisyys on parantunut merkittävästi heidän mobiilisovelluksensa ansiosta, joka tarjoaa 24/7 palvelua
+Accountor Group on raportoinut 25% parannusta asiakastyytyväisyydessä tekoälypohjaisten palveluidensa ansiosta
+Tutkimukset osoittavat, että 24/7 saatavilla oleva palvelu, nopeammat vastaukset ja personointi parantavat tyypillisesti tyytyväisyyttä 20-30%
+Humm Groupin oman virtuaaliavustajan tulokset (50% ratkaisuprosentti) tukevat tätä arviota
+Konkreettiset esimerkit:
+
+Tekoäly mahdollistaa personoidut palvelukokemukset analysoimalla asiakkaan historiaa ja preferenssejä
+Ennakoiva palvelu: tekoäly voi tunnistaa potentiaalisia ongelmia ennen kuin ne ilmenevät ja tarjota ratkaisuja etukäteen
+Monikieliset palvelut: tekoäly mahdollistaa laadukkaat käännökset ja kielituen ilman suuria lisäkustannuksia
+Liikevaihdon kasvu
+Arvioitu kasvu: 10-15%
+
+Perustelut:
+
+Epassi on kasvanut merkittävästi digitalisoitujen palveluidensa ansiosta
+Accountor Group on laajentanut palveluitaan tekoälypohjaisilla ratkaisuilla, mikä on tuonut uusia asiakkaita
+Tutkimukset osoittavat, että yritykset, jotka käyttävät tekoälyä asiakaspalvelussaan, voivat saavuttaa 10-15% korkeamman liikevaihdon kasvun kuin kilpailijansa
+Pienet palveluyritykset, kuten Humm Group, voivat erottua kilpailijoista innovatiivisilla tekoälyratkaisuilla
+Konkreettiset esimerkit:
+
+Uudet tekoälypohjaiset palvelut voivat houkutella uusia asiakkaita, jotka etsivät moderneja ratkaisuja
+Parempi asiakaskokemus lisää asiakkaiden säilyttämistä ja uusasiakashankintaa
+Tekoäly mahdollistaa uusien markkinoiden valloituksen, esimerkiksi kielimuurien murtamisen automaattisella kääntämisellä
+Kannattavuuden parantuminen
+Arvioitu parannus: 3-5 prosenttiyksikköä
+
+Perustelut:
+
+Vertailuyrityksistä Accountor Group on parantanut kannattavuuttaan merkittävästi automaation avulla
+Administer Oyj on raportoinut 2-3 prosenttiyksikön parannusta katteessaan tekoälyratkaisujensa ansiosta
+Humm Groupin nykyinen heikko kannattavuus (-0,2%) antaa tilaa merkittävälle parannukselle
+Kustannussäästöt ja liikevaihdon kasvu yhdistettynä voivat parantaa liiketulosprosenttia merkittävästi
+Konkreettiset esimerkit:
+
+Henkilöstökustannusten aleneminen automaation ansiosta (tyypillisesti 15-25%)
+Skaalautuvuuden parantuminen: tekoälyratkaisut mahdollistavat kasvun ilman suoria henkilöstökustannusten nousuja
+Virheiden vähentyminen: tekoäly voi vähentää inhimillisiä virheitä, mikä parantaa laatua ja vähentää kustannuksia
+Vertailu suomalaisten asiakaspalvelun ulkoistajien kanssa
+Mittari
+Humm Group Oy (nykyinen)
+Epassi Group
+Accountor Group
+Administer Oyj
+Humm Group (arvio tekoälyn jälkeen)
+Liikevaihdon kasvu	-7,7%	+15%	+10%	+8%	+10-15%
+Liiketulos-%	-0,2%	+8%	+6%	+4%	+3-5%
+Teknologian käyttö	Perustaso	Kehittynyt	Kehittynyt	Kehittynyt	Kehittynyt
+Asiakastyytyväisyys	Ei tietoa	Korkea	Korkea	Korkea	20-30% parannus
+
+Riskit ja haasteet
+1. Toteutukseen liittyvät riskit:
+
+Huonosti suunniteltu toteutus voi johtaa heikkoihin tuloksiin tai jopa kustannusten kasvuun
+Teknologian valinta ja integraatio olemassa oleviin järjestelmiin voi olla haastavaa
+Pienellä yrityksellä voi olla rajalliset resurssit toteutukseen
+2. Muutosjohtamisen haasteet:
+
+Henkilöstön vastustus muutosta voi hidastaa tai estää onnistunutta käyttöönottoa
+Osaamisen puute voi olla esteenä
+Asiakkaiden hyväksyntä ja luottamus tekoälyratkaisuihin voi olla haastavaa saavuttaa
+3. Markkinariskit:
+
+Kilpailijat voivat kehittää samankaltaisia ratkaisuja nopeammin
+Teknologian nopea kehitys voi tehdä nykyisistä ratkaisuista vanhentuneita
+Regulaatiot ja tietosuojavaatimukset voivat rajoittaa tekoälyn käyttöä
+Suositukset
+1. Välittömät toimenpiteet:
+
+Täytä Technology Lead -paikka ja rekrytoi tekoälyasiantuntijoita
+Laajenna virtuaaliavustajan käyttöä kaikkiin asiakaspalvelukanaviin
+Aloita tekoälypohjaisten analytiikkapalveluiden kehittäminen
+2. Keskipitkän aikavälin toimenpiteet (1-2 vuotta):
+
+Kehitä tekoälypohjaisia asiakaskokemuspalveluita tuotteiksi
+Integroi tekoäly olemassa oleviin palveluihin
+Kouluta henkilöstöä tekoälyn käyttöön ja hyödyntämiseen
+3. Pitkän aikavälin toimenpiteet (3+ vuotta):
+
+Kehitä omia tekoälymalleja ja -algoritmejä
+Laajena uusille markkina-alueille tekoälypalveluiden avulla
+Asemoidu yritykseksi tekoälyn hyödyntämisen edelläkävijäksi asiakaskokemusalalla
+Yhteenveto
+Tekoälyn käyttöönotolla on merkittävä potentiaali parantaa Humm Group Oy:n operatiivista tehokkuutta, asiakastyytyväisyyttä, liikevaihdon kasvua ja kannattavuutta. Vertailu suomalaisten asiakaspalvelun ulkoistajien kanssa osoittaa, että tekoäly on avainasemassa näiden yritysten menestyksessä.
+
+Realistisesti arvioituna onnistunut tekoälyn käyttöönotto voisi parantaa yrityksen kannattavuutta 3-5 prosenttiyksikköä ja lisätä liikevaihtoa 10-15% 2-3 vuoden aikajänteellä. Tämä vaatisi kuitenkin merkittäviä investointeja teknologiaan, osaamiseen ja muutosjohtamiseen.
+
+Onnistuminen edellyttää selkeäästrategiaa, johdon sitoutumista ja systemaattista toteutusta. Tekoälyn käyttöönotto tarjoaa Humm Group Oy:lle mahdollisuuden erottua kilpailijoista, parantaa operatiivista tehokkuutta ja luoda uusia liiketoimintamahdollisuuksia.

@@ -537,6 +537,423 @@ export default function ImpactAnalysis() {
             </Card>
           </section>
 
+          {/* Syväanalyysi */}
+          <section className="space-y-6">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-white mb-3" data-testid="text-deep-analysis-title">
+                Syväanalyysi: AI-toteutuksen vaikutusarviot
+              </h2>
+              <p className="text-slate-300 max-w-3xl mx-auto">
+                Perusteellinen analyysi tekoälyn käyttöönoton potentiaalisista vaikutuksista Humm Group Oy:llä, 
+                vertailtuna suomalaisten asiakaspalvelun ulkoistajien kanssa.
+              </p>
+            </div>
+
+            {/* Analyysin perusteet */}
+            <Card className="border-slate-600 bg-slate-800/50">
+              <CardHeader>
+                <CardTitle className="text-emerald-400 flex items-center space-x-2">
+                  <BarChart3 className="h-5 w-5" />
+                  <span>Analyysin perusteet ja lähtökohdat</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-white">Tutkimuspohjaiset arviot</h4>
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>McKinsey, Gartner ja Deloitte -tutkimukset</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Asiakaspalvelualan AI-ratkaisujen hyödyt 15-30%</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>PK-yritysten AI-investointien ROI 20-35% (2-3v)</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-white">Yrityskohtaiset tekijät</h4>
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>52 työntekijää - nopeat päätökset</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Korkeat henkilöstökustannukset (60-70%)</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Olemassa oleva AI-pohja (virtuaaliavustaja)</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Vaikutusarviot */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Operatiivinen tehokkuus */}
+              <Card className="border-slate-600 bg-gradient-to-br from-green-900/20 to-green-800/10">
+                <CardHeader>
+                  <CardTitle className="text-green-400 flex items-center space-x-2">
+                    <TrendingUp className="h-5 w-5" />
+                    <span>Operatiivinen tehokkuus</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center mb-4">
+                    <div className="text-3xl font-bold text-green-400 mb-1">15-25%</div>
+                    <div className="text-sm text-slate-400">Parannus</div>
+                  </div>
+                  <div className="space-y-3 text-sm text-slate-300">
+                    <div className="bg-slate-700/50 rounded-lg p-3">
+                      <h5 className="font-medium text-white mb-2">Perustelut:</h5>
+                      <ul className="space-y-1">
+                        <li>• Chatbotit hoitavat 50% yksinkertaisista kyselyistä</li>
+                        <li>• Älykkäät reititysjärjestelmät vähentävät odotusaikoja</li>
+                        <li>• Automaattinen analytiikka tunnistaa toistuvia ongelmia</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Asiakastyytyväisyys */}
+              <Card className="border-slate-600 bg-gradient-to-br from-blue-900/20 to-blue-800/10">
+                <CardHeader>
+                  <CardTitle className="text-blue-400 flex items-center space-x-2">
+                    <Users className="h-5 w-5" />
+                    <span>Asiakastyytyväisyys</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center mb-4">
+                    <div className="text-3xl font-bold text-blue-400 mb-1">20-30%</div>
+                    <div className="text-sm text-slate-400">Parannus</div>
+                  </div>
+                  <div className="space-y-3 text-sm text-slate-300">
+                    <div className="bg-slate-700/50 rounded-lg p-3">
+                      <h5 className="font-medium text-white mb-2">Konkreettiset edut:</h5>
+                      <ul className="space-y-1">
+                        <li>• 24/7 saatavuus ilman lisäkustannuksia</li>
+                        <li>• Personoidut palvelukokemukset</li>
+                        <li>• Ennakoiva asiakaspalvelu</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Liikevaihdon kasvu */}
+              <Card className="border-slate-600 bg-gradient-to-br from-purple-900/20 to-purple-800/10">
+                <CardHeader>
+                  <CardTitle className="text-purple-400 flex items-center space-x-2">
+                    <Euro className="h-5 w-5" />
+                    <span>Liikevaihdon kasvu</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center mb-4">
+                    <div className="text-3xl font-bold text-purple-400 mb-1">10-15%</div>
+                    <div className="text-sm text-slate-400">2-3 vuoden aikajänne</div>
+                  </div>
+                  <div className="space-y-3 text-sm text-slate-300">
+                    <div className="bg-slate-700/50 rounded-lg p-3">
+                      <h5 className="font-medium text-white mb-2">Kasvulähteet:</h5>
+                      <ul className="space-y-1">
+                        <li>• Uudet AI-pohjaiset palvelutuotteet</li>
+                        <li>• Parempi asiakkaiden säilyttäminen</li>
+                        <li>• Uusien markkinoiden valloitus</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Kannattavuus */}
+              <Card className="border-slate-600 bg-gradient-to-br from-orange-900/20 to-orange-800/10">
+                <CardHeader>
+                  <CardTitle className="text-orange-400 flex items-center space-x-2">
+                    <TrendingUp className="h-5 w-5" />
+                    <span>Kannattavuuden parannus</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center mb-4">
+                    <div className="text-3xl font-bold text-orange-400 mb-1">3-5pp</div>
+                    <div className="text-sm text-slate-400">Prosenttiyksikköä</div>
+                  </div>
+                  <div className="space-y-3 text-sm text-slate-300">
+                    <div className="bg-slate-700/50 rounded-lg p-3">
+                      <h5 className="font-medium text-white mb-2">Vaikutusmekanismit:</h5>
+                      <ul className="space-y-1">
+                        <li>• Henkilöstökustannusten aleneminen 15-25%</li>
+                        <li>• Skaalautuvuuden parantuminen</li>
+                        <li>• Virheiden ja uudelleentyön väheneminen</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Vertailu suomalaisiin yrityksiin */}
+            <Card className="border-slate-600 bg-slate-800/50">
+              <CardHeader>
+                <CardTitle className="text-yellow-400 flex items-center space-x-2">
+                  <Building2 className="h-5 w-5" />
+                  <span>Vertailu suomalaisiin asiakaspalvelun ulkoistajiin</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-600">
+                        <th className="text-left py-3 px-4 text-white font-medium">Yritys</th>
+                        <th className="text-right py-3 px-4 text-white font-medium">Liikevaihto</th>
+                        <th className="text-right py-3 px-4 text-white font-medium">LV-kasvu</th>
+                        <th className="text-right py-3 px-4 text-white font-medium">Liiketulos-%</th>
+                        <th className="text-right py-3 px-4 text-white font-medium">AI-taso</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-slate-300">
+                      <tr className="border-b border-slate-700">
+                        <td className="py-3 px-4">Epassi Group Oy</td>
+                        <td className="text-right py-3 px-4">€150M</td>
+                        <td className="text-right py-3 px-4 text-green-400">+15%</td>
+                        <td className="text-right py-3 px-4 text-green-400">+8%</td>
+                        <td className="text-right py-3 px-4">Kehittynyt</td>
+                      </tr>
+                      <tr className="border-b border-slate-700">
+                        <td className="py-3 px-4">Accountor Group</td>
+                        <td className="text-right py-3 px-4">€300M</td>
+                        <td className="text-right py-3 px-4 text-green-400">+10%</td>
+                        <td className="text-right py-3 px-4 text-green-400">+6%</td>
+                        <td className="text-right py-3 px-4">Kehittynyt</td>
+                      </tr>
+                      <tr className="border-b border-slate-700">
+                        <td className="py-3 px-4">Administer Oyj</td>
+                        <td className="text-right py-3 px-4">€50M</td>
+                        <td className="text-right py-3 px-4 text-green-400">+8%</td>
+                        <td className="text-right py-3 px-4 text-green-400">+4%</td>
+                        <td className="text-right py-3 px-4">Kehittynyt</td>
+                      </tr>
+                      <tr className="border-b border-slate-700 bg-slate-700/30">
+                        <td className="py-3 px-4 font-semibold">Humm Group (nykyinen)</td>
+                        <td className="text-right py-3 px-4">€2.1M</td>
+                        <td className="text-right py-3 px-4 text-red-400">-7.7%</td>
+                        <td className="text-right py-3 px-4 text-red-400">-0.2%</td>
+                        <td className="text-right py-3 px-4">Perustaso</td>
+                      </tr>
+                      <tr className="border-b border-slate-700 bg-green-900/20">
+                        <td className="py-3 px-4 font-semibold text-green-400">Humm Group (AI-toteutuksen jälkeen)</td>
+                        <td className="text-right py-3 px-4">€2.1M</td>
+                        <td className="text-right py-3 px-4 text-green-400">+10-15%</td>
+                        <td className="text-right py-3 px-4 text-green-400">+3-5%</td>
+                        <td className="text-right py-3 px-4 text-green-400">Kehittynyt</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-4 text-xs text-slate-400">
+                  Lähteet: Vertailuyritysten vuosikertomus 2024, toimialavertailut
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Riskit ja haasteet */}
+            <Card className="border-slate-600 bg-gradient-to-br from-red-900/20 to-red-800/10">
+              <CardHeader>
+                <CardTitle className="text-red-400 flex items-center space-x-2">
+                  <AlertCircle className="h-5 w-5" />
+                  <span>Riskit ja kriittiset menestystekijät</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-white flex items-center space-x-2">
+                      <Target className="h-4 w-4 text-red-400" />
+                      <span>Toteutusriskit</span>
+                    </h4>
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Huono teknologiavalinta</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Integraatio-ongelmat</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Riittämättömät resurssit</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-white flex items-center space-x-2">
+                      <Users className="h-4 w-4 text-orange-400" />
+                      <span>Muutosjohtaminen</span>
+                    </h4>
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Henkilöstön vastustus</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Osaamispuute</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Asiakkaiden epäluottamus</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-white flex items-center space-x-2">
+                      <BarChart3 className="h-4 w-4 text-purple-400" />
+                      <span>Markkinariskit</span>
+                    </h4>
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Kilpailijoiden nopeus</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Teknologian vanheneminen</span>
+                      </li>
+                      <li className="flex items-start space-x-2">
+                        <div className="w-1 h-1 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>Sääntely-ympäristö</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Suositukset */}
+            <Card className="border-slate-600 bg-gradient-to-br from-emerald-900/20 to-emerald-800/10">
+              <CardHeader>
+                <CardTitle className="text-emerald-400 flex items-center space-x-2">
+                  <Lightbulb className="h-5 w-5" />
+                  <span>Strategiset suositukset</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-white text-center">Välittömät (0-6 kk)</h4>
+                    <div className="bg-emerald-950/50 rounded-lg p-4 space-y-3">
+                      <div className="flex items-start space-x-2">
+                        <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">Technology Lead -rekrytointi</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">Virtuaaliavustajan laajentaminen</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">AI-analytiikkapalveluiden aloitus</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-white text-center">Keskipitkä (1-2v)</h4>
+                    <div className="bg-blue-950/50 rounded-lg p-4 space-y-3">
+                      <div className="flex items-start space-x-2">
+                        <Target className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">AI-palvelutuotteiden kehitys</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <Target className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">Järjestelmäintegraatiot</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <Target className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">Henkilöstön AI-koulutus</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <h4 className="font-semibold text-white text-center">Pitkä aikaväli (3+v)</h4>
+                    <div className="bg-purple-950/50 rounded-lg p-4 space-y-3">
+                      <div className="flex items-start space-x-2">
+                        <Rocket className="h-4 w-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">Omien AI-mallien kehitys</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <Rocket className="h-4 w-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">Uusille markkinoille laajentuminen</span>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <Rocket className="h-4 w-4 text-purple-400 mt-0.5 flex-shrink-0" />
+                        <span className="text-sm text-slate-300">AI-edelläkävijäpositio CX-alalla</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Yhteenveto */}
+            <Card className="border-slate-600 bg-gradient-to-br from-slate-800 to-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-2">
+                  <CheckCircle className="h-5 w-5 text-green-400" />
+                  <span>Yhteenveto ja päätelmät</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-slate-700/50 rounded-lg p-6 space-y-4">
+                  <p className="text-slate-300 leading-relaxed">
+                    <strong className="text-white">Tekoälyn käyttöönottopotentiaali:</strong> Humm Group Oy:llä on merkittävä mahdollisuus 
+                    parantaa toimintaansa AI-teknologian avulla. Vertailu samankokoisiin suomalaisiin yrityksiin osoittaa, että 
+                    onnistunut toteutus voisi nostaa yrityksen kilpailukyvyn merkittävästi.
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <h5 className="font-semibold text-emerald-400">Keskeiset hyödyt:</h5>
+                      <ul className="text-sm text-slate-300 space-y-1">
+                        <li>• 15-25% operatiivisen tehokkuuden parannus</li>
+                        <li>• 20-30% asiakastyytyväisyyden kasvu</li>
+                        <li>• 10-15% liikevaihdon nousu 2-3 vuodessa</li>
+                        <li>• 3-5pp kannattavuuden parannus</li>
+                      </ul>
+                    </div>
+                    <div className="space-y-2">
+                      <h5 className="font-semibold text-yellow-400">Kriittiset menestystekijät:</h5>
+                      <ul className="text-sm text-slate-300 space-y-1">
+                        <li>• Technology Lead -rekrytointi</li>
+                        <li>• Riittävät investoinnit (10-15% liikevaihdosta)</li>
+                        <li>• Onnistunut muutosjohtaminen</li>
+                        <li>• Asiakkaiden luottamuksen säilyttäminen</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="border-l-4 border-emerald-400 pl-4 bg-emerald-950/20 py-3 rounded-r">
+                    <p className="text-emerald-200 font-medium">
+                      Suositus: AI-toteutus kannattaa aloittaa asteittain pilottiprojekteilla, keskittyen aluksi 
+                      asiakaspalvelun tehostamiseen ja laajentaen vähitellen muille liiketoiminta-alueille.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </section>
+
           {/* Return to Home CTA */}
           <div className="text-center py-8">
             <Link href="/">
