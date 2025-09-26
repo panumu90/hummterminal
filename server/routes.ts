@@ -562,6 +562,59 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
       
       const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
 
+      // Generate smart follow-up questions based on user's question and AI response
+      let followUpSuggestions: string[] = [];
+      try {
+        const followUpResponse = await openai.chat.completions.create({
+          model: GPT_MODEL,
+          messages: [
+            {
+              role: "system",
+              content: `Analysoi käyttäjän kysymystä ja AI:n vastausta. Luo 2-3 älykästä, relevanttia jatkokysymystä jotka:
+- Syventävät aihetta
+- Ovat käytännöllisiä ja hyödyllisiä
+- Keskittyvät AI:n käyttöönottoon ja toteutukseen
+- Sopivat humm.fi:n asiantuntijatarpeisiin
+
+Vastaa vain JSON-muodossa: ["kysymys1", "kysymys2", "kysymys3"]`
+            },
+            {
+              role: "user",
+              content: `Käyttäjän kysymys: "${normalizeText(message)}"
+AI:n vastaus: "${aiResponse.substring(0, 200)}..."`
+            }
+          ],
+          max_completion_tokens: 200,
+        });
+
+        const followUpContent = followUpResponse.choices[0].message.content;
+        if (followUpContent) {
+          try {
+            const parsedSuggestions = JSON.parse(followUpContent);
+            if (Array.isArray(parsedSuggestions)) {
+              followUpSuggestions = parsedSuggestions.slice(0, 3); // Max 3 suggestions
+            }
+          } catch (parseError) {
+            console.log("Failed to parse follow-up suggestions JSON:", followUpContent);
+            // Fallback: extract questions from text
+            const lines = followUpContent.split('\n').filter(line => 
+              line.trim().length > 10 && 
+              (line.includes('?') || line.toLowerCase().includes('kuinka') || line.toLowerCase().includes('mitä'))
+            );
+            followUpSuggestions = lines.slice(0, 3).map(line => line.replace(/^[^a-zA-Zäöå]*/, '').trim());
+          }
+        }
+      } catch (followUpError) {
+        console.error("Follow-up generation failed:", followUpError);
+        // Provide fallback suggestions based on common AI topics
+        const fallbackSuggestions = [
+          "Mitä teknologiaa tarvitaan AI-agenttien integrointiin?",
+          "Miten arvioidaan AI-toteutuksen ROI:ta?",
+          "Millaisia riskejä AI-käyttöönotossa tulee huomioida?"
+        ];
+        followUpSuggestions = fallbackSuggestions.slice(0, 2);
+      }
+
       // Save chat message
       await storage.saveChatMessage({
         message,
@@ -569,7 +622,10 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
         timestamp: Date.now()
       });
 
-      res.json({ response: aiResponse });
+      res.json({ 
+        response: aiResponse,
+        followUpSuggestions: followUpSuggestions.filter(s => s.length > 5) // Filter out empty/short suggestions
+      });
     } catch (error) {
       console.error("Chat error:", error);
       res.status(500).json({ error: "Failed to process chat message" });

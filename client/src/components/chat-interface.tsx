@@ -384,6 +384,7 @@ export function ChatInterface() {
   const [selectedContext, setSelectedContext] = useState<ContextType>("general");
   const [isExpanded, setIsExpanded] = useState(false);
   const [mcpModalOpen, setMcpModalOpen] = useState(false);
+  const [followUpSuggestions, setFollowUpSuggestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -477,6 +478,7 @@ export function ChatInterface() {
     },
     onSuccess: (data) => {
       console.log("Chat response received:", data.response);
+      console.log("Follow-up suggestions received:", data.followUpSuggestions);
       console.log("Has markdown headers:", data.response.includes('##') || data.response.includes('###'));
       console.log("Has markdown bold:", data.response.includes('**'));
       setMessages(prev => [...prev, {
@@ -484,6 +486,8 @@ export function ChatInterface() {
         isUser: false,
         timestamp: Date.now()
       }]);
+      // Set follow-up suggestions
+      setFollowUpSuggestions(data.followUpSuggestions || []);
     },
     onError: () => {
       toast({
@@ -506,7 +510,24 @@ export function ChatInterface() {
     }]);
 
     setInputValue("");
+    // Clear previous follow-up suggestions when sending new message
+    setFollowUpSuggestions([]);
     chatMutation.mutate({ message: message });
+  };
+
+  const handleFollowUpClick = (suggestion: string) => {
+    if (chatMutation.isPending) return;
+
+    // Add user message
+    setMessages(prev => [...prev, {
+      content: suggestion,
+      isUser: true,
+      timestamp: Date.now()
+    }]);
+
+    // Clear follow-up suggestions immediately when one is clicked
+    setFollowUpSuggestions([]);
+    chatMutation.mutate({ message: suggestion });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -637,21 +658,21 @@ export function ChatInterface() {
                     {message.isUser ? (
                       <span className="whitespace-pre-wrap">{message.content}</span>
                     ) : (
-                      <div className="prose prose-sm dark:prose-invert text-foreground">
+                      <div className="max-w-none text-gray-100">
                         <ReactMarkdown 
                           remarkPlugins={[remarkGfm]}
                           components={{
-                            h1: ({children}) => <h1 className="text-lg font-bold mb-2">{children}</h1>,
-                            h2: ({children}) => <h2 className="text-base font-semibold mb-2">{children}</h2>,
-                            h3: ({children}) => <h3 className="text-sm font-medium mb-1">{children}</h3>,
-                            p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
-                            ul: ({children}) => <ul className="list-disc pl-4 mb-2">{children}</ul>,
-                            ol: ({children}) => <ol className="list-decimal pl-4 mb-2">{children}</ol>,
-                            li: ({children}) => <li className="mb-1">{children}</li>,
-                            strong: ({children}) => <strong className="font-semibold">{children}</strong>,
-                            em: ({children}) => <em className="italic">{children}</em>,
-                            code: ({children}) => <code className="bg-muted px-1 py-0.5 rounded text-xs">{children}</code>,
-                            blockquote: ({children}) => <blockquote className="border-l-2 border-border pl-3 italic">{children}</blockquote>
+                            h1: ({children}) => <h1 className="text-lg font-bold mb-2 text-white">{children}</h1>,
+                            h2: ({children}) => <h2 className="text-base font-semibold mb-2 text-white">{children}</h2>,
+                            h3: ({children}) => <h3 className="text-sm font-medium mb-1 text-gray-100">{children}</h3>,
+                            p: ({children}) => <p className="mb-2 last:mb-0 text-gray-100">{children}</p>,
+                            ul: ({children}) => <ul className="list-disc pl-4 mb-2 text-gray-100">{children}</ul>,
+                            ol: ({children}) => <ol className="list-decimal pl-4 mb-2 text-gray-100">{children}</ol>,
+                            li: ({children}) => <li className="mb-1 text-gray-100">{children}</li>,
+                            strong: ({children}) => <strong className="font-semibold text-white">{children}</strong>,
+                            em: ({children}) => <em className="italic text-gray-200">{children}</em>,
+                            code: ({children}) => <code className="bg-slate-700 text-gray-100 px-1 py-0.5 rounded text-xs">{children}</code>,
+                            blockquote: ({children}) => <blockquote className="border-l-2 border-slate-500 pl-3 italic text-gray-200">{children}</blockquote>
                           }}
                         >
                           {message.content}
@@ -675,6 +696,35 @@ export function ChatInterface() {
               </div>
             </div>
           )}
+          
+          {/* Follow-up Suggestions */}
+          {followUpSuggestions.length > 0 && (
+            <div className="chat-message" data-testid="follow-up-suggestions">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                  <MessageCircle className="h-4 w-4 text-accent-foreground" />
+                </div>
+                <div className="bg-accent/50 rounded-lg p-3 max-w-2xl">
+                  <p className="text-sm font-medium mb-2 text-accent-foreground">Jatkokysymyksiä:</p>
+                  <div className="space-y-2">
+                    {followUpSuggestions.map((suggestion, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        size="sm"
+                        className="text-left h-auto py-2 px-3 justify-start whitespace-normal bg-background/80 hover:bg-background text-foreground"
+                        onClick={() => handleFollowUpClick(suggestion)}
+                        data-testid={`follow-up-${index}`}
+                      >
+                        {suggestion}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div ref={messagesEndRef} />
         </div>
 
