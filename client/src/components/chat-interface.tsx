@@ -696,7 +696,7 @@ export function ChatInterface() {
 
       {/* MCP Deep Analysis Button */}
       <div className="mt-6">
-        <Dialog>
+        <Dialog open={mcpModalOpen} onOpenChange={setMcpModalOpen}>
           <DialogTrigger asChild>
             <Button 
               variant="outline" 
@@ -898,7 +898,7 @@ export function ChatInterface() {
                     <ExternalLink className="h-4 w-4" />
                     Lähteet ja lisätietoa
                   </h3>
-                  <div className="text-xs text-muted-foreground space-y-2">
+                  <div className="text-xs text-slate-300 space-y-2">
                     <div>
                       <p className="font-medium">Keskeiset lähteet:</p>
                       <ul className="list-disc pl-4 mt-1 space-y-1">
