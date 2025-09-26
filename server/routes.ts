@@ -2,28 +2,14 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { questionAnswers, mcpContent } from "./question-answers";
-import OpenAI from "openai";
+import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 
-const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY || "sk-placeholder",
-  fetch: (url, init) => {
-    // Sanitize all headers to ASCII to prevent ByteString conversion errors
-    const headers = new Headers(init?.headers || {});
-    headers.forEach((value, key) => {
-      const asciiKey = key.replace(/[^\x00-\x7F]/g, '');
-      const asciiValue = String(value).replace(/[^\x00-\x7F]/g, '');
-      if (asciiKey !== key) {
-        headers.delete(key);
-      }
-      headers.set(asciiKey, asciiValue);
-    });
-    return fetch(url, { ...init, headers });
-  }
-});
+// DON'T DELETE THIS COMMENT - Blueprint: javascript_gemini integration
+const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
-// Use GPT-3.5 turbo which is universally available - upgrade when newer models become accessible
-const GPT_MODEL = "gpt-3.5-turbo";
+// Use Gemini 2.5 Pro which excels at coding and multilingual tasks
+const GEMINI_MODEL = "gemini-2.5-pro";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
@@ -87,27 +73,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
               return replacements[char] || char;
             });
 
-          const enhancementResponse = await openai.chat.completions.create({
-            model: GPT_MODEL, // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-            messages: [
-              {
-                role: "system",
-                content: `Toimi asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa.
+          const enhancementResponse = await gemini.models.generateContent({
+            model: GEMINI_MODEL, // using Gemini 2.5 Pro for enhanced responses
+            config: {
+              systemInstruction: `Toimi asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa.
 Tiivistä olennainen niin, että vastaus on:
 - Helppo lukea
 - Informatiivinen
-- Enintään 120 sanaa`
-              },
-              {
-                role: "user", 
-                content: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}`
-              }
-            ],
-            max_completion_tokens: 300,
+- Enintään 120 sanaa`,
+              maxOutputTokens: 300,
+              temperature: 0.7
+            },
+            contents: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}`
           });
 
-          if (enhancementResponse.choices[0].message.content) {
-            finalAnswer = enhancementResponse.choices[0].message.content;
+          if (enhancementResponse.text) {
+            finalAnswer = enhancementResponse.text;
           }
         } catch (aiError) {
           console.error("AI enhancement failed:", aiError);
@@ -221,10 +202,10 @@ Tiivistä olennainen niin, että vastaus on:
       const { message, context_type } = chatRequestSchema.parse(req.body);
       console.log("Received message:", message, "Context:", context_type);
       
-      // Check if OpenAI API key is available
-      if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'sk-placeholder') {
+      // Check if Gemini API key is available
+      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === '') {
         return res.status(200).json({
-          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan OpenAI API-avain toimiakseen. Voit tarkastella case-esimerkkejä sivun vasemmasta reunasta.'
+          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan Gemini API-avain toimiakseen. Voit tarkastella case-esimerkkejä sivun vasemmasta reunasta.'
         });
       }
       
@@ -542,56 +523,52 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
         console.log(`Non-ASCII chars found in ${context_type} systemPrompt:`, problematicChars.slice(0, 10));
       }
       
-      // Try OpenAI request with retry for transient failures
+      // Try Gemini request with retry for transient failures
       let response;
       try {
-        response = await openai.chat.completions.create({
-          model: GPT_MODEL,
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: normalizeText(message) }
-          ],
-          max_completion_tokens: 500,
+        response = await gemini.models.generateContent({
+          model: GEMINI_MODEL,
+          config: {
+            systemInstruction: systemPrompt,
+            maxOutputTokens: 500,
+            temperature: 0.8
+          },
+          contents: normalizeText(message)
         });
       } catch (error: any) {
-        console.error("OpenAI request failed:", error.name, error.message);
+        console.error("Gemini request failed:", error.name, error.message);
         // Return graceful fallback instead of 500
         return res.status(200).json({
           response: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit silti tarkastella case-esimerkkejä sivun vasemmasta reunasta ja kokeilla kysyä uudelleen hetken päästä.'
         });
       }
 
-      const rawResponse = response.choices[0].message.content;
-      console.log("GPT-5 raw response:", rawResponse ? `"${rawResponse.substring(0, 100)}..."` : "null/empty");
+      const rawResponse = response.text;
+      console.log("Gemini 2.5 Pro raw response:", rawResponse ? `"${rawResponse.substring(0, 100)}..."` : "null/empty");
       
       const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
 
       // Generate smart follow-up questions based on user's question and AI response
       let followUpSuggestions: string[] = [];
       try {
-        const followUpResponse = await openai.chat.completions.create({
-          model: GPT_MODEL,
-          messages: [
-            {
-              role: "system",
-              content: `Analysoi käyttäjän kysymystä ja AI:n vastausta. Luo 2-3 älykästä, relevanttia jatkokysymystä jotka:
+        const followUpResponse = await gemini.models.generateContent({
+          model: GEMINI_MODEL,
+          config: {
+            systemInstruction: `Analysoi käyttäjän kysymystä ja AI:n vastausta. Luo 2-3 älykästä, relevanttia jatkokysymystä jotka:
 - Syventävät aihetta
 - Ovat käytännöllisiä ja hyödyllisiä
 - Keskittyvät AI:n käyttöönottoon ja toteutukseen
 - Sopivat humm.fi:n asiantuntijatarpeisiin
 
-Vastaa vain JSON-muodossa: ["kysymys1", "kysymys2", "kysymys3"]`
-            },
-            {
-              role: "user",
-              content: `Käyttäjän kysymys: "${normalizeText(message)}"
+Vastaa vain JSON-muodossa: ["kysymys1", "kysymys2", "kysymys3"]`,
+            maxOutputTokens: 200,
+            temperature: 0.7
+          },
+          contents: `Käyttäjän kysymys: "${normalizeText(message)}"
 AI:n vastaus: "${aiResponse.substring(0, 200)}..."`
-            }
-          ],
-          max_completion_tokens: 200,
         });
 
-        const followUpContent = followUpResponse.choices[0].message.content;
+        const followUpContent = followUpResponse.text;
         if (followUpContent) {
           try {
             const parsedSuggestions = JSON.parse(followUpContent);
