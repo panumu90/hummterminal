@@ -128,12 +128,12 @@ export default function TechLeadCV() {
           --bg: #0a1530;
           --bg-elev: #0f1f46;
           --brand: #103a7a;
-          --brand-2: #1e90ff;
+          --brand-2: #2563eb;
           --muted: #a8b3cf;
           --txt: #e8efff;
           --shadow: 0 10px 30px rgba(15,31,70,.35);
           --radius: 18px;
-          --ring: 0 0 0 3px rgba(30,144,255,.35);
+          --ring: 0 0 0 3px rgba(37,99,235,.35);
         }
         
         .cv-page {

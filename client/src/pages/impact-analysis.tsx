@@ -23,9 +23,9 @@ import { Link } from "wouter";
 
 export default function ImpactAnalysis() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-slate-900 text-white border-b border-blue-700/30">
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-gray-900 text-white border-b border-slate-700/30">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-6">
             <Link href="/">

@@ -92,7 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             messages: [
               {
                 role: "system",
-                content: `Toimi asiantuntijana, joka auttaa humm.fi yritystä ottamaan tekoäly käyttöön organisaatiossa.
+                content: `Toimi asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa.
 Tiivistä olennainen niin, että vastaus on:
 - Helppo lukea
 - Informatiivinen
