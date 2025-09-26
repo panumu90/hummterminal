@@ -752,7 +752,7 @@ export function ChatInterface() {
                     </p>
                     
                     <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 mb-4">
-                      <h4 className="font-semibold mb-2 text-slate-300">Käytännön esimerkki: Asiakaspalveluchatbot</h4>
+                      <h4 className="font-semibold mb-2 text-white">Käytännön esimerkki: Asiakaspalveluchatbot</h4>
                       <p className="text-sm mb-2">
                         MCP:n avulla asiakaspalvelubot voi hakea tietoa useista lähteistä asiakkaan kysymyksen ratkaisemiseksi:
                       </p>
@@ -846,7 +846,7 @@ export function ChatInterface() {
                     </p>
 
                     <div className="bg-slate-800 border border-slate-600 rounded-lg p-4 mb-4">
-                      <h4 className="font-semibold mb-2 text-slate-300">GDPR ja vaatimustenmukaisuus</h4>
+                      <h4 className="font-semibold mb-2 text-white">GDPR ja vaatimustenmukaisuus</h4>
                       <p className="text-sm mb-2">
                         EU:n GDPR edellyttää, että henkilötietoja käsitellään asianmukaisin suojamekanismein ja vain käyttötarkoituksiinsa rajatusti. MCP:n roolipohjainen pääsy ja kontekstin rajaus tukevat näitä vaatimuksia.
                       </p>
@@ -869,7 +869,7 @@ export function ChatInterface() {
 
                 {/* Johtopäätökset */}
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-gray-300 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold mb-3 text-white flex items-center gap-2">
                     <Star className="h-4 w-4" />
                     Johtopäätökset
                   </h3>
@@ -894,11 +894,11 @@ export function ChatInterface() {
 
                 {/* Lähteet */}
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <h3 className="text-lg font-semibold mb-3 text-white flex items-center gap-2">
                     <ExternalLink className="h-4 w-4" />
                     Lähteet ja lisätietoa
                   </h3>
-                  <div className="text-xs text-slate-300 space-y-2">
+                  <div className="text-xs text-white space-y-2">
                     <div>
                       <p className="font-medium">Keskeiset lähteet:</p>
                       <ul className="list-disc pl-4 mt-1 space-y-1">
