@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle, FileText, ExternalLink } from "lucide-react";
+import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle, FileText, ExternalLink, BarChart3 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation } from "@tanstack/react-query";
@@ -76,6 +76,35 @@ const mcpQuestions: QuestionButton[] = [
 ];
 
 const topicAreas: TopicArea[] = [
+  {
+    id: "trends-2025",
+    title: "🚀 Trendit 2025",
+    icon: TrendingUp,
+    color: "bg-gradient-to-r from-purple-600 to-orange-600",
+    questions: [
+      {
+        id: "hyperpersonalization-trend",
+        question: "🎯 Kuinka hyperpersonointi mullistaa asiakaskokemuksen 2025?",
+        category: "general",
+        icon: Target,
+        color: "bg-purple-600"
+      },
+      {
+        id: "proactive-service-trend",
+        question: "⚡ Miksi proaktiivinen asiakaspalvelu on vuoden 2025 megatrendi?",
+        category: "general",
+        icon: Zap,
+        color: "bg-orange-600"
+      },
+      {
+        id: "cx-trends-2025-featured",
+        question: "📊 2025 suurimmat CX-trendit ja AI:n rooli",
+        category: "general",
+        icon: BarChart3,
+        color: "bg-blue-600"
+      }
+    ]
+  },
   {
     id: "strategy-roi",
     title: "Strategia & ROI",
@@ -433,9 +462,10 @@ export function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  // Removed auto-scroll to bottom to prevent annoying behavior when clicking buttons
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages]);
 
   const chatMutation = useMutation({
     mutationFn: async (data: { message: string, context_type?: ContextType }) => {
@@ -535,7 +565,7 @@ export function ChatInterface() {
                   key={question.id}
                   variant="outline"
                   size="sm"
-                  className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700"
+                  className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white"
                   onClick={() => handleQuestionClick(question.id)}
                   disabled={questionMutation.isPending}
                   data-testid={`question-${question.id}`}

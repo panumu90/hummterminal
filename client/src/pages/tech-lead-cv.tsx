@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
 
 export default function TechLeadCV() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -346,6 +348,16 @@ export default function TechLeadCV() {
           box-shadow: var(--shadow);
         }
       `}</style>
+
+      {/* Back button */}
+      <div className="wrap" style={{ paddingTop: '1rem' }}>
+        <Link href="/">
+          <button className="pill" style={{ marginBottom: '1rem' }} data-testid="back-to-home">
+            <ArrowLeft size={16} style={{ marginRight: '0.5rem' }} />
+            Palaa takaisin
+          </button>
+        </Link>
+      </div>
 
       <div className="cv-page" data-testid="tech-lead-cv-page">
         <header className="cv-header" role="banner">
