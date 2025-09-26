@@ -637,17 +637,17 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="sticky top-24">
-      <Card className="overflow-hidden" data-testid="chat-interface">
+    <div className="max-w-6xl mx-auto">
+      <Card className="overflow-hidden shadow-2xl border-0 bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm" data-testid="chat-interface">
         {/* Chat Header */}
-        <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center">
-              <Bot className="h-4 w-4" />
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-10 h-10 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+              <Bot className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-semibold" data-testid="chat-title">AI Assistentti</h3>
-              <p className="text-xs opacity-90">Kysy tarkempia kysymyksiä toteutuksista</p>
+              <h3 className="text-lg font-semibold" data-testid="chat-title">AI Assistentti johdolle</h3>
+              <p className="text-sm opacity-90">Räätälöidyt vastaukset asiakaspalvelualan ammattilaisille</p>
             </div>
           </div>
           <Button
@@ -659,9 +659,9 @@ export function ChatInterface() {
             title={isExpanded ? "Pienennä chat" : "Laajenna chat"}
           >
             {isExpanded ? (
-              <Minimize2 className="h-4 w-4" />
+              <Minimize2 className="h-5 w-5" />
             ) : (
-              <Maximize2 className="h-4 w-4" />
+              <Maximize2 className="h-5 w-5" />
             )}
           </Button>
         </div>
@@ -739,8 +739,8 @@ export function ChatInterface() {
 
 
         {/* Chat Messages */}
-        <div className={`overflow-y-auto p-4 space-y-4 transition-all duration-300 ${
-          isExpanded ? 'h-[calc(100vh-12rem)]' : 'h-80'
+        <div className={`overflow-y-auto p-6 space-y-6 transition-all duration-300 bg-slate-950/20 ${
+          isExpanded ? 'h-[calc(100vh-16rem)]' : 'h-96'
         }`} data-testid="chat-messages">
           {messages.map((message, index) => (
             <div key={index} className="chat-message" data-testid={`message-${index}`}>
@@ -796,77 +796,72 @@ export function ChatInterface() {
             </div>
           )}
           
-          {/* Follow-up Suggestions */}
-          {followUpSuggestions.length > 0 && (
-            <div className="chat-message" data-testid="follow-up-suggestions">
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
-                  <MessageCircle className="h-4 w-4 text-accent-foreground" />
-                </div>
-                <div className="bg-accent/50 rounded-lg p-3 max-w-2xl">
-                  <p className="text-sm font-medium mb-2 text-accent-foreground">Jatkokysymyksiä:</p>
-                  <div className="space-y-2">
-                    {followUpSuggestions.map((suggestion, index) => (
-                      <Button
-                        key={index}
-                        variant="outline"
-                        size="sm"
-                        className="text-left h-auto py-2 px-3 justify-start whitespace-normal bg-background/80 hover:bg-background text-foreground"
-                        onClick={() => handleFollowUpClick(suggestion)}
-                        data-testid={`follow-up-${index}`}
-                      >
-                        {suggestion}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Follow-up Suggestions - Above Input */}
+        {followUpSuggestions.length > 0 && (
+          <div className="border-t border-border bg-slate-800/30 p-4" data-testid="follow-up-suggestions-input">
+            <p className="text-sm font-medium mb-3 text-slate-200">💡 Suositellut jatkokysymykset johdolle:</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {followUpSuggestions.map((suggestion, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  size="sm"
+                  className="text-left h-auto py-3 px-4 justify-start whitespace-normal bg-slate-700/50 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-slate-500"
+                  onClick={() => handleFollowUpClick(suggestion)}
+                  data-testid={`follow-up-input-${index}`}
+                >
+                  <span className="text-xs leading-relaxed">{suggestion}</span>
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Chat Input */}
-        <div className="border-t border-border p-4">
-          <div className="flex space-x-3">
+        <div className="border-t border-border p-6 bg-slate-900/30">
+          <div className="flex space-x-4">
             <Input
               type="text"
-              placeholder="Kirjoita kysymyksesi..."
+              placeholder="Kysy mitä tahansa AI-asiakaspalvelusta johdolle..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={chatMutation.isPending}
-              className="flex-1"
+              className="flex-1 h-12 text-base bg-slate-800/50 border-slate-600 focus:border-primary text-slate-100 placeholder:text-slate-400"
               data-testid="chat-input"
             />
             <Button
               onClick={handleSend}
               disabled={chatMutation.isPending || !inputValue.trim()}
-              size="icon"
+              size="lg"
+              className="h-12 px-6"
               data-testid="send-button"
             >
-              <Send className="h-4 w-4" />
+              <Send className="h-5 w-5" />
             </Button>
           </div>
-          <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
-            <span>Esimerkki kysymyksiä:</span>
+          <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+            <span>💼 Räätälöidyt vastaukset Humm Group Oy:n johdolle</span>
             <div className="flex space-x-2">
               <Badge 
                 variant="secondary" 
-                className="cursor-pointer hover:opacity-80"
-                onClick={() => setInputValue("Miten kustannussäästöt saavutettiin?")}
-                data-testid="example-costs"
+                className="cursor-pointer hover:opacity-80 bg-slate-700 text-slate-200"
+                onClick={() => setInputValue("Millä aikataululla voimme toteuttaa AI-asiakaspalvelun?")}
+                data-testid="example-timeline"
               >
-                Kustannussäästöt
+                Aikataulu
               </Badge>
               <Badge 
                 variant="secondary" 
-                className="cursor-pointer hover:opacity-80"
-                onClick={() => setInputValue("Mitä teknologioita käytettiin?")}
-                data-testid="example-tech"
+                className="cursor-pointer hover:opacity-80 bg-slate-700 text-slate-200"
+                onClick={() => setInputValue("Mikä on ROI AI-investoinnille asiakaspalvelussa?")}
+                data-testid="example-roi"
               >
-                Teknologia
+                ROI & Hyödyt
               </Badge>
             </div>
           </div>

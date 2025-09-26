@@ -554,18 +554,31 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
         const followUpResponse = await gemini.models.generateContent({
           model: GEMINI_MODEL,
           config: {
-            systemInstruction: `Analysoi käyttäjän kysymystä ja AI:n vastausta. Luo 2-3 älykästä, relevanttia jatkokysymystä jotka:
-- Syventävät aihetta
-- Ovat käytännöllisiä ja hyödyllisiä
-- Keskittyvät AI:n käyttöönottoon ja toteutukseen
-- Sopivat humm.fi:n asiantuntijatarpeisiin
+            systemInstruction: `Analysoi käyttäjän kysymystä ja AI:n vastausta. Luo 2-3 strategista jatkokysymystä jotka on räätälöity HUMM GROUP OY:n johdolle ja asiakaspalvelualan ammattilaisille:
+
+KOHDERYHMÄ: Yrityksen johto, päättäjät, asiakaspalvelujohtajat
+FOKUS: Liiketoimintavaikutus, strategiset päätökset, toteutettavuus
+
+Jatkokysymysten tulee:
+- Keskittyä liiketoimintavaikutuksiin ja ROI:hin
+- Käsitellä toteutuksen aikatauluja ja resursseja  
+- Huomioida riskit ja haasteet
+- Olla konkreettisia ja toimintakelpoisia
+- Sopiva päättäjätasolle (ei teknisiä yksityiskohtia)
+- Auttaa strategisessa suunnittelussa
+
+Esimerkkityyppisiä kysymyksiä:
+- "Mikä on investoinnin takaisinmaksuaika?"
+- "Mitä riskejä toteutuksessa on tunnistettava?"
+- "Millä resursseilla tämä voidaan toteuttaa?"
 
 Vastaa vain JSON-muodossa: ["kysymys1", "kysymys2", "kysymys3"]`,
-            maxOutputTokens: 500,
-            temperature: 0.7
+            maxOutputTokens: 600,
+            temperature: 0.8
           },
           contents: `Käyttäjän kysymys: "${normalizeText(message)}"
-AI:n vastaus: "${aiResponse.substring(0, 200)}..."`
+AI:n vastaus: "${aiResponse.substring(0, 400)}..."
+Konteksti: Humm Group Oy (asiakaspalveluyritys, 2.1M€ liikevaihto) harkitsee AI-asiakaspalvelun käyttöönottoa ja tarvitsee johdon päätöksentekoa tukevia kysymyksiä`
         });
 
         const followUpContent = followUpResponse.candidates?.[0]?.content?.parts?.[0]?.text || followUpResponse.text;
