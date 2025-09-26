@@ -90,10 +90,11 @@ export default function TechLeadCV() {
       pill.addEventListener('click', handlePillClick);
     });
 
-    // Observe sections for active highlighting
-    const sections = Array.from(pills).map(pill => 
-      document.querySelector(pill.getAttribute('data-target') || '')
-    ).filter(Boolean);
+    // Observe sections for active highlighting - only pills with data-target
+    const sections = Array.from(pills)
+      .filter(pill => pill.getAttribute('data-target'))  // Only pills with data-target
+      .map(pill => document.querySelector(pill.getAttribute('data-target')!))
+      .filter(Boolean);
     sections.forEach(section => section && io.observe(section));
 
     // Back to top button
