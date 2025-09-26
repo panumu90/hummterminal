@@ -68,22 +68,23 @@ export default function Home() {
             {/* CTA Section - Tech Lead and Impact Analysis */}
             <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Tech Lead CTA */}
-              <Button 
-                size="lg"
-                onClick={() => window.open('/tech-lead-cv.html', '_blank')}
-                className="w-full h-16 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
-                data-testid="tech-lead-cta"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="flex items-center justify-center space-x-3 relative z-10">
-                  <Rocket className="h-6 w-6" />
-                  <div className="text-center">
-                    <div className="text-lg font-bold">🚀 Tech Lead ja humm group oy</div>
-                    <div className="text-sm opacity-90">Minun visio roolista</div>
+              <Link href="/tech-lead-cv">
+                <Button 
+                  size="lg"
+                  className="w-full h-16 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
+                  data-testid="tech-lead-cta"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-center justify-center space-x-3 relative z-10">
+                    <Rocket className="h-6 w-6" />
+                    <div className="text-center">
+                      <div className="text-lg font-bold">🚀 Tech Lead ja humm group oy</div>
+                      <div className="text-sm opacity-90">Minun visio roolista</div>
+                    </div>
+                    <Users className="h-6 w-6" />
                   </div>
-                  <Users className="h-6 w-6" />
-                </div>
-              </Button>
+                </Button>
+              </Link>
               
               {/* Impact Analysis CTA */}
               <Link href="/impact-analysis">
