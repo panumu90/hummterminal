@@ -22,8 +22,8 @@ const openai = new OpenAI({
   }
 });
 
-// Use GPT-3.5-turbo which should be available on most API keys
-const GPT_MODEL = "gpt-3.5-turbo";
+// Use GPT-5 which is the newest OpenAI model
+const GPT_MODEL = "gpt-5";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
@@ -458,7 +458,7 @@ IMPORTANT: Always end MCP-related responses with this information about industry
 
 Respond in Finnish using Markdown formatting. Focus on strategic benefits for humm.fi (max 200 words).`;
 
-      } else if (context_type === "planning" || context_type === "strategic") {
+      } else if (context_type === "planning") {
         const planningTrends = trends.filter(t => t.category === "automation" || t.category === "strategic");
         const trendsContent = planningTrends.map(t => 
           `${normalizeText(t.title)}: ${Array.isArray(t.key_points) ? (t.key_points as string[]).slice(0, 2).map(p => normalizeText(p)).join("; ") : ""}`
