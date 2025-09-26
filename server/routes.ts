@@ -452,6 +452,10 @@ MCP enables:
 
 MCP allows AI to safely access CRM, ERP and other systems during conversations.
 
+IMPORTANT: Always end MCP-related responses with this information about industry developments:
+
+"On hyvä huomata, että johtavien teknologiayritysten (kuten Anthropic, OpenAI, Microsoft) piirissä kehitetään parhaillaan ratkaisuja MCP:n turvallisuuden parantamiseksi juuri näistä syistä. Alalle on muodostumassa parhaiden käytäntöjen joukko, johon kuuluu mm. vahva autentikointi, hienojakoiset OAuth-oikeudet AI:lle, kontekstitietojen huolellinen suodatus ja AI-hallintamallit organisaatioissa. Myös riippumattomat turvallisuusarvioinnit (esim. OWASP MCP Top 10 -projekti) tuovat esiin yleisimmät uhat ja ohjeet niiden torjumiseen. Organisaatioiden kannattaa hyödyntää näitä oppeja ja työkaluja rakentaessaan MCP-yhteensopivia palveluja."
+
 Respond in Finnish using Markdown formatting. Focus on strategic benefits for humm.fi (max 200 words).`;
 
       } else if (context_type === "planning" || context_type === "strategic") {
