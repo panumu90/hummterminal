@@ -1,6 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Check, Info, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import type { Case } from "@/lib/types";
 
 interface CaseCardProps {
@@ -50,63 +57,136 @@ function getCategoryColor(category: string) {
 }
 
 export function CaseCard({ case_ }: CaseCardProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [detailedContent, setDetailedContent] = useState<string>("");
+
+  const implementationMutation = useMutation({
+    mutationFn: async (caseId: string): Promise<{ content: string }> => {
+      const response = await apiRequest('POST', `/api/cases/${caseId}/implementation`);
+      const data = await response.json();
+      return data;
+    },
+    onSuccess: (data) => {
+      setDetailedContent(data.content);
+      setIsModalOpen(true);
+    },
+    onError: (error) => {
+      console.error('Failed to fetch implementation details:', error);
+    }
+  });
+
+  const handleImplementationClick = () => {
+    implementationMutation.mutate(case_.id.toString());
+  };
+
   return (
-    <Card className="case-card shadow-sm hover:shadow-md" data-testid={`card-case-${case_.id}`}>
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center text-xl">
-              {getIconElement(case_.icon)}
-            </div>
-            <div>
-              <h3 className="text-xl font-semibold text-foreground" data-testid={`text-company-${case_.id}`}>
-                {case_.company}
-              </h3>
-              <p className="text-sm text-muted-foreground" data-testid={`text-location-${case_.id}`}>
-                {case_.country} • {case_.industry}
-              </p>
-            </div>
-          </div>
-          <Badge 
-            className={`${getCategoryColor(case_.category)} text-white`}
-            data-testid={`badge-category-${case_.id}`}
-          >
-            {case_.category}
-          </Badge>
-        </div>
-        
-        <div className="mb-4">
-          <h4 className="font-semibold text-foreground mb-2" data-testid={`text-solution-${case_.id}`}>
-            {case_.solution_name}
-          </h4>
-          <p className="text-muted-foreground text-sm mb-3" data-testid={`text-description-${case_.id}`}>
-            {case_.description}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          {case_.key_metrics.map((metric, index) => (
-            <div key={index} className="text-center p-3 bg-muted rounded-lg" data-testid={`metric-${case_.id}-${index}`}>
-              <div className={`${getBadgeClass(metric.type)} text-white px-2 py-1 rounded text-xs font-bold mb-1`}>
-                {metric.value}
+    <>
+      <Card className="case-card shadow-sm hover:shadow-md" data-testid={`card-case-${case_.id}`}>
+        <CardContent className="p-6">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center text-xl">
+                {getIconElement(case_.icon)}
               </div>
-              <div className="text-xs text-muted-foreground">{metric.label}</div>
+              <div>
+                <h3 className="text-xl font-semibold text-foreground" data-testid={`text-company-${case_.id}`}>
+                  {case_.company}
+                </h3>
+                <p className="text-sm text-muted-foreground" data-testid={`text-location-${case_.id}`}>
+                  {case_.country} • {case_.industry}
+                </p>
+              </div>
             </div>
-          ))}
-        </div>
+            <Badge 
+              className={`${getCategoryColor(case_.category)} text-white`}
+              data-testid={`badge-category-${case_.id}`}
+            >
+              {case_.category}
+            </Badge>
+          </div>
+          
+          <div className="mb-4">
+            <h4 className="font-semibold text-foreground mb-2" data-testid={`text-solution-${case_.id}`}>
+              {case_.solution_name}
+            </h4>
+            <p className="text-muted-foreground text-sm mb-3" data-testid={`text-description-${case_.id}`}>
+              {case_.description}
+            </p>
+          </div>
 
-        <div className="border-t border-border pt-4">
-          <h5 className="font-medium text-foreground mb-2">Keskeiset oppimiskohteet:</h5>
-          <ul className="text-sm text-muted-foreground space-y-1">
-            {case_.learning_points.map((point, index) => (
-              <li key={index} className="flex items-start space-x-2" data-testid={`learning-point-${case_.id}-${index}`}>
-                <Check className="h-3 w-3 text-primary mt-1 flex-shrink-0" />
-                <span>{point}</span>
-              </li>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            {case_.key_metrics.map((metric, index) => (
+              <div key={index} className="text-center p-3 bg-muted rounded-lg" data-testid={`metric-${case_.id}-${index}`}>
+                <div className={`${getBadgeClass(metric.type)} text-white px-2 py-1 rounded text-xs font-bold mb-1`}>
+                  {metric.value}
+                </div>
+                <div className="text-xs text-muted-foreground">{metric.label}</div>
+              </div>
             ))}
-          </ul>
-        </div>
-      </CardContent>
-    </Card>
+          </div>
+
+          <div className="border-t border-border pt-4 mb-4">
+            <h5 className="font-medium text-foreground mb-2">Keskeiset oppimiskohteet:</h5>
+            <ul className="text-sm text-muted-foreground space-y-1">
+              {case_.learning_points.map((point, index) => (
+                <li key={index} className="flex items-start space-x-2" data-testid={`learning-point-${case_.id}-${index}`}>
+                  <Check className="h-3 w-3 text-primary mt-1 flex-shrink-0" />
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <Button
+            onClick={handleImplementationClick}
+            disabled={implementationMutation.isPending}
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+            data-testid={`button-implementation-${case_.id}`}
+          >
+            {implementationMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Luodaan yksityiskohtaista sisältöä...
+              </>
+            ) : (
+              <>
+                <Info className="mr-2 h-4 w-4" />
+                Lue lisää toteutuksesta
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-lg">
+                {getIconElement(case_.icon)}
+              </div>
+              {case_.company} - Toteutuksen yksityiskohdat
+            </DialogTitle>
+            <DialogDescription>
+              AI-generoitu syvyysanalyysi {case_.solution_name} -toteutuksesta
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4">
+            {detailedContent ? (
+              <div className="prose prose-sm max-w-none text-foreground">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {detailedContent}
+                </ReactMarkdown>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center p-8 text-muted-foreground">
+                <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                Luodaan yksityiskohtaista sisältöä...
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }

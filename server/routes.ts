@@ -233,6 +233,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
           .trim();
       };
 
+      const getContextualFallback = (message: string): string[] => {
+        const lowerMessage = message.toLowerCase();
+        
+        if (lowerMessage.includes('mcp') || lowerMessage.includes('protocol')) {
+          return [
+            "Mitkä ovat MCP:n suurimmat riskit?",
+            "Millä aikataululla MCP voidaan toteuttaa?"
+          ];
+        } else if (lowerMessage.includes('roi') || lowerMessage.includes('kustannus') || lowerMessage.includes('investointi')) {
+          return [
+            "Miten mittaamme AI-investoinnin onnistumista?",
+            "Millä resursseilla toteutus vaatii?"
+          ];
+        } else if (lowerMessage.includes('hyperpersonointi') || lowerMessage.includes('personointi')) {
+          return [
+            "Mikä on hyperpersonoinnin toteutuskustannus?",
+            "Mitä teknologiaa hyperpersonointi vaatii?"
+          ];
+        } else if (lowerMessage.includes('proaktiivinen') || lowerMessage.includes('ennakoiva')) {
+          return [
+            "Miten proaktiivisuus vaikuttaa asiakastyytyväisyyteen?",
+            "Millaisia resursseja proaktiivinen palvelu vaatii?"
+          ];
+        } else if (lowerMessage.includes('integraatio') || lowerMessage.includes('yhdist')) {
+          return [
+            "Mitä riskejä järjestelmäintegraatiossa on?",
+            "Millä aikataululla integraatio voidaan toteuttaa?"
+          ];
+        } else {
+          // General AI customer service questions for leadership
+          return [
+            "Mikä on AI-toteutuksen takaisinmaksuaika?",
+            "Mitä riskejä AI-käyttöönotossa tulee huomioida?"
+          ];
+        }
+      };
+
       // Shared function to read attached_assets for all contexts  
       const readAttachedAssets = async (): Promise<string> => {
         try {
@@ -554,59 +591,60 @@ Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
         const followUpResponse = await gemini.models.generateContent({
           model: GEMINI_MODEL,
           config: {
-            systemInstruction: `Analysoi käyttäjän kysymystä ja AI:n vastausta. Luo 2-3 strategista jatkokysymystä jotka on räätälöity HUMM GROUP OY:n johdolle ja asiakaspalvelualan ammattilaisille:
+            systemInstruction: `Luo 2-3 lyhyttä jatkokysymystä johdolle aiheesta: "${message}". 
 
-KOHDERYHMÄ: Yrityksen johto, päättäjät, asiakaspalvelujohtajat
-FOKUS: Liiketoimintavaikutus, strategiset päätökset, toteutettavuus
+Kysymysten tulee keskittyä:
+- Liiketoimintavaikutuksiin ja ROI:hin
+- Toteutuksen aikatauluihin ja resursseihin
+- Riskeihin ja haasteisiin
 
-Jatkokysymysten tulee:
-- Keskittyä liiketoimintavaikutuksiin ja ROI:hin
-- Käsitellä toteutuksen aikatauluja ja resursseja  
-- Huomioida riskit ja haasteet
-- Olla konkreettisia ja toimintakelpoisia
-- Sopiva päättäjätasolle (ei teknisiä yksityiskohtia)
-- Auttaa strategisessa suunnittelussa
+TÄRKEITÄ SÄÄNTÖJÄ:
+- Vastaa VAIN JSON-muodossa: ["kysymys1", "kysymys2"]
+- Älä kirjoita muuta tekstiä
+- Kysymykset suomeksi
+- Sopii Humm Group Oy:n johdolle
 
-Esimerkkityyppisiä kysymyksiä:
-- "Mikä on investoinnin takaisinmaksuaika?"
-- "Mitä riskejä toteutuksessa on tunnistettava?"
-- "Millä resursseilla tämä voidaan toteuttaa?"
-
-Vastaa vain JSON-muodossa: ["kysymys1", "kysymys2", "kysymys3"]`,
-            maxOutputTokens: 600,
-            temperature: 0.8
+Esimerkki: ["Mikä on investoinnin takaisinmaksuaika?", "Mitä riskejä toteutuksessa on?"]`,
+            maxOutputTokens: 300,
+            temperature: 0.7
           },
-          contents: `Käyttäjän kysymys: "${normalizeText(message)}"
-AI:n vastaus: "${aiResponse.substring(0, 400)}..."
-Konteksti: Humm Group Oy (asiakaspalveluyritys, 2.1M€ liikevaihto) harkitsee AI-asiakaspalvelun käyttöönottoa ja tarvitsee johdon päätöksentekoa tukevia kysymyksiä`
+          contents: `Aihe: ${normalizeText(message)}`
         });
 
         const followUpContent = followUpResponse.candidates?.[0]?.content?.parts?.[0]?.text || followUpResponse.text;
+        console.log("Follow-up response content:", followUpContent);
+        
         if (followUpContent) {
           try {
-            const parsedSuggestions = JSON.parse(followUpContent);
+            // Clean the response first - remove markdown formatting, etc.
+            const cleanContent = followUpContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+            console.log("Cleaned follow-up content:", cleanContent);
+            
+            const parsedSuggestions = JSON.parse(cleanContent);
             if (Array.isArray(parsedSuggestions)) {
               followUpSuggestions = parsedSuggestions.slice(0, 3); // Max 3 suggestions
+              console.log("Parsed follow-up suggestions:", followUpSuggestions);
             }
           } catch (parseError) {
             console.log("Failed to parse follow-up suggestions JSON:", followUpContent);
-            // Fallback: extract questions from text
-            const lines = followUpContent.split('\n').filter(line => 
-              line.trim().length > 10 && 
-              (line.includes('?') || line.toLowerCase().includes('kuinka') || line.toLowerCase().includes('mitä'))
-            );
-            followUpSuggestions = lines.slice(0, 3).map(line => line.replace(/^[^a-zA-Zäöå]*/, '').trim());
+            console.log("Parse error:", (parseError as Error).message);
+            
+            // Better fallback: try to extract questions from text
+            const questionMatches = followUpContent.match(/"([^"]*\?[^"]*)"/g);
+            if (questionMatches) {
+              followUpSuggestions = questionMatches.slice(0, 3).map(q => q.replace(/"/g, '').trim());
+              console.log("Extracted questions from text:", followUpSuggestions);
+            } else {
+              // Use contextual fallback based on the message topic
+              followUpSuggestions = getContextualFallback(message);
+            }
           }
+        } else {
+          followUpSuggestions = getContextualFallback(message);
         }
       } catch (followUpError) {
         console.error("Follow-up generation failed:", followUpError);
-        // Provide fallback suggestions based on common AI topics
-        const fallbackSuggestions = [
-          "Mitä teknologiaa tarvitaan AI-agenttien integrointiin?",
-          "Miten arvioidaan AI-toteutuksen ROI:ta?",
-          "Millaisia riskejä AI-käyttöönotossa tulee huomioida?"
-        ];
-        followUpSuggestions = fallbackSuggestions.slice(0, 2);
+        followUpSuggestions = getContextualFallback(message);
       }
 
       // Save chat message
@@ -633,6 +671,152 @@ Konteksti: Humm Group Oy (asiakaspalveluyritys, 2.1M€ liikevaihto) harkitsee A
       res.json(history);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch chat history" });
+    }
+  });
+
+  // Case implementation details endpoint
+  app.post('/api/cases/:id/implementation', async (req, res) => {
+    try {
+      const caseId = req.params.id;
+      console.log(`Generating implementation details for case ID: ${caseId}`);
+
+      // Get case data
+      const cases = await storage.getAllCases();
+      const targetCase = cases.find(c => c.id.toString() === caseId);
+      
+      if (!targetCase) {
+        return res.status(404).json({ error: 'Case not found' });
+      }
+
+      // Generate detailed implementation content using Gemini
+      const prompt = `Luo yksityiskohtainen, syvyysanalyysi ${targetCase.company}:n AI-asiakaspalvelutoteutuksesta. Sisällytä:
+
+CASE: ${targetCase.company} - ${targetCase.solution_name}
+TOIMIALA: ${targetCase.industry}
+KUVAUS: ${targetCase.description}
+KATEGORIA: ${targetCase.category}
+
+Luo seuraava sisältö **suomeksi**:
+
+## 1. Tekninen toteutus
+- Käytetyt AI-teknologiat ja -mallit
+- Järjestelmäarkkitehtuuri
+- Integraatiot olemassa oleviin järjestelmiin
+- Käyttöliittymäratkaisut
+
+## 2. Projektin vaiheet ja aikataulu
+- Pilottivaihe ja sen kesto
+- Asteittainen käyttöönotto
+- Koulutus ja muutoksen hallinta
+- Tuotantokäyttöön siirtyminen
+
+## 3. Kustannukset ja ROI
+- Alkuinvestointi (teknologia, henkilöstö, koulutus)
+- Operatiiviset kustannukset
+- Säästöt henkilöstökustannuksissa
+- Asiakastyytyväisyyden parantuminen
+- Takaisinmaksuaika
+
+## 4. Haasteet ja oppimiskohteet
+- Teknologiset haasteet ja ratkaisut
+- Organisaation muutosvastarinta
+- Datan laatu ja saatavuus
+- Asiakkaiden vastaanotto
+
+## 5. Tulokset ja mittarit
+- Konkreettiset hyödyt (säästöt, tehokkuus)
+- Asiakaskokemuksen parantuminen
+- Henkilöstön työn muuttuminen
+- Pitkän aikavälin vaikutukset
+
+## 6. Oppimiskohteet Humm Group Oy:lle
+- Sovellettavat käytännöt
+- Kriittiset menestystekijät
+- Varoitukset ja riskientenhallinta
+- Strategiset suositukset
+
+Keskity käytännöllisiin, mitattaviin tuloksiin ja konkreettisiin oppimiskohtiin joita Humm Group Oy voi hyödyntää omassa AI-strategiassaan.`;
+
+      // Define normalizeText function for this endpoint
+      const normalizeText = (text: string) => {
+        return text
+          .replace(/[^\x00-\x7F]/g, (char) => {
+            const replacements: Record<string, string> = {
+              "\u2013": "-",
+              "\u2014": "-",  
+              "\u2018": "'",
+              "\u2019": "'",
+              "\u201C": '"',
+              "\u201D": '"',
+              "\u2026": "...",
+              "\u00A0": " ",
+              "\u202F": " ",
+              "ä": "ä", "ö": "ö", "å": "å",
+              "Ä": "Ä", "Ö": "Ö", "Å": "Å"
+            };
+            return replacements[char] || "";
+          })
+          .replace(/\s+/g, ' ')
+          .trim();
+      };
+
+      const normalizedPrompt = normalizeText(prompt);
+
+      // Generate content using Gemini API
+      const result = await gemini.models.generateContent({
+        model: GEMINI_MODEL,
+        config: {
+          systemInstruction: `Toimit asiantuntijana, joka auttaa Humm Group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. Keskity käytännöllisiin, mitattaviin tuloksiin ja konkreettisiin oppimiskohtiin joita Humm Group Oy voi hyödyntää omassa AI-strategiassaan.`
+        },
+        contents: normalizedPrompt
+      });
+      
+      let generatedText = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || 
+        "Sisällön luomisessa tapahtui virhe. Yritä uudelleen myöhemmin.";
+
+      // Clean up the response
+      generatedText = normalizeText(generatedText);
+
+      console.log(`Generated implementation details for ${targetCase.company}: ${generatedText.substring(0, 200)}...`);
+
+      res.json({ 
+        content: generatedText,
+        company: targetCase.company,
+        solution: targetCase.solution_name
+      });
+
+    } catch (error) {
+      console.error('Error generating implementation details:', error);
+      res.status(500).json({ 
+        error: 'Failed to generate implementation details',
+        content: `# ${req.params.id ? 'Toteutuksen yksityiskohdat' : 'Tekninen virhe'}
+
+Pahoittelemme, mutta yksityiskohtaisen toteutusanalyysin luomisessa tapahtui virhe. 
+
+## Yleisiä AI-toteutuksen vaiheita:
+
+### 1. Suunnittelu ja strategia
+- Liiketoimintatarpeiden kartoitus
+- Teknologiavalintojen tekeminen
+- Projektisuunnitelman laatiminen
+
+### 2. Pilotointi
+- Rajoitettu kokeilu
+- Alkuperäisten tulosten mittaaminen
+- Tarvittavat säädöt
+
+### 3. Laajennus
+- Asteittainen käyttöönotto
+- Henkilöstön koulutus
+- Prosessien optimointi
+
+### 4. Tuotantokäyttö
+- Täysi implementaatio
+- Jatkuva seuranta ja parantaminen
+- ROI:n mittaaminen
+
+Yritä uudelleen tai ota yhteyttä tekniseen tukeen.`
+      });
     }
   });
 

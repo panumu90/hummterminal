@@ -637,31 +637,31 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <Card className="overflow-hidden shadow-2xl border-0 bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-sm" data-testid="chat-interface">
+    <div className="w-full">
+      <Card className="overflow-hidden shadow-xl border-0 bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm" data-testid="chat-interface">
         {/* Chat Header */}
-        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-primary-foreground/20 rounded-full flex items-center justify-center">
-              <Bot className="h-5 w-5" />
+        <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-primary-foreground/20 rounded-full flex items-center justify-center">
+              <Bot className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold" data-testid="chat-title">AI Assistentti johdolle</h3>
-              <p className="text-sm opacity-90">Räätälöidyt vastaukset asiakaspalvelualan ammattilaisille</p>
+              <h3 className="text-base font-semibold" data-testid="chat-title">AI Chat</h3>
+              <p className="text-xs opacity-90">Johdon kysymykset</p>
             </div>
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={toggleExpanded}
-            className="text-primary-foreground hover:bg-primary-foreground/20 p-2"
+            className="text-primary-foreground hover:bg-primary-foreground/20 p-1"
             data-testid="expand-button"
             title={isExpanded ? "Pienennä chat" : "Laajenna chat"}
           >
             {isExpanded ? (
-              <Minimize2 className="h-5 w-5" />
+              <Minimize2 className="h-4 w-4" />
             ) : (
-              <Maximize2 className="h-5 w-5" />
+              <Maximize2 className="h-4 w-4" />
             )}
           </Button>
         </div>
