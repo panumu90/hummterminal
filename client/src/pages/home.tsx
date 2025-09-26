@@ -82,7 +82,7 @@ export default function Home() {
                       <Rocket className="h-6 w-6" />
                       <div className="text-center">
                         <div className="text-lg font-bold">🚀 Tech Lead ja humm group oy</div>
-                        <div className="text-sm opacity-90">Ota yhteyttä asiantuntijoihin</div>
+                        <div className="text-sm opacity-90">Minun visio roolista</div>
                       </div>
                       <Users className="h-6 w-6" />
                     </div>
@@ -92,10 +92,10 @@ export default function Home() {
                   <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-blue-700 dark:text-blue-300 flex items-center gap-3">
                       <Building className="h-6 w-6" />
-                      Tech Lead ja humm group oy
+                      Tech Lead ja humm group oy - Minun visio roolista
                     </DialogTitle>
                     <DialogDescription className="text-base">
-                      Ota yhteyttä AI-asiantuntijoihimme ja keskustele projektin mahdollisuuksista
+                      Työhakemus ja visioni siitä, kuinka Tech Lead -roolia tulisi hoitaa
                     </DialogDescription>
                   </DialogHeader>
                   <ScrollArea className="h-[60vh] pr-4">
@@ -103,14 +103,14 @@ export default function Home() {
                       <section>
                         <h3 className="text-lg font-semibold mb-3 text-blue-600 dark:text-blue-400 flex items-center gap-2">
                           <Rocket className="h-4 w-4" />
-                          Miksi ottaa yhteyttä?
+                          Miksi hakea Tech Lead -roolia?
                         </h3>
                         <div className="prose prose-sm dark:prose-invert max-w-none">
                           <p className="mb-3">
-                            <strong>humm group oy</strong> on suomalainen AI-teknologiayhtiö, joka auttaa yrityksiä hyödyntämään tekoälyä asiakaskokemuksen parantamisessa ja liiketoiminnan tehostamisessa.
+                            Haluan tuoda <strong>humm group oy:lle</strong> teknistä johtajuutta ja visiota, joka yhdistää AI-teknologian liiketoimintatavoitteisiin. Minun näkemykseni Tech Lead -roolista on holistinen lähestymistapa teknologiajohtajuuteen.
                           </p>
                           <p className="mb-3">
-                            Tarjoamme asiantuntevaa konsultointia, teknologiaratkaisuja ja strategista ohjausta AI-projektien suunnittelusta toteutukseen saakka.
+                            Uskon, että tehokas Tech Lead ei ainoastaan hallitse teknologiaa, vaan toimii siltana liiketoiminnan ja teknisen toteutuksen välillä.
                           </p>
                         </div>
                       </section>
@@ -118,20 +118,20 @@ export default function Home() {
                       <section>
                         <h3 className="text-lg font-semibold mb-3 text-green-600 dark:text-green-400 flex items-center gap-2">
                           <Users className="h-4 w-4" />
-                          Palvelumme
+                          Visioni roolista
                         </h3>
                         <div className="grid gap-3">
                           <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                            <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">AI-strategia ja konsultointi</h4>
-                            <p className="text-sm">Autamme määrittelemään AI:n potentiaalin yrityksessäsi ja luomaan toteutuskelpoisen roadmapin.</p>
+                            <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">Strateginen teknologiajohtajuus</h4>
+                            <p className="text-sm">Yhdistän teknisen osaamisen liiketoimintaymmärrykseen ja luon selkeät roadmapit AI-toteutuksille.</p>
                           </div>
                           <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                            <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">Tekninen toteutus</h4>
-                            <p className="text-sm">Kehitämme AI-ratkaisuja asiakaspalveluun, automaatioon ja liiketoiminnan optimointiin.</p>
+                            <h4 className="font-semibold mb-2 text-green-800 dark:text-green-200">Tiimin kehittäminen</h4>
+                            <p className="text-sm">Rakennan vahvoja kehitystiimejä, menton kulttuuria ja varmistan teknisen laadun kaikissa projekteissa.</p>
                           </div>
                           <div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
-                            <h4 className="font-semibold mb-2 text-purple-800 dark:text-purple-200">Integraatiot ja alustat</h4>
-                            <p className="text-sm">Yhdistämme AI-ratkaisut olemassa oleviin järjestelmiisi saumattomasti.</p>
+                            <h4 className="font-semibold mb-2 text-purple-800 dark:text-purple-200">Arkkitehtuuri ja skaalautuvuus</h4>
+                            <p className="text-sm">Suunnittelen ja toteutan skaalautuvia AI-arkkitehtuureja, jotka kasvavat yrityksen mukana.</p>
                           </div>
                         </div>
                       </section>
@@ -139,7 +139,7 @@ export default function Home() {
                       <section>
                         <h3 className="text-lg font-semibold mb-3 text-gray-700 dark:text-gray-300 flex items-center gap-2">
                           <Mail className="h-4 w-4" />
-                          Yhteystiedot
+                          Ota yhteyttä
                         </h3>
                         <div className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                           <div className="space-y-3">
@@ -161,12 +161,12 @@ export default function Home() {
 
                       <section>
                         <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                          <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">💡 Valmis aloittamaan?</h4>
+                          <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-200">💡 Valmis rakentamaan tulevaisuutta?</h4>
                           <p className="text-sm mb-3">
-                            Ota yhteyttä jo tänään ja keskustellaan, miten voimme auttaa yritystäsi hyödyntämään tekoälyä menestyksekkäästi.
+                            Ota yhteyttä ja keskustellaan, miten voin auttaa humm group oy:tä saavuttamaan seuraavan tason AI-teknologiajohtajuudessa.
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            Tarjoamme ilmaisen konsultaation, jossa kartoitamme yrityksesi tarpeet ja AI:n potentiaalin.
+                            Tarjoan visionäärisen lähestymistavan teknologiajohtajuuteen ja intohimoa rakentaa tulevaisuuden AI-ratkaisuja.
                           </p>
                         </div>
                       </section>
