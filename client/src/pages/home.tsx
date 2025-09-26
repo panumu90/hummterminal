@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
 import { PageHeader } from "@/components/page-header";
 import { CaseCard } from "@/components/case-card";
 import { ChatInterface } from "@/components/chat-interface";
@@ -7,12 +8,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AlertCircle, Bot, Building, Rocket, Users, Mail, Phone, Linkedin, TrendingUp, BarChart, Target, CheckCircle, Zap, Clock, PiggyBank, Headphones, Wrench, LineChart, Heart, MessageSquare, Brain, Star, ShoppingBag, Shield, Award } from "lucide-react";
+import { AlertCircle, Bot, Building, Rocket, Users, Mail, Phone, Linkedin, TrendingUp, BarChart } from "lucide-react";
 import type { Case } from "@/lib/types";
 
 export default function Home() {
   const [techLeadModalOpen, setTechLeadModalOpen] = useState(false);
-  const [impactModalOpen, setImpactModalOpen] = useState(false);
   const { data: cases, isLoading, error } = useQuery<Case[]>({
     queryKey: ["/api/cases"],
   });
@@ -68,8 +68,9 @@ export default function Home() {
           <div className="lg:col-span-2">
             <PageHeader />
 
-            {/* Tech Lead CTA Section */}
-            <div className="mb-8">
+            {/* CTA Section - Tech Lead and Impact Analysis */}
+            <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Tech Lead CTA */}
               <Dialog open={techLeadModalOpen} onOpenChange={setTechLeadModalOpen}>
                 <DialogTrigger asChild>
                   <Button 
@@ -174,6 +175,25 @@ export default function Home() {
                   </ScrollArea>
                 </DialogContent>
               </Dialog>
+              
+              {/* Impact Analysis CTA */}
+              <Link href="/impact-analysis">
+                <Button 
+                  size="lg"
+                  className="w-full h-16 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
+                  data-testid="impact-analysis-cta-top"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-center justify-center space-x-3 relative z-10">
+                    <TrendingUp className="h-6 w-6" />
+                    <div className="text-center">
+                      <div className="text-lg font-bold">📈 AI-projektin vaikutus</div>
+                      <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
+                    </div>
+                    <BarChart className="h-6 w-6" />
+                  </div>
+                </Button>
+              </Link>
             </div>
 
             {/* Case Cards Grid */}
@@ -220,171 +240,23 @@ export default function Home() {
 
             {/* AI Project Impact Analysis Section */}
             <div className="mt-12 mb-8">
-              <Dialog open={impactModalOpen} onOpenChange={setImpactModalOpen}>
-                <DialogTrigger asChild>
-                  <Button 
-                    size="lg"
-                    className="w-full h-16 bg-gradient-to-r from-slate-600 via-blue-600 to-slate-700 hover:from-slate-700 hover:via-blue-700 hover:to-slate-800 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
-                    data-testid="impact-analysis-cta"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div className="flex items-center justify-center space-x-3 relative z-10">
-                      <TrendingUp className="h-6 w-6" />
-                      <div className="text-center">
-                        <div className="text-lg font-bold">📈 Humm group oy onnistuneen AI-projektin vaikutus</div>
-                        <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
-                      </div>
-                      <BarChart className="h-6 w-6" />
+              <Link href="/impact-analysis">
+                <Button 
+                  size="lg"
+                  className="w-full h-16 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
+                  data-testid="impact-analysis-cta"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-center justify-center space-x-3 relative z-10">
+                    <TrendingUp className="h-6 w-6" />
+                    <div className="text-center">
+                      <div className="text-lg font-bold">📈 Humm group oy onnistuneen AI-projektin vaikutus</div>
+                      <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
                     </div>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh]">
-                  <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-green-700 dark:text-green-300 flex items-center gap-3">
-                      <TrendingUp className="h-6 w-6" />
-                      Onnistuneen AI-projektin vaikutus tehokkuuteen ja säästöihin
-                    </DialogTitle>
-                    <DialogDescription className="text-base">
-                      Kattava analyysi todellisista liiketoimintahyödyistä ja mitattavista tuloksista
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="h-[75vh] flex flex-col">
-                    {/* Modern Header */}
-                    <div className="bg-slate-800 text-white p-6 rounded-t-lg mb-6">
-                      <h1 className="text-3xl font-bold mb-2">Tekoälyn käyttöönoton vaikutus</h1>
-                      <p className="text-slate-200 text-lg">Arvioitu parannus suorituskyvyssä ja kilpailuasemassa</p>
-                    </div>
-
-                    <ScrollArea className="flex-1 px-4">
-                      <div className="space-y-6">
-                        {/* Financial Impact Chart Placeholder */}
-                        <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700">
-                          <h3 className="text-xl font-semibold text-center mb-4 text-slate-800 dark:text-slate-200">
-                            Arvioitu taloudellinen vaikutus 3 vuoden aikana
-                          </h3>
-                          <div className="h-32 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-lg flex items-center justify-center">
-                            <div className="text-center text-slate-600 dark:text-slate-400">
-                              <BarChart className="h-12 w-12 mx-auto mb-2" />
-                              <p className="text-sm">Liikevaihdon kasvu, kustannussäästöt ja kannattavuuden parannus</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Impact Grid - 2x2 Layout */}
-                        <div className="grid md:grid-cols-2 gap-6">
-                          {/* Operational Efficiency Card */}
-                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
-                            <div className="flex items-center mb-4">
-                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
-                                <Zap className="h-6 w-6 text-slate-800 dark:text-slate-200" />
-                              </div>
-                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Operatiivinen tehokkuus</h3>
-                            </div>
-                            <div className="flex-1">
-                              <ul className="space-y-3 mb-4">
-                                <li className="flex items-start">
-                                  <TrendingUp className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Prosessien automaatio</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <Clock className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Vastausaikojen lyhentyminen</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <Users className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Resurssien optimointi</span>
-                                </li>
-                              </ul>
-                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">+25-30% tehokkuuden parannus</div>
-                            </div>
-                          </div>
-
-                          {/* Cost Reduction Card */}
-                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
-                            <div className="flex items-center mb-4">
-                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
-                                <PiggyBank className="h-6 w-6 text-slate-800 dark:text-slate-200" />
-                              </div>
-                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Kustannussäästöt</h3>
-                            </div>
-                            <div className="flex-1">
-                              <ul className="space-y-3 mb-4">
-                                <li className="flex items-start">
-                                  <Headphones className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Asiakaspalvelukustannusten alennus</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <Wrench className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Manuaalisen työn väheneminen</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <LineChart className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Parempi resurssisuunnittelu</span>
-                                </li>
-                              </ul>
-                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">15-20% kustannussäästö</div>
-                            </div>
-                          </div>
-
-                          {/* Customer Experience Card */}
-                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
-                            <div className="flex items-center mb-4">
-                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
-                                <Heart className="h-6 w-6 text-slate-800 dark:text-slate-200" />
-                              </div>
-                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Asiakaskokemus</h3>
-                            </div>
-                            <div className="flex-1">
-                              <ul className="space-y-3 mb-4">
-                                <li className="flex items-start">
-                                  <MessageSquare className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">24/7 AI-tuki</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <Brain className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Personoitu vuorovaikutus</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <Star className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Ennakoiva palvelu</span>
-                                </li>
-                              </ul>
-                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">+35-40% tyytyväisyys</div>
-                            </div>
-                          </div>
-
-                          {/* Revenue Growth Card */}
-                          <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-6 border border-slate-200 dark:border-slate-700 flex flex-col h-full">
-                            <div className="flex items-center mb-4">
-                              <div className="w-12 h-12 bg-slate-800 bg-opacity-10 dark:bg-slate-600 rounded-full flex items-center justify-center mr-4">
-                                <TrendingUp className="h-6 w-6 text-slate-800 dark:text-slate-200" />
-                              </div>
-                              <h3 className="text-xl font-semibold text-slate-800 dark:text-slate-200">Liikevaihdon kasvu</h3>
-                            </div>
-                            <div className="flex-1">
-                              <ul className="space-y-3 mb-4">
-                                <li className="flex items-start">
-                                  <ShoppingBag className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Uudet AI-palvelut</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <Shield className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Asiakassäilyvyyden parannus</span>
-                                </li>
-                                <li className="flex items-start">
-                                  <Award className="h-5 w-5 text-slate-600 dark:text-slate-400 mr-3 mt-0.5 flex-shrink-0" />
-                                  <span className="text-slate-700 dark:text-slate-300">Kilpailuedun saavuttaminen</span>
-                                </li>
-                              </ul>
-                              <div className="text-2xl font-bold text-slate-800 dark:text-slate-200">+20-25% liikevaihdon kasvu</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollArea>
+                    <BarChart className="h-6 w-6" />
                   </div>
-                </DialogContent>
-              </Dialog>
+                </Button>
+              </Link>
             </div>
           </div>
 
