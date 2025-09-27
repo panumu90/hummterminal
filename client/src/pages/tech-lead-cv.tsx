@@ -225,19 +225,18 @@ export default function TechLeadCV() {
         }
         
         .content-subtitle {
-          color: var(--brand-2);
+          color: var(--txt);
           font-size: 1.1rem;
           font-weight: 700;
           margin: 24px 0 12px 0;
-          display: flex;
-          align-items: center;
-          gap: 8px;
+          border-bottom: 1px solid rgba(255,255,255,.1);
+          padding-bottom: 8px;
         }
         
         .skill-highlight {
-          background: rgba(37,99,235,.08);
-          border: 1px solid rgba(37,99,235,.2);
-          border-radius: 12px;
+          background: rgba(255,255,255,.03);
+          border: 1px solid rgba(255,255,255,.1);
+          border-radius: 8px;
           padding: 16px;
           margin: 16px 0;
         }
@@ -247,17 +246,18 @@ export default function TechLeadCV() {
         }
         
         .philosophy-text {
-          background: rgba(255,255,255,.04);
-          border-left: 3px solid var(--brand-2);
+          background: rgba(255,255,255,.02);
+          border-left: 3px solid rgba(255,255,255,.3);
           padding: 16px;
-          border-radius: 0 8px 8px 0;
+          border-radius: 0 4px 4px 0;
           font-style: italic;
           margin: 20px 0;
         }
         
         .value-proposition {
-          background: linear-gradient(135deg, rgba(37,99,235,.1), rgba(16,58,122,.1));
-          border-radius: 16px;
+          background: rgba(255,255,255,.02);
+          border: 1px solid rgba(255,255,255,.08);
+          border-radius: 8px;
           padding: 20px;
           margin: 24px 0;
         }
@@ -275,16 +275,18 @@ export default function TechLeadCV() {
         }
         
         .value-item {
-          background: rgba(255,255,255,.06);
+          background: rgba(255,255,255,.03);
+          border: 1px solid rgba(255,255,255,.08);
           padding: 12px;
-          border-radius: 8px;
+          border-radius: 4px;
           text-align: center;
           font-size: 0.9rem;
         }
         
         .role-intro {
           background: rgba(255,255,255,.02);
-          border-radius: 12px;
+          border: 1px solid rgba(255,255,255,.06);
+          border-radius: 8px;
           padding: 20px;
           margin-bottom: 24px;
         }
@@ -295,35 +297,33 @@ export default function TechLeadCV() {
         }
         
         .highlight-section {
-          color: var(--brand-2);
+          color: var(--txt);
           font-size: 1.2rem;
+          font-weight: 700;
           margin: 28px 0 16px 0;
-          display: flex;
-          align-items: center;
-          gap: 8px;
+          border-bottom: 1px solid rgba(255,255,255,.2);
+          padding-bottom: 8px;
         }
         
         .emphasis-box {
-          background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(16,58,122,.06));
-          border: 1px solid rgba(37,99,235,.15);
-          border-radius: 16px;
+          background: rgba(255,255,255,.02);
+          border: 1px solid rgba(255,255,255,.1);
+          border-radius: 8px;
           padding: 24px;
           margin: 16px 0;
         }
         
         .critical-text {
-          background: linear-gradient(90deg, #ef4444, #dc2626);
-          background-clip: text;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          color: var(--txt);
           font-weight: 800;
           font-size: 1.1em;
         }
         
         .commitment-list {
           margin: 16px 0;
-          background: rgba(255,255,255,.04);
-          border-radius: 8px;
+          background: rgba(255,255,255,.02);
+          border: 1px solid rgba(255,255,255,.06);
+          border-radius: 4px;
           padding: 16px;
         }
         
@@ -333,9 +333,9 @@ export default function TechLeadCV() {
         }
         
         .result-text {
-          background: rgba(34,197,94,.1);
-          border: 1px solid rgba(34,197,94,.2);
-          border-radius: 8px;
+          background: rgba(255,255,255,.03);
+          border: 1px solid rgba(255,255,255,.1);
+          border-radius: 4px;
           padding: 12px;
           margin-top: 16px;
           text-align: center;
@@ -366,11 +366,12 @@ export default function TechLeadCV() {
         }
         
         .enhanced-list li::before {
-          content: '✓';
+          content: '•';
           position: absolute;
           left: 0;
-          color: var(--brand-2);
+          color: rgba(255,255,255,.6);
           font-weight: bold;
+          font-size: 1.2em;
         }
         
         /* Better spacing and visual hierarchy */
@@ -405,18 +406,17 @@ export default function TechLeadCV() {
           margin-top: 20px;
         }
         
-        /* Chip styling improvements */
+        /* Professional chip styling */
         .chip {
           display: inline-block;
-          background: linear-gradient(135deg, var(--brand-2), var(--brand));
-          color: white;
-          padding: 8px 16px;
-          border-radius: 20px;
+          background: rgba(255,255,255,.06);
+          color: var(--txt);
+          padding: 6px 12px;
+          border-radius: 4px;
           font-size: 0.85rem;
           font-weight: 600;
           margin: 4px 8px 4px 0;
-          box-shadow: 0 2px 8px rgba(37,99,235,.3);
-          border: 1px solid rgba(255,255,255,.1);
+          border: 1px solid rgba(255,255,255,.15);
         }
         
         /* Better responsive text sizing */
@@ -623,36 +623,36 @@ export default function TechLeadCV() {
           <section className="section card pad" aria-labelledby="h-mietteet">
             <h2 id="h-mietteet">Mietteitäni</h2>
             <div className="content">
-              <h3 className="content-subtitle">💼 Analyysi ja lähtökohdat</h3>
+              <h3 className="content-subtitle">Analyysi ja lähtökohdat</h3>
               <p>Olen perehtynyt syvällisesti <strong>Humm Group Oy:n</strong> toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin. Pohdin tarkkaan, minkälaista arvoa voisin yritykselle tuoda.</p>
               
-              <h3 className="content-subtitle">🎯 Ydinosaaminen</h3>
+              <h3 className="content-subtitle">Ydinosaaminen</h3>
               <p>Erikoisosaamiseni keskittyy kahteen kriittiseen alueeseen:</p>
               <div className="skill-highlight">
                 <p><strong>1. Järjestelmäintegraatiot:</strong> API-integraatiot, CRM-järjestelmien kytkennät, automaatiotyökalut ja datan siirtäminen eri järjestelmien välillä saumattomasti.</p>
                 <p><strong>2. Tekoälyn strateginen hyödyntäminen:</strong> GPT-mallien hyödyntäminen, embedding-teknologiat, RAG-arkkitehtuurit ja fine-tuning-prosessit.</p>
               </div>
               
-              <h3 className="content-subtitle">🚀 Käytännön osaamisen todistus</h3>
+              <h3 className="content-subtitle">Käytännön osaamisen todistus</h3>
               <p>Osaan rakentaa <strong>AI-strategioita</strong>, implementoida niitä käytännössä ja mitata liiketoimintavaikutuksia. <em>Tämä sovellus toimii konkreettisena näyttönä kyvyistäni.</em></p>
               
-              <h3 className="content-subtitle">💡 Liiketoimintaymmärrys</h3>
+              <h3 className="content-subtitle">Liiketoimintaymmärrys</h3>
               <p>Usean vuoden kokemus suurten pörssiyhtiöiden analysoinnista antaa perspektiiviä menestyneiden organisaatioiden johtamiseen.</p>
               
               <p className="philosophy-text">Lähestymistapani: <strong>asiakaskokemus edellä, teknologia seuraa</strong>. Haluan olla mukana merkityksellisessä työssä ja luoda todellista arvoa.</p>
               
               <div className="value-proposition">
-                <h4>🎯 Kolme arvonluontitapaa Hummille:</h4>
+                <h4>Kolme arvonluontitapaa Hummille:</h4>
                 <div className="value-grid">
-                  <div className="value-item">📈 <strong>Tehokkuuden parantaminen</strong></div>
-                  <div className="value-item">💡 <strong>Uusien palvelumallien ideointi</strong></div>
-                  <div className="value-item">🎨 <strong>Asiakaskokemuksen kehittäminen</strong></div>
+                  <div className="value-item"><strong>Tehokkuuden parantaminen</strong></div>
+                  <div className="value-item"><strong>Uusien palvelumallien ideointi</strong></div>
+                  <div className="value-item"><strong>Asiakaskokemuksen kehittäminen</strong></div>
                 </div>
               </div>
               
-              <h3 className="content-subtitle">🔍 Markkinaanalyysi</h3>
+              <h3 className="content-subtitle">Markkinaanalyysi</h3>
               <p>Kilpailijoihin perehtyessäni huomasin, että monet hyödyntävät jo tekoälyä ja automaatiota. <strong>Voisin tuoda arvoa käytännön AI-osaamisella.</strong></p>
-              <h3 className="content-subtitle">👤 Henkilökohtaiset vahvuudet</h3>
+              <h3 className="content-subtitle">Henkilökohtaiset vahvuudet</h3>
               <div className="enhanced-list">
                 <ul>
                   <li><strong>Innovatiivisuus</strong> ja uteliaisuus uusia teknologioita kohtaan</li>
@@ -664,7 +664,7 @@ export default function TechLeadCV() {
                 </ul>
               </div>
               
-              <h3 className="content-subtitle">❓ Miksi nämä ovat kriittisiä Tech Leadille</h3>
+              <h3 className="content-subtitle">Miksi nämä ovat kriittisiä Tech Leadille</h3>
               <div className="enhanced-list">
                 <ul>
                   <li>Tekoälyala kehittyy nopeasti → <strong>jatkuva oppiminen on välttämätöntä</strong></li>
@@ -689,22 +689,22 @@ export default function TechLeadCV() {
                   <p className="lead-text">Rooli on erityisen vaativa, koska <strong>Humm Group</strong> on pieni yritys, joka on vasta aloittamassa tekoälymatkaansa. Tech Leadin on oltava sekä <strong>tekninen asiantuntija</strong> että <strong>strateginen ajattelija</strong>.</p>
                 </div>
                 
-                <h3 className="highlight-section">⚡ Jatkuva kehitys - elinehto AI-maailmassa</h3>
+                <h3 className="highlight-section">Jatkuva kehitys - elinehto AI-maailmassa</h3>
                 <div className="emphasis-box">
                   <p>Tekoälyala kehittyy <strong>eksponentiaalisesti</strong>. Jatkuva oppiminen ja kehittyminen eivät ole vain hyviä ominaisuuksia - ne ovat <span className="critical-text">elinehtoja</span> Tech Leadille AI-maailmassa.</p>
                   
                   <div className="commitment-list">
                     <p><strong>Sitoudun:</strong></p>
-                    <p>🔬 Seuraamaan aktiivisesti alan tutkimusta</p>
-                    <p>🧪 Kokeilemaan uusia teknologioita</p>
-                    <p>🤝 Osallistumaan AI-yhteisöihin</p>
-                    <p>⚙️ Tekemään jatkuvasti proof-of-concept -toteutuksia</p>
+                    <p>Seuraamaan aktiivisesti alan tutkimusta</p>
+                    <p>Kokeilemaan uusia teknologioita</p>
+                    <p>Osallistumaan AI-yhteisöihin</p>
+                    <p>Tekemään jatkuvasti proof-of-concept -toteutuksia</p>
                   </div>
                   
                   <p className="result-text">Tämä varmistaa, että <strong>Humm Group pysyy teknologisen kehityksen kärjessä</strong>.</p>
                 </div>
                 
-                <h3 className="content-subtitle">🎯 Liiketoiminnan ymmärrys ja mahdollisuudet</h3>
+                <h3 className="content-subtitle">Liiketoiminnan ymmärrys ja mahdollisuudet</h3>
                 <div className="enhanced-list">
                   <ul>
                     <li><strong>Asiakaskokemus & ulkoistus:</strong> Merkittävä arvopotentiaali tekoälyllä</li>
@@ -728,7 +728,7 @@ export default function TechLeadCV() {
                 <p>Systemaattinen lähestymistapa Tech Lead -roolin onnistumiseen keskittyen kommunikointiin, joustavuuteen, arvon tuottamiseen ja kulttuurin muutokseen...</p>
               </div>
               <div className="full-content">
-                <h3 className="content-subtitle">💬 Kommunikointi ja läpinäkyvyys</h3>
+                <h3 className="content-subtitle">Kommunikointi ja läpinäkyvyys</h3>
                 <div className="enhanced-list">
                   <ul>
                     <li><strong>Säännölliset palaverit</strong> johdon ja tiimin kanssa</li>
@@ -737,7 +737,7 @@ export default function TechLeadCV() {
                   </ul>
                 </div>
                 
-                <h3 className="content-subtitle">🔄 Joustavuus ja iteratiivisuus</h3>
+                <h3 className="content-subtitle">Joustavuus ja iteratiivisuus</h3>
                 <div className="enhanced-list">
                   <ul>
                     <li><strong>Ketteryys:</strong> Valmius muuttaa suunnitelmia tarpeen mukaan</li>
@@ -746,7 +746,7 @@ export default function TechLeadCV() {
                   </ul>
                 </div>
                 
-                <h3 className="content-subtitle">💰 Liiketoiminnan arvon tuottaminen</h3>
+                <h3 className="content-subtitle">Liiketoiminnan arvon tuottaminen</h3>
                 <div className="enhanced-list">
                   <ul>
                     <li><strong>Quick wins:</strong> Keskity hankkeisiin, jotka tuottavat nopeasti arvoa</li>
@@ -755,7 +755,7 @@ export default function TechLeadCV() {
                   </ul>
                 </div>
                 
-                <h3 className="content-subtitle">🎭 Kulttuurin muutos</h3>
+                <h3 className="content-subtitle">Kulttuurin muutos</h3>
                 <div className="enhanced-list">
                   <ul>
                     <li><strong>Osaamisen kehitys:</strong> Teko älyosaaminen koko organisaatiossa</li>
@@ -783,17 +783,17 @@ export default function TechLeadCV() {
                   <p className="lead-text">Tech Lead -rooli on <strong>strategisesti kriittinen</strong> Humm Group Oy:lle tekoälyn hyödyntämisessä ja kilpailuedun saavuttamisessa. Onnistunut Tech Lead yhdistää teknologisen osaamisen, liiketoimintaymmärryksen ja johtamistaidot.</p>
                 </div>
                 
-                <h3 className="content-subtitle">🚀 AI:n strategiset hyödyt Hummille</h3>
+                <h3 className="content-subtitle">AI:n strategiset hyödyt Hummille</h3>
                 <div className="value-proposition">
                   <div className="value-grid">
-                    <div className="value-item">👥 <strong>Asiakaskokemuksen parantaminen</strong></div>
-                    <div className="value-item">⚡ <strong>Operatiivisen tehokkuuden lisääminen</strong></div>
-                    <div className="value-item">🎯 <strong>Uusien palveluiden kehittäminen</strong></div>
-                    <div className="value-item">📊 <strong>Päätöksenteon tukeminen</strong></div>
+                    <div className="value-item"><strong>Asiakaskokemuksen parantaminen</strong></div>
+                    <div className="value-item"><strong>Operatiivisen tehokkuuden lisääminen</strong></div>
+                    <div className="value-item"><strong>Uusien palveluiden kehittäminen</strong></div>
+                    <div className="value-item"><strong>Päätöksenteon tukeminen</strong></div>
                   </div>
                 </div>
                 
-                <h3 className="content-subtitle">📈 Seuranta ja läpinäkyvyys</h3>
+                <h3 className="content-subtitle">Seuranta ja läpinäkyvyys</h3>
                 <p className="philosophy-text">Seurattava dashboard on <strong>välttämätön työkalu</strong> Tech Leadille - mahdollistaa strategian ja toteutuksen jatkuvan seurannan, läpinäkyvyyden ja päätöksenteon tukemisen.</p>
                 
                 <div className="result-text">

@@ -79,7 +79,7 @@ export default function Home() {
                   <div className="flex items-center justify-center space-x-3 relative z-10">
                     <Rocket className="h-6 w-6" />
                     <div className="text-center">
-                      <div className="text-lg font-bold">🚀 Tech Lead ja humm group oy</div>
+                      <div className="text-lg font-bold">Tech Lead ja Humm Group Oy</div>
                       <div className="text-sm opacity-90">Minun visio roolista</div>
                     </div>
                     <Users className="h-6 w-6" />
@@ -98,7 +98,7 @@ export default function Home() {
                   <div className="flex items-center justify-center space-x-3 relative z-10">
                     <TrendingUp className="h-6 w-6" />
                     <div className="text-center">
-                      <div className="text-lg font-bold">📈 AI-projektin vaikutus</div>
+                      <div className="text-lg font-bold">AI-projektin vaikutus</div>
                       <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
                     </div>
                     <BarChart className="h-6 w-6" />
@@ -187,7 +187,7 @@ export default function Home() {
                   <div className="flex items-center justify-center space-x-3 relative z-10">
                     <TrendingUp className="h-6 w-6" />
                     <div className="text-center">
-                      <div className="text-lg font-bold">📈 Humm group oy onnistuneen AI-projektin vaikutus</div>
+                      <div className="text-lg font-bold">Humm Group Oy onnistuneen AI-projektin vaikutus</div>
                       <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
                     </div>
                     <BarChart className="h-6 w-6" />
