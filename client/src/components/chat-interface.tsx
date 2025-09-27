@@ -668,78 +668,6 @@ export function ChatInterface() {
           </Button>
         </div>
 
-        {/* MCP Section - TÄRKEÄ! */}
-        <div className={`border-b border-border bg-emerald-950 transition-all duration-300 ${
-          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 pb-6 max-h-none opacity-100'
-        }`}>
-          <div className="flex items-center gap-2 mb-3">
-            <Shield className="h-5 w-5 text-emerald-600" />
-            <h4 className="text-sm font-semibold text-emerald-100">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
-          </div>
-          <p className="text-xs text-emerald-300 mb-3">
-            MCP mahdollistaa turvallisen AI-integraation yritysjärjestelmiin
-          </p>
-          <div className="grid grid-cols-1 gap-2">
-            {mcpQuestions.map((question) => {
-              const IconComponent = question.icon;
-              return (
-                <PulseButton
-                  key={question.id}
-                  variant="outline"
-                  size="sm"
-                  pulse="subtle"
-                  className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white"
-                  onClick={() => handleQuestionClick(question.id)}
-                  loading={questionMutation.isPending}
-                  disabled={questionMutation.isPending}
-                  data-testid={`question-${question.id}`}
-                >
-                  <IconComponent className="h-4 w-4 mr-2 text-emerald-600 flex-shrink-0" />
-                  <span className="leading-tight">{question.question}</span>
-                </PulseButton>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* AI Kysymykset aiheittain */}
-        <div className={`border-b border-border transition-all duration-300 ${
-          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-80 overflow-y-auto opacity-100'
-        }`}>
-          <h4 className="text-sm font-medium mb-3 text-foreground">AI-asiakaspalvelu kysymykset:</h4>
-          <div className="space-y-4">
-            {topicAreas.map((topic) => {
-              const TopicIcon = topic.icon;
-              return (
-                <div key={topic.id} className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <TopicIcon className={`h-4 w-4 ${topic.color.replace('bg-', 'text-')}`} />
-                    <h5 className="text-xs font-medium text-foreground">{topic.title}</h5>
-                  </div>
-                  <div className="grid grid-cols-1 gap-1 ml-6">
-                    {topic.questions.map((question) => {
-                      const QuestionIcon = question.icon;
-                      return (
-                        <Button
-                          key={question.id}
-                          variant="ghost"
-                          size="sm"
-                          className="h-auto p-2 text-xs text-left justify-start hover:bg-muted"
-                          onClick={() => handleQuestionClick(question.id)}
-                          disabled={questionMutation.isPending}
-                          data-testid={`question-${question.id}`}
-                        >
-                          <QuestionIcon className="h-3 w-3 mr-2 text-muted-foreground flex-shrink-0" />
-                          <span className="leading-tight text-muted-foreground">{question.question}</span>
-                        </Button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
 
         {/* Chat Messages */}
@@ -885,6 +813,79 @@ export function ChatInterface() {
                 ROI & Hyödyt
               </Badge>
             </div>
+          </div>
+        </div>
+
+        {/* MCP Section - TÄRKEÄ! */}
+        <div className={`border-t border-border bg-emerald-950 transition-all duration-300 ${
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 pb-6 max-h-none opacity-100'
+        }`}>
+          <div className="flex items-center gap-2 mb-3">
+            <Shield className="h-5 w-5 text-emerald-600" />
+            <h4 className="text-sm font-semibold text-emerald-100">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
+          </div>
+          <p className="text-xs text-emerald-300 mb-3">
+            MCP mahdollistaa turvallisen AI-integraation yritysjärjestelmiin
+          </p>
+          <div className="grid grid-cols-1 gap-2">
+            {mcpQuestions.map((question) => {
+              const IconComponent = question.icon;
+              return (
+                <PulseButton
+                  key={question.id}
+                  variant="outline"
+                  size="sm"
+                  pulse="subtle"
+                  className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white"
+                  onClick={() => handleQuestionClick(question.id)}
+                  loading={questionMutation.isPending}
+                  disabled={questionMutation.isPending}
+                  data-testid={`question-${question.id}`}
+                >
+                  <IconComponent className="h-4 w-4 mr-2 text-emerald-600 flex-shrink-0" />
+                  <span className="leading-tight">{question.question}</span>
+                </PulseButton>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* AI Kysymykset aiheittain */}
+        <div className={`border-t border-border transition-all duration-300 ${
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-80 overflow-y-auto opacity-100'
+        }`}>
+          <h4 className="text-sm font-medium mb-3 text-foreground">AI-asiakaspalvelu kysymykset:</h4>
+          <div className="space-y-4">
+            {topicAreas.map((topic) => {
+              const TopicIcon = topic.icon;
+              return (
+                <div key={topic.id} className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <TopicIcon className={`h-4 w-4 ${topic.color.replace('bg-', 'text-')}`} />
+                    <h5 className="text-xs font-medium text-foreground">{topic.title}</h5>
+                  </div>
+                  <div className="grid grid-cols-1 gap-1 ml-6">
+                    {topic.questions.map((question) => {
+                      const QuestionIcon = question.icon;
+                      return (
+                        <Button
+                          key={question.id}
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-2 text-xs text-left justify-start hover:bg-muted"
+                          onClick={() => handleQuestionClick(question.id)}
+                          disabled={questionMutation.isPending}
+                          data-testid={`question-${question.id}`}
+                        >
+                          <QuestionIcon className="h-3 w-3 mr-2 text-muted-foreground flex-shrink-0" />
+                          <span className="leading-tight text-muted-foreground">{question.question}</span>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </Card>
