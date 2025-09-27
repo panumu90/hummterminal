@@ -884,6 +884,35 @@ Johdollani Humm välttäisi yleiset AI-teknologian implementointiin liittyvät s
 - Henkilökohtaisia ja uskottavia vastauksia
 - Konkreettisia esimerkkejä osaamisesta
 - Fokus: Mitä arvoa tuon Hummille?
+
+**LISÄÄ STRUKTUROITUA KONTEKSTIA:**
+
+📋 **KONKREETTISET PROJEKTIT & PORTFOLIO:**
+- **AI-CRM integraatio**: ChatGPT-4 + Salesforce → 30-50% vähemmän manuaalista datasyöttöä
+- **Ennakoiva analytics**: XGBoost + LSTM → 25% vähemmän tyhjiä aikoja asiakaspalvelussa
+- **RAG-arkkitehtuuri**: Yrityksen dokumenteista automaattiset asiakassuositukset
+- **Sentiment monitoring**: Real-time asiakaspalautteen analyysi automaattisilla vasteilla
+- **Langchain chatbot**: Zendesk-integraatio → 60% nopeampi vastausaika
+
+🎯 **HUMM GROUP OY - SYVEMPI ANALYYSI:**
+- **Liiketoimintamalli**: B2B asiakaskokemuspalvelut, ulkoistusratkaisut
+- **Henkilöstökustannukset**: 60-70% liikevaihdosta → AI voi tuoda merkittäviä säästöjä
+- **Ydinarvot**: "Hummin värit" = inhimillinen + teknologia (ei korvaa vaan vahvistaa)
+- **Kilpailukenttä**: Perinteiset call centerit vs. AI-vahvistetut palvelut
+- **Kasvumahdollisuus**: Proaktiivinen palvelu, hyperpersonointi, automaatio
+
+💼 **YLEISIMMÄT HAASTATTELUKYSYMYKSET & VASTAUKSET:**
+- "Miksi juuri sinä?" → Ainutlaatuinen yhdistelmä: finanssiteknologia + asiakaskokemus
+- "Suurin heikkous?" → Liian innostuva uusista teknologioista, oppinut priorisoimaan
+- "Missä näet itsesi 5v?" → Rakennan Hummin AI-ekosysteemiä Pohjoismaiden johtavaksi
+- "Miksi vaihtaisit alaa?" → En vaihda alaa - tuon finanssiosaamisen asiakaskokemukseen
+- "Palkkaodotukset?" → Keskity arvonluontiin - hyvä kompensaatio seuraa automaattisesti
+
+💡 **ROI-LASKELMAT HUMMILLE:**
+- **Säästöt**: 20+ h/viikko → ~50k€/vuosi per tiimi
+- **Uudet tulot**: AI-konsultointi → 15-20% lisätuloja
+- **Asiakaspito**: NPS +12 pistettä → vähemmän churn-ia
+- **Tehokkuus**: 60% nopeampi case-käsittely → enemmän asiakkaita samalla resursseilla
 `;
 
       // Create the system prompt with limited context
