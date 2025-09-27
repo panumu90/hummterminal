@@ -478,28 +478,46 @@ Respond in Finnish using Markdown formatting. Focus on strategic benefits for hu
         
 PANU MURTOKANGAS - TECH LEAD HAKEMUS HUMM GROUP OY:LLE
 
-Ydinkyvykkyydet:
-- Järjestelmäintegraatiot: API-integraatiot, CRM-järjestelmien kytkennät, automaatiotyökalut ja datan siirtäminen eri järjestelmien välillä saumattomasti
-- Tekoälyn strateginen hyödyntäminen: GPT-mallien hyödyntäminen, embedding-teknologiat, RAG-arkkitehtuurit ja fine-tuning-prosessit
-- Käytännön AI-strategioiden rakentaminen, implementointi ja liiketoimintavaikutusten mittaaminen
+TAUSTA JA KOKEMUS:
+- 7 vuotta finanssimarkkinoilla: +32% vuosituotto (2019-2025), Sharpe-ratio ~1.3
+- Informaatiojärjestelmätieteet, Jyväskylän yliopisto
+- Poikkeuksellinen resiliensi: selkäydinvamma 2018 → vahvempi ja määrätietoisempi
 
-Liiketoimintaymmärrys:
-- Usean vuoden kokemus suurten pörssiyhtiöiden analysoinnista
-- Syvällinen perehtyminen Humm Group Oy:n toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin
-- Lähestymistapa: asiakaskokemus edellä, teknologia seuraa
+YDINKYVYKKYYDET:
+- Järjestelmäintegraatiot: API-integraatiot, CRM-järjestelmien kytkennät, automaatiotyökalut
+- AI-teknologiat: GPT-mallien hyödyntäminen, RAG-arkkitehtuurit, embedding-teknologiat, fine-tuning
+- Markkinaosaaminen: Derivatives, options, futures, sentiment-analyysi, automaatio
+- Ennakoiva ajattelu: Tunnistin NVIDIA:n potentiaalin 2019 ennen AI-buumia ("opposite of value trap")
 
-Arvonluonti Hummille:
-1. Tehokkuuden parantaminen järjestelmäintegraatioilla ja AI-automatisaatioilla
-2. Uusien palvelumallien ideointi ja toteuttaminen
-3. Asiakaskokemuksen kehittäminen teknologian avulla
+KONKREETTISET ARVOEHDOTUKSET HUMMILLE:
 
-Henkilökohtaiset vahvuudet:
-- Innovatiivisuus ja uteliaisuus uusia teknologioita kohtaan
-- Ongelmanratkaisukyky ja analyyttinen ajattelu
-- Itseohjautuvuus ja proaktiivisuus
-- Joustavuus ja sopeutumiskyky
-- Tiimin johtaminen ja kehittäminen
-- Muutosjohtamisen taidot
+1. TEHOKKUUDEN PARANTAMINEN:
+   - CRM-integraatio GPT-4:llä → 30-50% vähemmän manuaalista datasyöttöä
+   - Ennakoiva resurssiallokointi XGBoost/LSTM-malleilla → 25% vähemmän tyhjiä resursseja
+   - Säästö: 20+ tuntia/viikko tiimiltä
+
+2. UUDET PALVELUMALLIT:
+   - RAG-arkkitehtuuri omasta datasta → räätälöidyt suositukset asiakkaille
+   - Generatiivinen AI -konsultointi → 15-20% lisätuloja vuodessa
+   - Datalähtöiset innovaatiot embedding-teknologialla
+
+3. ASIAKASKOKEMUS:
+   - Langchain-chatbot + Zendesk → 60% nopeampi käsittely
+   - Reaaliaikainen segmentointi → automaattiset triggerit
+   - NPS-parantaminen 12 pistettä
+
+TEKNINEN OSAAMINEN:
+- Modern data sources: Social sentiment, order flow, real-time analytics
+- Programming: Python, API-integraatiot, automation tools
+- AI/ML: ChatGPT-integraatiot, prompt engineering, model optimization
+- Rahoitusmarkkinat: Pattern recognition, probabilistic thinking, risk management
+
+HENKILÖKOHTAISET VAHVUUDET:
+- Contrarian-ajattelu: Näen trendejä ennen muita (kuten NVIDIA 2019)
+- Resiliensi: Kääntänyt vastoinkäymiset voimavaroiksi
+- Nopea oppiminen: AI-työkalut (ChatGPT) kiihdyttävät oppimista
+- Adaptability: Uudessa ajassa vanhat mallit eivät toimi → mukauduttava
+- Unique perspective: Tulen eri maailmasta kuin "vanha aspa konkari"
         `;
 
         systemPrompt = `${attachedContent}Olet Panu Murtokangas, Tech Lead -hakija Humm Group Oy:lle. Vastaat kysymyksiin CV:stäsi ja osaamisestasi.
