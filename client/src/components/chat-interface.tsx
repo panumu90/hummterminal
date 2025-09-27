@@ -377,7 +377,7 @@ const contextConfig = {
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      content: "Hei! Voin kertoa lisää näistä AI-asiakaspalvelutoteutuksista. Valitse painikkeesta aihepiiri joka kiinnostaa sinua eniten, niin osaan antaa tarkempia vastauksia.",
+      content: "Moro Hummilaiset. Tähän chattiin on integroitu Googlen uusin Gemini 2.5 pro tekoäly ja sitä on koulutettu vastaamaan teidän mieltä askarruttaviin kysymyksiin tekoälyn implementoinnista liiketoimintaan. Feel free to ask anything",
       isUser: false,
       timestamp: Date.now()
     }
