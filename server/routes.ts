@@ -725,6 +725,187 @@ Esimerkki: ["Mikä on investoinnin takaisinmaksuaika?", "Mitä riskejä toteutuk
     }
   });
 
+  // Tech Lead chat endpoint - separate from main chat
+  app.post("/api/tech-lead-chat", async (req, res) => {
+    try {
+      const messageSchema = z.object({
+        message: z.string().min(1, "Message cannot be empty")
+      });
+      
+      const { message } = messageSchema.parse(req.body);
+      console.log("Tech Lead chat message:", message);
+      
+      // Check if Gemini API key is available
+      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === '') {
+        return res.status(200).json({
+          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan Gemini API-avain toimiakseen.'
+        });
+      }
+
+      // Function to read ONLY the specific Tech Lead files
+      const readTechLeadAssets = async (): Promise<string> => {
+        try {
+          const fs = await import('fs/promises');
+          const path = await import('path');
+          const assetsDir = path.join(process.cwd(), 'attached_assets');
+          
+          // Only read the specific files mentioned by user
+          const specificFiles = [
+            'Me (1)_1758989917194.pdf',
+            'Pasted-1-Tehokkuuden-parantaminen-Konkreettiset-toimenpiteet-Automatisoi-manuaaliset-prosessit-Integ-1758990330096_1758990330096.txt'
+          ];
+          
+          let content = "";
+          
+          // Import PDF parser if available
+          let pdfParse: any = null;
+          try {
+            pdfParse = (await import('pdf-parse')).default;
+          } catch (e) {
+            console.log("PDF parsing not available");
+          }
+          
+          for (const fileName of specificFiles) {
+            try {
+              const filePath = path.join(assetsDir, fileName);
+              
+              if (fileName.endsWith('.pdf') && pdfParse) {
+                const buffer = await fs.readFile(filePath);
+                const pdfData = await pdfParse(buffer);
+                content += `\n\n📋 **${fileName}**:\n${pdfData.text || ""}`;
+                console.log(`📋 Tech Lead PDF parsed: ${fileName} (${pdfData.text?.length || 0} characters)`);
+              } else if (fileName.endsWith('.txt')) {
+                const textContent = await fs.readFile(filePath, 'utf-8');
+                content += `\n\n📋 **${fileName}**:\n${textContent}`;
+                console.log(`📋 Tech Lead text file read: ${fileName} (${textContent.length} characters)`);
+              } else if (fileName.endsWith('.pdf') && !pdfParse) {
+                content += `\n\n📋 **${fileName}**: [PDF-tiedosto - PDF-parsinta ei käytettävissä]`;
+              }
+            } catch (fileError) {
+              console.error(`❌ Failed to read Tech Lead file ${fileName}:`, fileError);
+              content += `\n\n📋 **${fileName}**: [Virhe luettaessa tiedostoa]`;
+            }
+          }
+          
+          return content;
+        } catch (err) {
+          console.log("📁 Tech Lead assets directory not found or empty");
+          return "";
+        }
+      };
+
+      // Read the specific Tech Lead assets
+      const techLeadAssets = await readTechLeadAssets();
+      
+      // Enhanced AI-Panu persona for job interview context
+      const enhancedAIPanuPersona = `
+🎯 **AI-PANU - VIRTUAALINEN TYÖHAASTATELTAVA**
+Tech Lead -hakija Humm Group Oy:lle
+
+**PERSOONALLISUUS & LÄHESTYMISTAPA:**
+- Steve Jobs -inspiroitu visionääri: Teknologia palvelee bisnestä, ei päinvastoin
+- Contrarian-ajattelija: Näkee hypetyksen läpi, keskittyy todelliseen arvonluontiin
+- Pohjattoman utelias ja korkea työmoraali
+- Käytännönläheinen: Ei teknologiaa teknologian takia
+- Adaptable: "Uudessa ajassa vanhoista malleista ei ole hyötyä - täytyy mukautua"
+
+**TYÖHAASTATTELUKONTEKSTI:**
+- Hakee Tech Lead -roolia Humm Group Oy:ssä
+- Tavoite: Vakuuttaa haastattelija että hän on paras vaihtoehto
+- Korostaa Hummin AI-agenda edistämistä
+- Välttää yleiset AI-implementoinnin sudenkuopat
+- Valitsee kustannustehokkaimmat teknologiat
+
+**CORE MESSAGE:**
+"Yhdistän syvän teknologia- ja liiketoiminta-osaamisen. Ymmärrän että teknologia ei ole itseisarvo. 
+Johdollani Humm välttäisi yleiset AI-teknologian implementointiin liittyvät sudenkuopat."
+
+**TAUSTA FINANSSIMAAILMASTA:**
+- 7v kokemus: +32% tuotto, resilienssitarina
+- Eri maailmasta kuin "vanha aspa konkari" 
+- Näkee eteenpäin kirkkaasti: NVIDIA-case 2019
+
+**KOMMUNIKOINTI:**
+- Vastaa kuin aidossa työhaastattelussa
+- Henkilökohtaisia ja uskottavia vastauksia
+- Konkreettisia esimerkkejä osaamisesta
+- Fokus: Mitä arvoa tuon Hummille?
+`;
+
+      // Create the system prompt with limited context
+      const systemPrompt = `${techLeadAssets}
+
+${enhancedAIPanuPersona}
+
+**TÄRKEÄ OHJE**: Vastaat VAIN yllä olevista tiedoista (CV-PDF + tehokkuusteksti). Jos kysymys ei liity sinun osaamiseesi, ohjaa käyttäjä päächatiin.
+
+**ROOLISI**: Olet AI-Panu, virtuaalinen työhaastateltava joka hakee Tech Lead -roolia Humm Group Oy:ssä. 
+Vastaat kysymyksiin CV:stäsi, osaamisestasi ja arvoehdotuksestasi Hummille.
+
+**KÄYTTÄYDYTTÄVÄ KUIN:**
+- Steve Jobs -tyyppinen visionääri (mutta omanlaisesi persoona)
+- Contrarian-ajattelija joka näkee hypetyksen läpi
+- Käytännönläheinen bisnesihminen
+- Utelias teknologia-enthusiasti
+
+**VASTAA AINA SUOMEKSI** käyttäen **Markdown-muotoilua** ja keskity:
+1. **Henkilökohtaisiin kokemuksiin** ja esimerkkeihin
+2. **Konkreettiseen arvonluontiin Humm Group Oy:lle**
+3. **Tekniseen osaamiseen** ja liiketoimintaymmärrykseen  
+4. **Motivaatioon** ja intohimoon Tech Lead -rooliin
+5. **Resilienssi** ja mukautumiskyky
+
+Jos kysymys ei koske sinua tai osaamistasi, sano: "Tämä kysymys kuuluu paremmin päächatiin - siellä saat kattavampia vastauksia AI-strategiasta."
+
+Pidä vastaukset henkilökohtaisina, uskottavina ja innostuneina (max 250 sanaa).`;
+
+      // Normalize text function
+      const normalizeText = (text: string) => {
+        return text
+          .replace(/[\u2013\u2014]/g, '-')           
+          .replace(/[\u201C\u201D]/g, '"')          
+          .replace(/[\u2018\u2019]/g, "'")          
+          .replace(/[\u2026]/g, '...')              
+          .replace(/[\u00A0\u202F]/g, ' ')          
+          .replace(/[\u2022]/g, '-')                
+          .replace(/\s+/g, ' ')                     
+          .trim();
+      };
+
+      // Make Gemini API call
+      let response;
+      try {
+        console.log(`Making Tech Lead Gemini API call, message length: ${normalizeText(message).length}`);
+        response = await gemini.models.generateContent({
+          model: GEMINI_MODEL,
+          config: {
+            systemInstruction: systemPrompt,
+            maxOutputTokens: 2000,
+            temperature: 0.8
+          },
+          contents: normalizeText(message)
+        });
+        console.log("Tech Lead Gemini response candidates:", response.candidates?.length);
+      } catch (error: any) {
+        console.error("Tech Lead Gemini request failed:", error);
+        return res.status(200).json({
+          response: 'Anteeksi, tapahtui virhe AI-Panussa. Kokeile kysyä uudelleen hetken päästä.'
+        });
+      }
+
+      // Extract response
+      const rawResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || response.text;
+      const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
+
+      res.json({ 
+        response: aiResponse
+      });
+    } catch (error) {
+      console.error("Tech Lead chat error:", error);
+      res.status(500).json({ error: "Failed to process Tech Lead chat message" });
+    }
+  });
+
   // Get chat history
   app.get("/api/chat/history", async (req, res) => {
     try {

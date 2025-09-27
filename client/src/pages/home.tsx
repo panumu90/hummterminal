@@ -49,9 +49,8 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 
   const techLeadChatMutation = useMutation({
     mutationFn: async (data: { message: string }) => {
-      const response = await apiRequest("POST", "/api/chat", { 
-        message: data.message,
-        context_type: "tech_lead"
+      const response = await apiRequest("POST", "/api/tech-lead-chat", { 
+        message: data.message
       });
       return response.json();
     },
