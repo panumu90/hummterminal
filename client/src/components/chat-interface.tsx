@@ -891,7 +891,39 @@ export function ChatInterface() {
         }`}>
           <h4 className="text-base font-semibold mb-4 text-white">🎯 Suositut kysymykset johdolle</h4>
           <div className="space-y-3">
-            {/* Top 3 featured questions with larger buttons */}
+            {/* Top 6 featured questions - hyperpersonalization and proactivity first */}
+            <PulseButton
+              variant="outline"
+              size="lg"
+              pulse="subtle"
+              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-purple-500 transition-all duration-200"
+              onClick={() => handleQuestionClick("hyperpersonalization-trend")}
+              disabled={questionMutation.isPending}
+              data-testid="featured-question-personalization"
+            >
+              <Target className="h-5 w-5 mr-3 text-purple-400 flex-shrink-0" />
+              <div>
+                <div className="font-medium">Kuinka hyperpersonointi mullistaa asiakaskokemuksen?</div>
+                <div className="text-xs text-slate-400 mt-1">Personalisaation tulevaisuus</div>
+              </div>
+            </PulseButton>
+
+            <PulseButton
+              variant="outline"
+              size="lg"
+              pulse="subtle"
+              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-orange-500 transition-all duration-200"
+              onClick={() => handleQuestionClick("proactive-service-trend")}
+              disabled={questionMutation.isPending}
+              data-testid="featured-question-proactive"
+            >
+              <Zap className="h-5 w-5 mr-3 text-orange-400 flex-shrink-0" />
+              <div>
+                <div className="font-medium">Miksi proaktiivinen asiakaspalvelu on vuoden 2025 megatrendi?</div>
+                <div className="text-xs text-slate-400 mt-1">Ennakoiva asiakaspalvelu</div>
+              </div>
+            </PulseButton>
+            
             <PulseButton
               variant="outline"
               size="lg"
@@ -928,15 +960,31 @@ export function ChatInterface() {
               variant="outline"
               size="lg"
               pulse="subtle"
-              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-purple-500 transition-all duration-200"
-              onClick={() => handleQuestionClick("hyperpersonalization-trend")}
+              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-red-500 transition-all duration-200"
+              onClick={() => handleQuestionClick("reduce-manual-work")}
               disabled={questionMutation.isPending}
-              data-testid="featured-question-personalization"
+              data-testid="featured-question-automation"
             >
-              <Target className="h-5 w-5 mr-3 text-purple-400 flex-shrink-0" />
+              <Workflow className="h-5 w-5 mr-3 text-red-400 flex-shrink-0" />
               <div>
-                <div className="font-medium">Kuinka hyperpersonointi mullistaa asiakaskokemuksen?</div>
-                <div className="text-xs text-slate-400 mt-1">Personalisaation tulevaisuus</div>
+                <div className="font-medium">Miten automaatio voi vähentää manuaalista työtä?</div>
+                <div className="text-xs text-slate-400 mt-1">Prosessien tehostaminen</div>
+              </div>
+            </PulseButton>
+
+            <PulseButton
+              variant="outline"
+              size="lg"
+              pulse="subtle"
+              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-cyan-500 transition-all duration-200"
+              onClick={() => handleQuestionClick("data-quality")}
+              disabled={questionMutation.isPending}
+              data-testid="featured-question-data"
+            >
+              <Shield className="h-5 w-5 mr-3 text-cyan-400 flex-shrink-0" />
+              <div>
+                <div className="font-medium">Miten asiakasdata pysyy laadukkaana ja suojattuna?</div>
+                <div className="text-xs text-slate-400 mt-1">Tietosuoja ja laatuvaatimukset</div>
               </div>
             </PulseButton>
           </div>
