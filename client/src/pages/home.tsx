@@ -28,7 +28,12 @@ interface ChatMessage {
 function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      content: "Olen perehtynyt syvällisesti Humm Group Oy:n toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin. Pohdin tarkkaan, minkälaista arvoa voisin yritykselle tuoda Tech Lead -roolissa.\n\nVoin keskustella taustastani, osaamisestani ja siitä, miten voisin edistää Hummin liiketoimintaa. Kysy mitä tahansa!",
+      content: "Moro Hummilaiset, olen nyt viikon ajan saanut perehtyä  Humm Group Oy:n toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin. Pohdin tarkkaan, minkälaista arvoa voisin yritykselle tuoda Tech Lead -roolissa. Olen saanut selkeän käsityksen roolissa pärjäämisen edellytyksistä ja näen, että olisin todennäköisesti ainoa hakija, joka voi aikuisten oikeasti viedä firmanne AI-agendaa eteenpäin",
+      isUser: false,
+      timestamp: Date.now() - 1000
+    },
+    {
+      content: "AI-skene etenee sellaista vauhtia, että kellään normaalilla ihmisellä ei ole aikaa eikä kiinnostusta sitä seurata. Minulle tämä on elämäntapa. Tulen taustaltani täysin eri maailmasta ja luulen, että se on hummille vain hyvä asia -- kukaan vanha aspa konkari ei hyvinkään todennäköisesti näe eteenpäin yhtä kirkkaasti. Uudessa ajassa vanhoista malleista ei ole hyötyä -- täytyy mukautua!  Kysy minulta mitä vain, niin ai-Panu vastaa",
       isUser: false,
       timestamp: Date.now()
     }
