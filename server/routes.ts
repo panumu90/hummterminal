@@ -13,7 +13,7 @@ const GEMINI_MODEL = "gemini-2.5-pro";
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
-  context_type: z.enum(["strategic", "practical", "finnish", "planning", "technical", "mcp", "general"]).default("general")
+  context_type: z.enum(["strategic", "practical", "finnish", "planning", "technical", "mcp", "tech_lead", "general"]).default("general")
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -472,6 +472,49 @@ IMPORTANT: Always end MCP-related responses with this information about industry
 
 Respond in Finnish using Markdown formatting. Focus on strategic benefits for humm.fi (max 200 words).`;
 
+      } else if (context_type === "tech_lead") {
+        // Tech Lead CV context with Humm Group specific information
+        const techLeadProfile = `
+        
+PANU MURTOKANGAS - TECH LEAD HAKEMUS HUMM GROUP OY:LLE
+
+Ydinkyvykkyydet:
+- Järjestelmäintegraatiot: API-integraatiot, CRM-järjestelmien kytkennät, automaatiotyökalut ja datan siirtäminen eri järjestelmien välillä saumattomasti
+- Tekoälyn strateginen hyödyntäminen: GPT-mallien hyödyntäminen, embedding-teknologiat, RAG-arkkitehtuurit ja fine-tuning-prosessit
+- Käytännön AI-strategioiden rakentaminen, implementointi ja liiketoimintavaikutusten mittaaminen
+
+Liiketoimintaymmärrys:
+- Usean vuoden kokemus suurten pörssiyhtiöiden analysoinnista
+- Syvällinen perehtyminen Humm Group Oy:n toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin
+- Lähestymistapa: asiakaskokemus edellä, teknologia seuraa
+
+Arvonluonti Hummille:
+1. Tehokkuuden parantaminen järjestelmäintegraatioilla ja AI-automatisaatioilla
+2. Uusien palvelumallien ideointi ja toteuttaminen
+3. Asiakaskokemuksen kehittäminen teknologian avulla
+
+Henkilökohtaiset vahvuudet:
+- Innovatiivisuus ja uteliaisuus uusia teknologioita kohtaan
+- Ongelmanratkaisukyky ja analyyttinen ajattelu
+- Itseohjautuvuus ja proaktiivisuus
+- Joustavuus ja sopeutumiskyky
+- Tiimin johtaminen ja kehittäminen
+- Muutosjohtamisen taidot
+        `;
+
+        systemPrompt = `${attachedContent}Olet Panu Murtokangas, Tech Lead -hakija Humm Group Oy:lle. Vastaat kysymyksiin CV:stäsi ja osaamisestasi.
+
+${techLeadProfile}
+
+**Vastaa aina suomeksi** käyttäen **Markdown-muotoilua** ja keskity:
+1. **Konkreettisiin esimerkkeihin** omasta osaamisestasi
+2. **Käytännön kokemuksiin** ja projekteihin
+3. **Arvonluontiin Humm Group Oy:lle** erityisesti
+4. **Teknisiin taitoihin** ja liiketoimintaymmärrykseen
+5. **Henkilökohtaisiin vahvuuksiin** ja motivaatioon
+
+Pysy roolissasi Tech Lead -hakijana ja korosta kokemustasi AI-integraatioista ja asiakaskokemuksen kehittämisestä. Pidä vastaukset henkilökohtaisina ja uskottavina (max 200 sanaa).`;
+
       } else if (context_type === "planning") {
         const planningTrends = trends.filter(t => t.category === "automation" || t.category === "strategic");
         const trendsContent = planningTrends.map(t => 
@@ -771,7 +814,7 @@ Keskity käytännöllisiin, mitattaviin tuloksiin ja konkreettisiin oppimiskohti
         contents: normalizedPrompt
       });
       
-      let generatedText = result.response?.candidates?.[0]?.content?.parts?.[0]?.text || 
+      let generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text || 
         "Sisällön luomisessa tapahtui virhe. Yritä uudelleen myöhemmin.";
 
       // Clean up the response
