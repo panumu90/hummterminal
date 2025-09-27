@@ -885,35 +885,105 @@ export function ChatInterface() {
           </div>
         </div>
 
-        {/* AI Kysymykset aiheittain */}
+        {/* Suositut kysymykset - Featured */}
         <div className={`border-t border-border transition-all duration-300 ${
-          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-80 overflow-y-auto opacity-100'
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-6 opacity-100'
         }`}>
-          <h4 className="text-sm font-medium mb-3 text-foreground">AI-asiakaspalvelu kysymykset:</h4>
+          <h4 className="text-base font-semibold mb-4 text-white">🎯 Suositut kysymykset johdolle</h4>
+          <div className="space-y-3">
+            {/* Top 3 featured questions with larger buttons */}
+            <PulseButton
+              variant="outline"
+              size="lg"
+              pulse="subtle"
+              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-blue-500 transition-all duration-200"
+              onClick={() => handleQuestionClick("cx-trends-2025-featured")}
+              disabled={questionMutation.isPending}
+              data-testid="featured-question-trends"
+            >
+              <BarChart3 className="h-5 w-5 mr-3 text-blue-400 flex-shrink-0" />
+              <div>
+                <div className="font-medium">2025 suurimmat CX-trendit ja AI:n rooli</div>
+                <div className="text-xs text-slate-400 mt-1">Strateginen näkemys tulevaisuudesta</div>
+              </div>
+            </PulseButton>
+            
+            <PulseButton
+              variant="outline"
+              size="lg"
+              pulse="subtle"
+              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-green-500 transition-all duration-200"
+              onClick={() => handleQuestionClick("roi-measurement")}
+              disabled={questionMutation.isPending}
+              data-testid="featured-question-roi"
+            >
+              <DollarSign className="h-5 w-5 mr-3 text-green-400 flex-shrink-0" />
+              <div>
+                <div className="font-medium">Miten AI-investoinnista saa mitattavaa arvoa?</div>
+                <div className="text-xs text-slate-400 mt-1">ROI ja konkreettiset hyödyt</div>
+              </div>
+            </PulseButton>
+
+            <PulseButton
+              variant="outline"
+              size="lg"
+              pulse="subtle"
+              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-purple-500 transition-all duration-200"
+              onClick={() => handleQuestionClick("hyperpersonalization-trend")}
+              disabled={questionMutation.isPending}
+              data-testid="featured-question-personalization"
+            >
+              <Target className="h-5 w-5 mr-3 text-purple-400 flex-shrink-0" />
+              <div>
+                <div className="font-medium">Kuinka hyperpersonointi mullistaa asiakaskokemuksen?</div>
+                <div className="text-xs text-slate-400 mt-1">Personalisaation tulevaisuus</div>
+              </div>
+            </PulseButton>
+          </div>
+
+          {/* More topics toggle */}
+          <div className="mt-4 pt-4 border-t border-slate-600/50">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-slate-300 hover:text-white hover:bg-slate-700/50"
+              onClick={toggleExpanded}
+              data-testid="toggle-more-questions"
+            >
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Näytä lisää aiheita ({topicAreas.length} kategoriaa)
+            </Button>
+          </div>
+        </div>
+
+        {/* Extended questions view */}
+        <div className={`border-t border-border transition-all duration-300 ${
+          isExpanded ? 'p-6 max-h-96 overflow-y-auto opacity-100' : 'max-h-0 overflow-hidden opacity-0 p-0'
+        }`}>
           <div className="space-y-4">
-            {topicAreas.map((topic) => {
+            {topicAreas.slice(0, 6).map((topic) => {
               const TopicIcon = topic.icon;
               return (
                 <div key={topic.id} className="space-y-2">
                   <div className="flex items-center gap-2">
                     <TopicIcon className={`h-4 w-4 ${topic.color.replace('bg-', 'text-')}`} />
-                    <h5 className="text-xs font-medium text-foreground">{topic.title}</h5>
+                    <h5 className="text-sm font-medium text-white">{topic.title}</h5>
                   </div>
-                  <div className="grid grid-cols-1 gap-1 ml-6">
-                    {topic.questions.map((question) => {
+                  <div className="grid grid-cols-1 gap-2 ml-6">
+                    {topic.questions.slice(0, 2).map((question) => {
                       const QuestionIcon = question.icon;
                       return (
                         <Button
                           key={question.id}
                           variant="ghost"
                           size="sm"
-                          className="h-auto p-2 text-xs text-left justify-start hover:bg-muted"
+                          className="h-auto p-3 text-xs text-left justify-start hover:bg-slate-700/50 text-slate-300 hover:text-white"
                           onClick={() => handleQuestionClick(question.id)}
                           disabled={questionMutation.isPending}
                           data-testid={`question-${question.id}`}
                         >
-                          <QuestionIcon className="h-3 w-3 mr-2 text-muted-foreground flex-shrink-0" />
-                          <span className="leading-tight text-muted-foreground">{question.question}</span>
+                          <QuestionIcon className="h-3 w-3 mr-2 text-slate-400 flex-shrink-0" />
+                          <span className="leading-tight">{question.question}</span>
                         </Button>
                       );
                     })}
@@ -921,6 +991,19 @@ export function ChatInterface() {
                 </div>
               );
             })}
+          </div>
+          
+          <div className="mt-4 pt-4 border-t border-slate-600/50">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-slate-400 hover:text-slate-200"
+              onClick={toggleExpanded}
+              data-testid="collapse-questions"
+            >
+              <Minimize2 className="h-4 w-4 mr-2" />
+              Piilota lisäkysymykset
+            </Button>
           </div>
         </div>
       </Card>
