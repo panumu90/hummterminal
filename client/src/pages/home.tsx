@@ -213,6 +213,14 @@ export default function Home() {
             </div>
           </div>
         </div>
+        
+        {/* Progressive Loading Notice */}
+        <div className="mt-12 mb-6 text-center">
+          <p className="text-xs text-gray-500 italic">
+            Progressive loading ja micro-interactions on toteutettu design-periaatteella
+            'fast feedback, no surprises'. Tämä vähentää koettua viivettä ja parantaa konversiota.
+          </p>
+        </div>
       </div>
     </div>
   );
