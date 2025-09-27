@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PulseButton } from "@/components/ui/pulse-button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from 'react-markdown';
@@ -681,18 +683,20 @@ export function ChatInterface() {
             {mcpQuestions.map((question) => {
               const IconComponent = question.icon;
               return (
-                <Button
+                <PulseButton
                   key={question.id}
                   variant="outline"
                   size="sm"
+                  pulse="subtle"
                   className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white"
                   onClick={() => handleQuestionClick(question.id)}
+                  loading={questionMutation.isPending}
                   disabled={questionMutation.isPending}
                   data-testid={`question-${question.id}`}
                 >
                   <IconComponent className="h-4 w-4 mr-2 text-emerald-600 flex-shrink-0" />
                   <span className="leading-tight">{question.question}</span>
-                </Button>
+                </PulseButton>
               );
             })}
           </div>
@@ -784,13 +788,25 @@ export function ChatInterface() {
             </div>
           ))}
           {chatMutation.isPending && (
-            <div className="chat-message" data-testid="loading-message">
+            <div className="chat-message animate-in fade-in-0 duration-300" data-testid="loading-message">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
                   <Bot className="h-4 w-4 text-primary-foreground animate-pulse" />
                 </div>
-                <div className="bg-muted rounded-lg p-3 max-w-xs">
-                  <p className="text-sm text-muted-foreground">Kirjoittaa...</p>
+                <div className="bg-muted rounded-lg p-3 max-w-2xl">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">AI miettii vastausta...</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-4/5" />
+                    <Skeleton className="h-3 w-3/5" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -806,16 +822,19 @@ export function ChatInterface() {
             <p className="text-sm font-medium mb-3 text-slate-200">💡 Suositellut jatkokysymykset johdolle:</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {followUpSuggestions.map((suggestion, index) => (
-                <Button
+                <PulseButton
                   key={index}
                   variant="outline"
                   size="sm"
-                  className="text-left h-auto py-3 px-4 justify-start whitespace-normal bg-slate-700/50 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-slate-500"
+                  pulse="subtle"
+                  className="text-left h-auto py-3 px-4 justify-start whitespace-normal bg-slate-700/50 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-slate-500 animate-in fade-in-0 slide-in-from-bottom-2 duration-300"
+                  style={{animationDelay: `${index * 100}ms`}}
                   onClick={() => handleFollowUpClick(suggestion)}
+                  loading={chatMutation.isPending}
                   data-testid={`follow-up-input-${index}`}
                 >
                   <span className="text-xs leading-relaxed">{suggestion}</span>
-                </Button>
+                </PulseButton>
               ))}
             </div>
           </div>
@@ -834,15 +853,17 @@ export function ChatInterface() {
               className="flex-1 h-12 text-base bg-slate-800/50 border-slate-600 focus:border-primary text-slate-100 placeholder:text-slate-400"
               data-testid="chat-input"
             />
-            <Button
+            <PulseButton
               onClick={handleSend}
-              disabled={chatMutation.isPending || !inputValue.trim()}
+              loading={chatMutation.isPending}
+              disabled={!inputValue.trim()}
               size="lg"
+              pulse="subtle"
               className="h-12 px-6"
               data-testid="send-button"
             >
               <Send className="h-5 w-5" />
-            </Button>
+            </PulseButton>
           </div>
           <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
             <span>💼 Räätälöidyt vastaukset Humm Group Oy:n johdolle</span>
