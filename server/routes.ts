@@ -913,7 +913,7 @@ Vastaat kysymyksiin CV:stäsi, osaamisestasi ja arvoehdotuksestasi Hummille.
 
 Jos kysymys ei koske sinua tai osaamistasi, sano: "Tämä kysymys kuuluu paremmin päächatiin - siellä saat kattavampia vastauksia AI-strategiasta."
 
-Pidä vastaukset henkilökohtaisina, uskottavina ja innostuneina (max 250 sanaa).`;
+Anna kattavia 3-5 kappaleen vastauksia jotka ovat henkilökohtaisia, uskottavia ja innostuneita.`;
 
       // Normalize text function
       const normalizeText = (text: string) => {
