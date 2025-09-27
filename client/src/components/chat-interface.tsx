@@ -380,6 +380,11 @@ export function ChatInterface() {
       content: "Moro Hummilaiset. Tähän chattiin on integroitu Googlen uusin Gemini 2.5 pro tekoäly ja sitä on koulutettu vastaamaan teidän mieltä askarruttaviin kysymyksiin tekoälyn implementoinnista liiketoimintaan. Feel free to ask anything",
       isUser: false,
       timestamp: Date.now()
+    },
+    {
+      content: "Alla on tekoälyyn liittyviä keskeisiä teemoja, käsitteitä ja niihin liittyviä teemoja. Klikkaa esimerkiksi MCP-aiheista kysymystä, niin sinulle avautuu keskustelumuotoinen infopläjäys, jossa voit chattailla mun datan kanssa",
+      isUser: false,
+      timestamp: Date.now() + 1
     }
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -387,6 +392,36 @@ export function ChatInterface() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [mcpModalOpen, setMcpModalOpen] = useState(false);
   const [followUpSuggestions, setFollowUpSuggestions] = useState<string[]>([]);
+  const [placeholderText, setPlaceholderText] = useState("Kysy mitä tahansa AI-asiakaspalvelusta johdolle...");
+
+  // Striimaavat placeholder-kysymykset
+  const rotatingQuestions = [
+    "Kysy mitä tahansa AI-asiakaspalvelusta johdolle...",
+    "Mikä on ROI AI-investoinnille asiakaspalvelussa?",
+    "Millä aikataululla voimme toteuttaa AI-asiakaspalvelun?",
+    "Mitä riskejä AI-asiakaspalvelussa on?",
+    "Kuinka paljon AI-asiakaspalvelu maksaa?",
+    "Mitä teknisiä vaatimuksia AI-toteutuksella on?",
+    "Kuinka integroida AI olemassa oleviin järjestelmiin?",
+    "Mitä tietoturvaseikkoja AI-käyttöönotossa tulee huomioida?",
+    "Kuinka mitata AI-asiakaspalvelun menestystä?",
+    "Millaista osaamista AI-projekti vaatii tiimiltä?"
+  ];
+
+  // Placeholder-tekstin rotaatio
+  useEffect(() => {
+    if (inputValue) return; // Älä vaihda jos käyttäjä kirjoittaa
+    
+    const interval = setInterval(() => {
+      setPlaceholderText(prev => {
+        const currentIndex = rotatingQuestions.indexOf(prev);
+        const nextIndex = (currentIndex + 1) % rotatingQuestions.length;
+        return rotatingQuestions[nextIndex];
+      });
+    }, 3000); // Vaihda 3 sekunnin välein
+
+    return () => clearInterval(interval);
+  }, [inputValue, rotatingQuestions]);
   
   // New modal state for AI responses
   const [aiModalOpen, setAiModalOpen] = useState(false);
@@ -773,7 +808,7 @@ export function ChatInterface() {
           <div className="flex space-x-4">
             <Input
               type="text"
-              placeholder="Kysy mitä tahansa AI-asiakaspalvelusta johdolle..."
+              placeholder={placeholderText}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
