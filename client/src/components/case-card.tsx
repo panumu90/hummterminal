@@ -82,24 +82,24 @@ export function CaseCard({ case_ }: CaseCardProps) {
 
   return (
     <>
-      <Card className="case-card shadow-sm hover:shadow-md" data-testid={`card-case-${case_.id}`}>
+      <Card className="case-card bg-slate-800/40 border border-slate-600/50 hover:border-slate-500/50 hover:bg-slate-800/60 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm" data-testid={`card-case-${case_.id}`}>
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center text-xl">
+              <div className="w-12 h-12 bg-slate-700/50 rounded-lg flex items-center justify-center text-xl border border-slate-600/30">
                 {getIconElement(case_.icon)}
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-foreground" data-testid={`text-company-${case_.id}`}>
+                <h3 className="text-xl font-bold text-white" data-testid={`text-company-${case_.id}`}>
                   {case_.company}
                 </h3>
-                <p className="text-sm text-muted-foreground" data-testid={`text-location-${case_.id}`}>
+                <p className="text-sm text-slate-300" data-testid={`text-location-${case_.id}`}>
                   {case_.country} • {case_.industry}
                 </p>
               </div>
             </div>
             <Badge 
-              className={`${getCategoryColor(case_.category)} text-white`}
+              className={`${getCategoryColor(case_.category)} text-white shadow-sm`}
               data-testid={`badge-category-${case_.id}`}
             >
               {case_.category}
@@ -107,31 +107,31 @@ export function CaseCard({ case_ }: CaseCardProps) {
           </div>
           
           <div className="mb-4">
-            <h4 className="font-semibold text-foreground mb-2" data-testid={`text-solution-${case_.id}`}>
+            <h4 className="font-semibold text-white mb-2" data-testid={`text-solution-${case_.id}`}>
               {case_.solution_name}
             </h4>
-            <p className="text-muted-foreground text-sm mb-3" data-testid={`text-description-${case_.id}`}>
+            <p className="text-slate-300 text-sm mb-3" data-testid={`text-description-${case_.id}`}>
               {case_.description}
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
             {case_.key_metrics.map((metric, index) => (
-              <div key={index} className="text-center p-3 bg-muted rounded-lg" data-testid={`metric-${case_.id}-${index}`}>
-                <div className={`${getBadgeClass(metric.type)} text-white px-2 py-1 rounded text-xs font-bold mb-1`}>
+              <div key={index} className="text-center p-3 bg-slate-700/30 rounded-lg border border-slate-600/30 backdrop-blur-sm" data-testid={`metric-${case_.id}-${index}`}>
+                <div className={`${getBadgeClass(metric.type)} text-white px-2 py-1 rounded text-xs font-bold mb-1 shadow-sm`}>
                   {metric.value}
                 </div>
-                <div className="text-xs text-muted-foreground">{metric.label}</div>
+                <div className="text-xs text-slate-400">{metric.label}</div>
               </div>
             ))}
           </div>
 
-          <div className="border-t border-border pt-4 mb-4">
-            <h5 className="font-medium text-foreground mb-2">Keskeiset oppimiskohteet:</h5>
-            <ul className="text-sm text-muted-foreground space-y-1">
+          <div className="border-t border-slate-600/50 pt-4 mb-4">
+            <h5 className="font-medium text-white mb-2">Keskeiset oppimiskohteet:</h5>
+            <ul className="text-sm text-slate-300 space-y-1">
               {case_.learning_points.map((point, index) => (
                 <li key={index} className="flex items-start space-x-2" data-testid={`learning-point-${case_.id}-${index}`}>
-                  <Check className="h-3 w-3 text-primary mt-1 flex-shrink-0" />
+                  <Check className="h-3 w-3 text-blue-400 mt-1 flex-shrink-0" />
                   <span>{point}</span>
                 </li>
               ))}
@@ -143,7 +143,7 @@ export function CaseCard({ case_ }: CaseCardProps) {
             loading={implementationMutation.isPending}
             loadingText="Luodaan sisältöä..."
             pulse="subtle"
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all duration-200"
             data-testid={`button-implementation-${case_.id}`}
           >
             <Info className="mr-2 h-4 w-4" />
