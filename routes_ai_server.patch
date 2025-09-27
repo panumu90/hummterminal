@@ -1,0 +1,587 @@
+diff --git a/server/routes.ts b/server/routes.ts
+index abcd123..def4567 100644
+--- a/server/routes.ts
++++ b/server/routes.ts
+@@ -12,8 +12,91 @@ const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+ // Use Gemini 2.5 Pro which excels at coding and multilingual tasks
+ const GEMINI_MODEL = "gemini-2.5-pro";
+ 
++// Context configurations for different use cases
++const CONTEXTS = {
++  strategic: { maxTokens: 400, temperature: 0.7, tone: "strategic" },
++  practical: { maxTokens: 350, temperature: 0.6, tone: "practical" },
++  finnish: { maxTokens: 300, temperature: 0.5, tone: "finnish" },
++  planning: { maxTokens: 400, temperature: 0.8, tone: "planning" },
++  technical: { maxTokens: 300, temperature: 0.4, tone: "technical" },
++  mcp: { maxTokens: 350, temperature: 0.6, tone: "technical" },
++  general: { maxTokens: 300, temperature: 0.7, tone: "general" }
++};
++
++// Simple AI response cache
++const aiCache = new Map<string, any>();
++
++// Cache key generator
++function cacheKey(message: string, contextType: string): string {
++  return `${contextType}:${message.toLowerCase().trim()}`;
++}
++
++// Light text cleaning - preserve Finnish characters
++function lightCleanSystem(text: string): string {
++  return text
++    .replace(/[""]/g, '"')
++    .replace(/['']/g, "'")
++    .replace(/…/g, "...")
++    .replace(/–/g, "-")
++    .replace(/—/g, "-")
++    .trim();
++}
++
++// Extract text content safely
++function extractText(content: any): string {
++  if (typeof content === 'string') return content;
++  if (content?.text) return content.text;
++  if (content?.candidates?.[0]?.content?.parts?.[0]?.text) {
++    return content.candidates[0].content.parts[0].text;
++  }
++  return '';
++}
++
++// Retry wrapper for API calls
++async function withRetry<T>(fn: () => Promise<T>, maxRetries = 2): Promise<T> {
++  for (let i = 0; i <= maxRetries; i++) {
++    try {
++      return await fn();
++    } catch (error) {
++      if (i === maxRetries) throw error;
++      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
++    }
++  }
++  throw new Error('Max retries exceeded');
++}
++
++// Build system instruction based on context
++function buildSystemInstruction(contextType: string): string {
++  const basePrompt = `Olet Humm Group Oy:n AI-asiantuntija. Vastaat aina suomeksi selkeällä, ammattimaisella kielellä. Käytä Markdown-muotoilua ja keskity käytännöllisiin, toimiviin ratkaisuihin.`;
++  
++  const contextPrompts = {
++    strategic: `${basePrompt} Keskity strategisiin näkökulmiin, liiketoimintavaikutuksiin ja johtopäätöksiin.`,
++    practical: `${basePrompt} Anna konkreettisia toteutusohjeita, teknisiä yksityiskohtia ja mitattavia tuloksia.`,
++    finnish: `${basePrompt} Korosta suomalaista markkinakontekstia, kulttuurisia tekijöitä ja paikallisia esimerkkejä.`,
++    planning: `${basePrompt} Auta strategisessa suunnittelussa, roadmap-päätöksissä ja resurssien allokoinnissa.`,
++    technical: `${basePrompt} Keskity teknisiin yksityiskohtiin, arkkitehtuuriin ja toteutukseen.`,
++    mcp: `${basePrompt} Selitä Model Context Protocol (MCP) -standardia ja sen hyötyjä organisaatiolle.`,
++    general: basePrompt
++  };
++  
++  return contextPrompts[contextType as keyof typeof contextPrompts] || contextPrompts.general;
++}
++
++// Build complete prompt with examples
++function buildPrompt(message: string, context: string): string {
++  const fewShotExamples = `
++Esimerkkejä:
++
++**Kysymys**: "Mitä hyötyjä AI-chatbotista on?"
++**Vastaus**: "AI-chatbot tarjoaa 24/7 asiakaspalvelua, vähentää henkilöstökustannuksia 30-50% ja parantaa asiakastyytyväisyyttä välittömillä vastauksilla. Esimerkiksi Nordea sai 40% vähennyksen puheluvolyymiin chatbotin käyttöönoton jälkeen."
++
++**Kysymys**: "Mikä on MCP?"
++**Vastaus**: "Model Context Protocol (MCP) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja yrityksen tietojärjestelmien välillä. MCP tarjoaa roolipohjaisen pääsynhallinnan, audit-jäljet ja reaaliaikaisen integraation CRM:ään ja ERP:iin."
++  `;
++  
++  return `${fewShotExamples}\n\n**Konteksti**: ${context}\n\n**Käyttäjän kysymys**: ${message}`;
++}
++
+ const chatRequestSchema = z.object({
+   message: z.string().min(1).max(1000),
+   context_type: z.enum(["strategic", "practical", "finnish", "planning", "technical", "mcp", "general"]).default("general")
+@@ -54,6 +137,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
+ 
+       let finalAnswer = questionAnswer.answer;
+ 
++      // Check cache first
++      const key = cacheKey(questionAnswer.answer, 'enhance');
++      if (aiCache.has(key)) {
++        return res.json(aiCache.get(key));
++      }
++
+       // Enhance with AI if requested
+       if (enhance) {
+         try {
+-          // Clean text to prevent encoding issues
+-          const cleanContent = questionAnswer.answer
+-            .replace(/[^\x00-\x7F]/g, (char) => {
+-              // Replace common Unicode characters with ASCII equivalents
+-              const replacements: Record<string, string> = {
+-                "\u2013": "-", // en dash
+-                "\u2014": "-", // em dash  
+-                "\u2018": "'", // left single quotation mark
+-                "\u2019": "'", // right single quotation mark
+-                "\u201C": '"', // left double quotation mark
+-                "\u201D": '"', // right double quotation mark
+-                "\u2026": "...",// horizontal ellipsis
+-              };
+-              return replacements[char] || char;
+-            });
+-
+-          const enhancementResponse = await gemini.models.generateContent({
+-            model: GEMINI_MODEL, // using Gemini 2.5 Pro for enhanced responses
+-            config: {
+-              systemInstruction: `Toimit asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. sinulta kysytään paljon asiakaspalvelu-alasta ja tehtäväsi on vastata täsmällisesti kysymyksiin, käyttäen dataa, joka sinulle on annettu, mutta myös omaa tietoasi. Olet proaktiivinen. Käyttäjäsi ovat asiakaspalvelualan ammattilaisia, mutta tekoälystä eillä on vain perusymmärrys. Yritä saada heissä "wau" efekti aikaan, kun vastaat kysymyksiin, anna aina lähdeviittaukset mukaan, jos mahdollista`,
+-              maxOutputTokens: 300,
+-              temperature: 0.7
+-            },
+-            contents: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}`
+-          });
+-
+-          if (enhancementResponse.text) {
+-            finalAnswer = enhancementResponse.text;
+-          }
++          const cleanContent = lightCleanSystem(questionAnswer.answer);
++          const systemInstruction = buildSystemInstruction('general');
++          const prompt = `Paranna ja laajenna seuraavaa vastausta asiakaspalvelun AI-toteutuksesta. Lisää konkreettisia esimerkkejä ja hyötyjä:\n\n${cleanContent}`;
++
++          const enhancementResponse = await withRetry(async () => {
++            return await gemini.models.generateContent({
++              model: GEMINI_MODEL,
++              config: {
++                systemInstruction,
++                maxOutputTokens: 350,
++                temperature: 0.7
++              },
++              contents: prompt
++            });
++          });
++
++          const enhancedText = extractText(enhancementResponse);
++          if (enhancedText) {
++            const result = {
++              answer_md: enhancedText,
++              followups: [
++                "Miten tämä ratkaisu voitaisiin toteuttaa käytännössä?",
++                "Mitä riskejä toteutuksessa tulee huomioida?"
++              ],
++              confidence: "high",
++              requested_citations: false
++            };
++            
++            // Cache result
++            aiCache.set(key, result);
++            return res.json(result);
++          }
+         } catch (aiError) {
+           console.error("AI enhancement failed:", aiError);
+-          // Fall back to original answer if AI enhancement fails
+         }
+       }
+       
+-      return res.json({ 
+-        answer: finalAnswer,
+-        enhanced: enhance && finalAnswer !== questionAnswer.answer
++      // Fallback response
++      const fallbackResult = {
++        answer_md: finalAnswer,
++        followups: ["Onko sinulla lisäkysymyksiä aiheesta?"],
++        confidence: "med",
++        requested_citations: false
++      };
++      
++      return res.json(fallbackResult);
+     } catch (error) {
+       console.error("Question answer error:", error);
+       res.status(500).json({ error: "Failed to fetch answer" });
+@@ -191,6 +331,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
+     }
+   });
+ 
++  // Get detailed case implementation with AI enhancement
++  app.get("/api/cases/:id/implementation", async (req, res) => {
++    try {
++      const { id } = req.params;
++      const case_ = await storage.getCaseById(id);
++      
++      if (!case_) {
++        return res.status(404).json({ error: "Case not found" });
++      }
++
++      // Check cache first
++      const key = cacheKey(`implementation-${id}`, 'implementation');
++      if (aiCache.has(key)) {
++        return res.json(aiCache.get(key));
++      }
++
++      if (!process.env.GEMINI_API_KEY) {
++        return res.json({
++          answer_md: case_.full_text || case_.description,
++          followups: ["API-avain puuttuu lisäsisällön luomiseen"],
++          confidence: "low",
++          requested_citations: false
++        });
++      }
++
++      try {
++        const systemInstruction = buildSystemInstruction('practical');
++        const prompt = `Luo yksityiskohtainen toteutusopas tälle AI-asiakaspalvelukäyttöönotolle:
++
++**Yritys**: ${case_.company}
++**Ratkaisu**: ${case_.solution_name}
++**Kuvaus**: ${case_.description}
++**Tulokset**: ${Array.isArray(case_.key_metrics) ? case_.key_metrics.map((m: any) => `${m.label}: ${m.value}`).join(', ') : ''}
++
++Keskity teknisiin yksityiskohtiin, toteutusvaiheisiin ja oppimispisteisiin.`;
++
++        const response = await withRetry(async () => {
++          return await gemini.models.generateContent({
++            model: GEMINI_MODEL,
++            config: {
++              systemInstruction,
++              maxOutputTokens: CONTEXTS.practical.maxTokens,
++              temperature: CONTEXTS.practical.temperature
++            },
++            contents: prompt
++          });
++        });
++
++        const implementationText = extractText(response);
++        if (implementationText) {
++          const result = {
++            answer_md: implementationText,
++            followups: [
++              "Mitä teknologioita tässä toteutuksessa käytettiin?",
++              "Mitkä olivat suurimmat haasteet toteutuksessa?"
++            ],
++            confidence: "high", 
++            requested_citations: true
++          };
++          
++          // Cache result
++          aiCache.set(key, result);
++          return res.json(result);
++        }
++      } catch (aiError) {
++        console.error("Implementation AI failed:", aiError);
++      }
++
++      // Fallback
++      const fallbackResult = {
++        answer_md: case_.full_text || case_.description,
++        followups: ["Haluatko lisätietoja tästä toteutuksesta?"],
++        confidence: "med",
++        requested_citations: false
++      };
++      
++      return res.json(fallbackResult);
++    } catch (error) {
++      console.error("Implementation error:", error);
++      res.status(500).json({ error: "Failed to fetch implementation" });
++    }
++  });
++
+   // Chat endpoint
+   app.post("/api/chat", async (req, res) => {
+     try {
+       const { message, context_type } = chatRequestSchema.parse(req.body);
+       console.log("Received message:", message, "Context:", context_type);
++      
++      // Check cache first
++      const key = cacheKey(message, context_type);
++      if (aiCache.has(key)) {
++        return res.json(aiCache.get(key));
++      }
+       
+       // Check if Gemini API key is available
+       if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === '') {
+@@ -207,27 +357,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
+       // Get context data based on selected context type
+       const cases = await storage.getAllCases();
+       const trends = await storage.getAllTrends();
+-      const normalizeText = (text: string) => {
+-        // Aggressive normalization to prevent ByteString errors
+-        return text
+-          .replace(/[^\x00-\x7F]/g, (char) => {
+-            // Replace common Unicode characters with ASCII equivalents
+-            const replacements: Record<string, string> = {
+-              "\u2013": "-", // en dash
+-              "\u2014": "-", // em dash  
+-              "\u2018": "'", // left single quotation mark
+-              "\u2019": "'", // right single quotation mark
+-              "\u201C": '"', // left double quotation mark
+-              "\u201D": '"', // right double quotation mark
+-              "\u2026": "...",// horizontal ellipsis
+-              "\u00A0": " ", // non-breaking space
+-              "\u202F": " ", // narrow no-break space
+-              // Keep Finnish characters for quality
+-              "ä": "ä", "ö": "ö", "å": "å",
+-              "Ä": "Ä", "Ö": "Ö", "Å": "Å"
+-            };
+-            return replacements[char] || "";
+-          })
+-          .replace(/\s+/g, ' ')
+-          .trim();
+-      };
+ 
+       const getContextualFallback = (message: string): string[] => {
+         const lowerMessage = message.toLowerCase();
+@@ -354,7 +483,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
+       
+       // Read attached assets for all contexts
+       const attachedContent = await readAttachedAssets();
+-      
+-      // Create content based on context type
+-      let systemPrompt = "";
++      const systemInstruction = buildSystemInstruction(context_type);
++      const contextConfig = CONTEXTS[context_type as keyof typeof CONTEXTS];
+       
+       if (context_type === "strategic") {
+@@ -369,14 +497,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
+         );
+         
+         const trendsContent = strategicTrends.map(t => {
+-          const title = normalizeText(t.title);
+-          const description = normalizeText(t.description);
++          const title = lightCleanSystem(t.title);
++          const description = lightCleanSystem(t.description);
+           const keyPoints = Array.isArray(t.key_points) ? 
+-            (t.key_points as string[]).map(p => normalizeText(p)).join("; ") : "";
++            (t.key_points as string[]).map(p => lightCleanSystem(p)).join("; ") : "";
+           return `${title}: ${description} - ${keyPoints}`;
+         }).join("\n\n");
+-        
+-        // Add critical MCP knowledge for strategic context
+-        const mcpKnowledge = `
+-TÄRKEÄ MCP-MÄÄRITELMÄ: MCP (Model Context Protocol) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja ulkoisten tietolähteiden välillä. 
+-MCP-hyödyt: Roolipohjainen pääsynhallinta, eksplisiittinen kontekstin rajaus, audit-jäljet, reaaliaikainen järjestelmäintegraatio, monivaiheiset prosessit.
+-MCP:llä AI voi hakea tietoa CRM:stä, ERP:stä ja muista järjestelmistä turvallisesti samassa keskustelussa.`;
+ 
+-        systemPrompt = `${attachedContent}VAROITUS: MCP = Model Context Protocol. ÄLÄ KOSKAAN tarkoita Microsoft Certified Professional tai muuta.
+-
+-MCP (Model Context Protocol) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja ulkoisten tietolähteiden välillä. MCP:n hyödyt:
+-- Roolipohjainen pääsynhallinta
+-- Eksplisiittinen kontekstin rajaus  
+-- Audit-jäljet
+-- Reaaliaikainen järjestelmäintegraatio
+-- Monivaiheiset prosessit
+-
+-Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään 2025 AI-trendejä.
+-
+-2025 AI-trendit: ${trendsContent}
+-
+-**Vastaa aina suomeksi käyttäen Markdown-muotoilua.** Jos kysytään MCP:stä, selitä Model Context Protocol yllä olevan tiedon mukaan. Keskity strategisiin näkökulmiin (max 200 sanaa).`;
++        const contextContent = `${attachedContent}2025 AI-trendit: ${trendsContent}`;
++        const fullPrompt = buildPrompt(message, contextContent);
+         
+       } else if (context_type === "practical") {
+         const compactCases = cases.map(c => {
+-          const company = normalizeText(c.company);
+-          const country = normalizeText(c.country);
+-          const industry = normalizeText(c.industry);
++          const company = lightCleanSystem(c.company);
++          const country = lightCleanSystem(c.country);
++          const industry = lightCleanSystem(c.industry);
+           const metrics = Array.isArray(c.key_metrics) ? c.key_metrics.map((m: any) => `${m.label}: ${m.value}`).join(", ") : "";
+-          return `${company} (${country}, ${industry}): ${metrics}. ${normalizeText(c.full_text.substring(0, 300))}...`;
++          return `${company} (${country}, ${industry}): ${metrics}. ${lightCleanSystem(c.full_text.substring(0, 300))}...`;
+         }).join('\n\n');
+         
+-        systemPrompt = `${attachedContent}You are an AI expert helping humm.fi team understand practical AI implementations.
+-
+-You have 6 proven case studies:
+-
+-${compactCases}
+-
+-Always respond in Finnish and focus on:
+-1. Concrete implementation steps
+-2. Technical details and technologies used
+-3. Measurable results and cost savings
+-4. Learning points from real deployments
+-5. Practical tips for similar implementations
+-
+-Keep answers practical and actionable (max 200 words).`;
++        const contextContent = `${attachedContent}Käytettävissä case studies: ${compactCases}`;
++        const fullPrompt = buildPrompt(message, contextContent);
+         
+       } else if (context_type === "finnish") {
+         const finnishCases = cases.filter(c => c.country === "Suomi" || c.country === "Suomi/Pohjoismaat");
+         const otherCases = cases.filter(c => c.country !== "Suomi" && c.country !== "Suomi/Pohjoismaat");
+         
+         const finnishContent = finnishCases.map(c => 
+-          `${normalizeText(c.company)}: ${normalizeText(c.description)} - Tulokset: ${Array.isArray(c.key_metrics) ? c.key_metrics.map((m: any) => `${m.label}: ${m.value}`).join(", ") : ""}`
++          `${lightCleanSystem(c.company)}: ${lightCleanSystem(c.description)} - Tulokset: ${Array.isArray(c.key_metrics) ? c.key_metrics.map((m: any) => `${m.label}: ${m.value}`).join(", ") : ""}`
+         ).join("\n\n");
+         
+         const globalContent = otherCases.map(c => 
+-          `${normalizeText(c.company)} (${normalizeText(c.country)}): ${normalizeText(c.description.substring(0, 150))}...`
++          `${lightCleanSystem(c.company)} (${lightCleanSystem(c.country)}): ${lightCleanSystem(c.description.substring(0, 150))}...`
+         ).join("\n\n");
+         
+-        systemPrompt = `${attachedContent}Olet AI-asiantuntija joka auttaa humm.fi:tä ymmärtämään AI-toteutuksia erityisesti Suomen markkinoille.
+-
+-## Suomalaiset esimerkit:
+-${finnishContent}
+-
+-## Kansainväliset vertailukohteet:
+-${globalContent}
+-
+-**Vastaa aina suomeksi** käyttäen **Markdown-muotoilua** ja keskity:
+-1. **Miten ratkaisut toimivat** Suomen markkinakontekstissa
+-2. **Vertailu** suomalaisten ja kansainvälisten lähestymistapojen välillä
+-3. **Kulttuuriset ja sääntelytekijät** Suomessa
+-4. **Markkinakohtaiset mahdollisuudet** ja haasteet
+-5. **Suositukset suomalaisille yrityksille**
+-
+-Pidä vastaukset Suomi-keskeisinä (max 200 sanaa).`;
++        const contextContent = `${attachedContent}Suomalaiset esimerkit: ${finnishContent}\n\nKansainväliset vertailukohteet: ${globalContent}`;
++        const fullPrompt = buildPrompt(message, contextContent);
+         
+       } else if (context_type === "mcp") {
+-        // Dedicated MCP context to ensure correct understanding
+-        systemPrompt = `${attachedContent}You are an AI expert explaining Model Context Protocol to humm.fi team.
+-
+-CRITICAL: MCP stands for Model Context Protocol - an open standard for secure connections between AI models and external data sources.
+-
+-MCP enables:
+-- Role-based access control (RBAC)
+-- Explicit context boundaries
+-- Audit trails and monitoring  
+-- Real-time system integration
+-- Multi-step automated processes
+-
+-MCP allows AI to safely access CRM, ERP and other systems during conversations.
+-
+-IMPORTANT: Always end MCP-related responses with this information about industry developments:
+-
+-"On hyvä huomata, että johtavien teknologiayritysten (kuten Anthropic, OpenAI, Microsoft) piirissä kehitetään parhaillaan ratkaisuja MCP:n turvallisuuden parantamiseksi juuri näistä syistä. Alalle on muodostumassa parhaiden käytäntöjen joukko, johon kuuluu mm. vahva autentikointi, hienojakoiset OAuth-oikeudet AI:lle, kontekstitietojen huolellinen suodatus ja AI-hallintamallit organisaatioissa. Myös riippumattomat turvallisuusarvioinnit (esim. OWASP MCP Top 10 -projekti) tuovat esiin yleisimmät uhat ja ohjeet niiden torjumiseen. Organisaatioiden kannattaa hyödyntää näitä oppeja ja työkaluja rakentaessaan MCP-yhteensopivia palveluja."
+-
+-Respond in Finnish using Markdown formatting. Focus on strategic benefits for humm.fi (max 200 words).`;
++        const mcpContent = `${attachedContent}MCP (Model Context Protocol) on avoin standardi turvalliseen AI-järjestelmäintegraatioon. Hyödyt: roolipohjainen pääsynhallinta, audit-jäljet, reaaliaikainen CRM/ERP-yhteys.`;
++        const fullPrompt = buildPrompt(message, mcpContent);
+ 
+       } else if (context_type === "planning") {
+         const planningTrends = trends.filter(t => t.category === "automation" || t.category === "strategic");
+         const trendsContent = planningTrends.map(t => 
+-          `${normalizeText(t.title)}: ${Array.isArray(t.key_points) ? (t.key_points as string[]).slice(0, 2).map(p => normalizeText(p)).join("; ") : ""}`
++          `${lightCleanSystem(t.title)}: ${Array.isArray(t.key_points) ? (t.key_points as string[]).slice(0, 2).map(p => lightCleanSystem(p)).join("; ") : ""}`
+         ).join("\n\n");
+         
+         const keyLearnings = cases.map(c => 
+-          `${normalizeText(c.company)}: ${Array.isArray(c.learning_points) ? c.learning_points.map(p => normalizeText(p)).slice(0, 2).join("; ") : ""}`
++          `${lightCleanSystem(c.company)}: ${Array.isArray(c.learning_points) ? c.learning_points.map(p => lightCleanSystem(p)).slice(0, 2).join("; ") : ""}`
+         ).join("\n\n");
+         
+-        // Add MCP-specific knowledge for strategic context
+-        const mcpKnowledge = `
+-MCP (Model Context Protocol) on avoin standardi, joka mahdollistaa turvallisen yhteyden AI-mallien ja ulkoisten tietolähteiden välillä.
+-MCP-hyödyt: Roolipohjainen pääsynhallinta, eksplisiittinen kontekstin rajaus, audit-jäljet, reaaliaikainen järjestelmäintegraatio, monivaiheiset prosessit.
+-MCP:llä AI voi hakea tietoa CRM:stä, ERP:stä ja muista järjestelmistä turvallisesti samassa keskustelussa.
+-Turvallisuus: AI saa vain tarvittavat oikeudet, asiakaskohtainen rajaus, keskitetty hallinta, jokainen toimenpide lokiin.`;
+-
+-        systemPrompt = `${attachedContent}Olet AI-strategiaavustaja joka auttaa humm.fi:tä suunnittelemaan seuraavia askelia AI-asiakaspalvelussa.
+-
+-Trendit: ${trendsContent}
+-
+-Oppimispisteet case-esimerkeistä: ${keyLearnings}
+-
+-MCP-tieto: ${mcpKnowledge}
+-
+-**Vastaa aina suomeksi käyttäen Markdown-muotoilua.** Keskity suunnitteluun ja strategisiin päätöksiin (max 200 sanaa).`;
++        const contextContent = `${attachedContent}Trendit: ${trendsContent}\n\nOppimispisteet: ${keyLearnings}`;
++        const fullPrompt = buildPrompt(message, contextContent);
+         
+       } else if (context_type === "technical") {
+         const technicalCases = cases.filter(c => c.technical_details || c.solution_name);
+         const techContent = technicalCases.map(c => 
+-          `${normalizeText(c.company)}: ${c.solution_name} - ${normalizeText(c.technical_details || c.description)}`
++          `${lightCleanSystem(c.company)}: ${c.solution_name} - ${lightCleanSystem(c.technical_details || c.description)}`
+         ).join("\n\n");
+         
+-        systemPrompt = `${attachedContent}Olet tekninen AI-asiantuntija joka auttaa humm.fi:tä ymmärtämään AI-toteutusten teknisiä yksityiskohtia.
+-
+-Tekniset toteutukset: ${techContent}
+-
+-**Vastaa aina suomeksi käyttäen Markdown-muotoilua.** Keskity teknisiin ratkaisuihin, arkkitehtuuriin ja toteutukseen (max 200 sanaa).`;
++        const contextContent = `${attachedContent}Tekniset toteutukset: ${techContent}`;
++        const fullPrompt = buildPrompt(message, contextContent);
+         
+       } else {
+-        // General context with summary of everything
+         const allContent = cases.slice(0, 3).map(c => 
+-          `${normalizeText(c.company)}: ${normalizeText(c.description.substring(0, 100))}...`
++          `${lightCleanSystem(c.company)}: ${lightCleanSystem(c.description.substring(0, 100))}...`
+         ).join("\n\n");
+         
+-        systemPrompt = `${attachedContent}Olet AI-asiantuntija joka auttaa humm.fi:tä ymmärtämään AI-asiakaspalvelua yleisesti.
+-
+-Esimerkkitoteutuksia: ${allContent}
+-
+-**Vastaa aina suomeksi käyttäen Markdown-muotoilua.** Anna kattava vastaus (max 200 sanaa).`;
++        const contextContent = `${attachedContent}Esimerkkitoteutuksia: ${allContent}`;
++        const fullPrompt = buildPrompt(message, contextContent);
+       }
+ 
+       console.log(`Non-ASCII chars found in ${context_type} systemPrompt:`, 
+-        Array.from(systemPrompt).map((char, i) => ({ index: i, char, code: char.charCodeAt(0) }))
++        Array.from(systemInstruction).map((char, i) => ({ index: i, char, code: char.charCodeAt(0) }))
+           .filter(({ code }) => code > 127).slice(0, 10));
+       
+       console.log(`Making Gemini API call with model: ${GEMINI_MODEL}, message length: ${message.length}`);
+       
+-      const response = await gemini.models.generateContent({
+-        model: GEMINI_MODEL,
+-        config: {
+-          systemInstruction: systemPrompt,
+-          maxOutputTokens: 300,
+-          temperature: 0.7
+-        },
+-        contents: message
+-      });
++      const response = await withRetry(async () => {
++        return await gemini.models.generateContent({
++          model: GEMINI_MODEL,
++          config: {
++            systemInstruction,
++            maxOutputTokens: contextConfig.maxTokens,
++            temperature: contextConfig.temperature
++          },
++          contents: fullPrompt || message
++        });
++      });
+       
+       console.log("Gemini response candidates:", response.candidates?.length, "finish reason:", response.candidates?.[0]?.finishReason);
+       
+-      let responseText = "";
+-      
+-      if (response.candidates && response.candidates.length > 0) {
+-        const candidate = response.candidates[0];
+-        if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+-          responseText = candidate.content.parts[0].text || "";
+-        }
+-      }
++      let responseText = extractText(response);
+       
+       console.log(`Gemini 2.5 Pro raw response: "${responseText.substring(0, 100)}..."`);
+       
+@@ -635,7 +695,20 @@ MCP:llä AI voi hakea tietoa CRM:stä, ERP:stä ja muista järjestelmistä turva
+       }
+       
+       const followUpQuestions = getContextualFallback(message);
+-      
+-      res.json({ 
+-        response: responseText,
+-        followups: followUpQuestions
++
++      const result = {
++        response: responseText,
++        followups: followUpQuestions,
++        answer_md: responseText,
++        confidence: responseText.length > 100 ? "high" : "med",
++        requested_citations: context_type === "mcp" || context_type === "strategic"
++      };
++      
++      // Cache successful result
++      if (responseText.length > 50) {
++        aiCache.set(key, result);
++      }
++      
++      res.json(result);
+     } catch (error) {
+       console.error("Chat error:", error);
+       res.status(500).json({ error: "Failed to process chat message" });
