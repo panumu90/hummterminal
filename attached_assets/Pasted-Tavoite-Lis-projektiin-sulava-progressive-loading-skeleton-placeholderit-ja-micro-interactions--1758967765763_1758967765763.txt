@@ -1,0 +1,202 @@
+Tavoite: Lisää projektiin sulava progressive loading (skeleton-placeholderit) ja micro-interactions (hover-efektit, ikonien värinvaihto, napin “pulsahdus”). Tee kaikki yhdellä patchilla, pienillä ja paikallisilla muutoksilla. Ei uusia maksurajapintoja, ei raskaita kirjastoja. Hyödynnä vain Tailwind ja Framer Motion (jos se on jo asennettu; muuten tee kevyt CSS-pohjainen vaihtoehto).
+
+Konventiot & reunaehdot
+
+Tee muutos yhden patch-tiedoston kautta: ui_progressive_loading.patch.
+
+Älä muuta projektin logiikkaa tai datavirtoja; lisää vain UI-kerroksen parannukset.
+
+Jos Framer Motion on jo käytössä, käytä sitä. Muussa tapauksessa tee “pulsahdus” pelkällä CSS:llä (Tailwind + keyframes).
+
+Kunnioita dark mode -tilaa (käytä dark:-luokkia).
+
+Missä on jo “loading”-tila (data haetaan), näytä skeleton; missä ei ole, lisää kevyt isLoading-mocki, jonka voi kytkeä propilla.
+
+Älä tee ulkoisia API-kutsuja. Ei lisäriippuvuuksia, ellei Framer Motion löydy valmiiksi.
+
+Tehtävät
+
+Luo yhteiskäyttöinen Skeleton-komponentti
+
+Tiedosto: src/components/Skeleton.tsx
+
+API: <Skeleton className="h-6 w-full" />
+
+Toteutus: pyöristetty suorakulmio, animate-pulse, vaalea/dark-variantit.
+
+Lisää Button-komponenttiin “micro-interaction”
+
+Tiedosto: jos projektissa on oma Button, laajenna sitä. Muutoin lisää uusi:
+
+src/components/PulseButton.tsx
+
+Käyttäytyminen:
+
+hover: hienovarainen y/n siirtymä tai varjostus
+
+active (mousedown): “pulsahdus” (scale ~0.97) – Framer Motionilla tai CSS-keyframes-fallbackilla
+
+Kytke Skeletonit todellisiin listauksiin/kortteihin
+
+Etsi 2–3 kohtaa, joissa data latautuu (esim. case-kortit, chat-paneeli, dashboard-widgetit).
+
+Lisää isLoading-tila (jos puuttuu) ja näytä:
+
+listaan: 3–6 skeleton-riviä (erikokoisia, luonnollisen näköisiä)
+
+korttiin: otsikko- ja tekstirivien skeletonit
+
+Kun data saapuu, korvaa skeletonit sisällöllä. Siisti “layout shift” pitämällä mitat mahdollisimman samoina.
+
+Hover-efektit korteille ja ikoneille
+
+Lisää Tailwind-luokat relevantteihin kortteihin/nappuloihin:
+
+transition, duration-200, hover:-translate-y-[1px], hover:shadow-md
+
+ikoneille: group-hover:opacity-80 tai kevyt rotate-[…] tms. maltillinen muutos
+
+Huomioi dark mode: käytä dark:bg-neutral-900/60, dark:border-neutral-800 jne.
+
+Valmiit käyttöesimerkit
+
+Missä on chat-vastausalue: näytä skeleton-rivit kyselyn lähetyksen jälkeen kunnes vastaus tulee.
+
+Missä on lista “case-korteista”: näytä 6 skeleton-korttia ennen kuin data renderöityy.
+
+Missä on mittarinumeroita (dashboard): vilauta lyhyesti pieni skeleton-palkki numeron tilalla ensimmäisellä renderöinnillä.
+
+Konkreettiset tiedostomuutokset
+
+Lisää uudet tiedostot
+
+src/components/Skeleton.tsx
+
+sisältö: pieni, uudelleenkäytettävä skeleton-div (animate-pulse, tumma/vaalea tausta)
+
+src/components/PulseButton.tsx
+
+jos Framer Motion on saatavilla:
+
+whileHover={{ y: -1 }} ja whileTap={{ scale: 0.97 }}
+
+muuten: CSS-fallback: lisää @keyframes press ja Tailwind “plugin-free” -luokat
+
+Päivitä olemassa olevia näkymiä (lisää skeletonit ja hover-efektit)
+
+Esim. case-kortit: lisää group-luokka ja kevyet hover-varjot/siirtymät
+
+Chat-paneeli: kun loading === true, näytä 3–5 skeleton-riviä
+
+Dashboard-mittarit: näytä pieni skeleton ennen numeroita (ensirenderöinti)
+
+Dark mode
+
+Lisää dark:-variantit kaikkiin uusiin tausta-/border-elementteihin
+
+Koodiluonnokset (agentti, käytä näitä pohjina)
+
+Skeleton
+
+// src/components/Skeleton.tsx
+export const Skeleton = ({ className = "" }: { className?: string }) => (
+  <div className={`animate-pulse bg-neutral-200/70 dark:bg-neutral-700/50 rounded-xl ${className}`} />
+);
+
+
+PulseButton (Framer Motion käytössä)
+
+// src/components/PulseButton.tsx
+import { motion } from "framer-motion";
+export const PulseButton = ({ children, className = "", ...p }: any) => (
+  <motion.button
+    whileTap={{ scale: 0.97 }}
+    whileHover={{ y: -1 }}
+    className={`rounded-2xl px-4 py-2 shadow transition duration-200 ${className}`}
+    {...p}
+  >
+    {children}
+  </motion.button>
+);
+
+
+PulseButton (CSS-fallback, jos Framer Motion ei ole asennettuna)
+
+// src/components/PulseButton.tsx
+export const PulseButton = ({ children, className = "", ...p }: any) => (
+  <button
+    className={`rounded-2xl px-4 py-2 shadow transition duration-200 hover:-translate-y-px active:[transform:scale(0.97)] ${className}`}
+    {...p}
+  >
+    {children}
+  </button>
+);
+
+
+Käyttö listauksessa (skeletonit)
+
+// esimerkkikomponentti
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/Skeleton";
+
+export function CaseList() {
+  const [items, setItems] = useState<any[] | null>(null);
+  useEffect(() => {
+    const t = setTimeout(() => setItems([{id:1},{id:2},{id:3},{id:4}]), 800); // mock
+    return () => clearTimeout(t);
+  }, []);
+  if (!items) {
+    return (
+      <div className="grid md:grid-cols-2 gap-3">
+        {[...Array(6)].map((_,i)=><Skeleton key={i} className="h-24" />)}
+      </div>
+    );
+  }
+  return (
+    <div className="grid md:grid-cols-2 gap-3">
+      {items.map(it=>(
+        <div key={it.id} className="group rounded-2xl border bg-white/60 dark:bg-neutral-900/60 p-4 transition duration-200 hover:-translate-y-px hover:shadow-md">
+          <div className="flex items-center gap-2">
+            <div className="size-8 rounded-lg bg-neutral-100 dark:bg-neutral-800 transition group-hover:opacity-80" />
+            <div className="font-semibold">Case #{it.id}</div>
+          </div>
+          <p className="text-sm opacity-70 mt-2">Lyhyt kuvaus…</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+Chat-vastauksen skeleton
+
+{loading ? (
+  <div className="space-y-2">
+    <Skeleton className="h-5 w-3/4" />
+    <Skeleton className="h-5 w-2/3" />
+    <Skeleton className="h-5 w-5/6" />
+  </div>
+) : (
+  <article className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
+    {answer}
+  </article>
+)}
+
+Hyväksymiskriteerit (DONE)
+
+Kortit ja listat näyttävät skeletonit ennen datan renderöintiä (vähintään 2 eri näkymää).
+
+Napeissa ja korteissa on hienovarainen hover ja pulsahdus painalluksessa.
+
+Dark mode toimii myös skeleton-tilassa.
+
+Ei uusia maksullisia integraatioita, ei ulkoisia kutsuja.
+
+Kaikki muutokset sisältyvät yhteen patchiin: ui_progressive_loading.patch.
+
+Aja lopuksi (agentti ohjaa, mutta ohjeeksi):
+git apply ui_progressive_loading.patch ja käynnistä dev-palvelin.
+
+Lopuksi: Lisää lyhyt “Tech Lead -viesti” UI:hin (esim. chat-paneelin yläreunaan pienellä harmaalla tekstillä):
+
+”Progressive loading ja micro-interactions on toteutettu design-periaatteella ‘fast feedback, no surprises’. Tämä vähentää koettua viivettä ja parantaa konversiota – pieni yksityiskohta, iso vaikutus.”
