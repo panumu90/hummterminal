@@ -76,8 +76,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const enhancementResponse = await gemini.models.generateContent({
             model: GEMINI_MODEL, // using Gemini 2.5 Pro for enhanced responses
             config: {
-              systemInstruction: `Toimit asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. sinulta kysytään paljon asiakaspalvelu-alasta ja tehtäväsi on vastata täsmällisesti kysymyksiin, käyttäen dataa, joka sinulle on annettu, mutta myös omaa tietoasi. Olet proaktiivinen. Käyttäjäsi ovat asiakaspalvelualan ammattilaisia, mutta tekoälystä eillä on vain perusymmärrys. Yritä saada heissä "wau" efekti aikaan, kun vastaat kysymyksiin, anna aina lähdeviittaukset mukaan, jos mahdollista`,
-              maxOutputTokens: 300,
+              systemInstruction: `Toimit asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. sinulta kysytään paljon asiakaspalvelu-alasta ja tehtäväsi on vastata täsmällisesti kysymyksiin, käyttäen dataa, joka sinulle on annettu, mutta myös omaa tietoasi. Olet proaktiivinen. Käyttäjäsi ovat asiakaspalvelualan ammattilaisia, mutta tekoälystä eillä on vain perusymmärrys. Yritä saada heissä "wau" efekti aikaan, kun vastaat kysymyksiin, anna aina lähdeviittaukset mukaan, jos mahdollista.
+
+VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja hyödyllisiä.`,
+              maxOutputTokens: 1000,
               temperature: 0.7
             },
             contents: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}`
@@ -396,7 +398,7 @@ Olet AI-asiantuntija joka auttaa humm.fi-tiimiä ymmärtämään 2025 AI-trendej
 
 2025 AI-trendit: ${trendsContent}
 
-**Vastaa aina suomeksi käyttäen Markdown-muotoilua.** Jos kysytään MCP:stä, selitä Model Context Protocol yllä olevan tiedon mukaan. Keskity strategisiin näkökulmiin (max 200 sanaa).`;
+**Vastaa aina suomeksi käyttäen Markdown-muotoilua.** Jos kysytään MCP:stä, selitä Model Context Protocol yllä olevan tiedon mukaan. Anna kattavia 3-5 kappaleen vastauksia strategisista näkökulmista.`;
         
       } else if (context_type === "practical") {
         const compactCases = cases.map(c => {
@@ -420,7 +422,7 @@ Always respond in Finnish and focus on:
 4. Learning points from real deployments
 5. Practical tips for similar implementations
 
-Keep answers practical and actionable (max 200 words).`;
+Anna kattavia 3-5 kappaleen vastauksia jotka ovat käytännöllisiä ja toimintasuuntautuneita.`;
         
       } else if (context_type === "finnish") {
         const finnishCases = cases.filter(c => c.country === "Suomi" || c.country === "Suomi/Pohjoismaat");
@@ -449,7 +451,7 @@ ${globalContent}
 4. **Markkinakohtaiset mahdollisuudet** ja haasteet
 5. **Suositukset suomalaisille yrityksille**
 
-Pidä vastaukset Suomi-keskeisinä (max 200 sanaa).`;
+Anna kattavia 3-5 kappaleen vastauksia jotka ovat Suomi-keskeisiä.`;
         
       } else if (context_type === "mcp") {
         // Dedicated MCP context to ensure correct understanding
@@ -470,7 +472,7 @@ IMPORTANT: Always end MCP-related responses with this information about industry
 
 "On hyvä huomata, että johtavien teknologiayritysten (kuten Anthropic, OpenAI, Microsoft) piirissä kehitetään parhaillaan ratkaisuja MCP:n turvallisuuden parantamiseksi juuri näistä syistä. Alalle on muodostumassa parhaiden käytäntöjen joukko, johon kuuluu mm. vahva autentikointi, hienojakoiset OAuth-oikeudet AI:lle, kontekstitietojen huolellinen suodatus ja AI-hallintamallit organisaatioissa. Myös riippumattomat turvallisuusarvioinnit (esim. OWASP MCP Top 10 -projekti) tuovat esiin yleisimmät uhat ja ohjeet niiden torjumiseen. Organisaatioiden kannattaa hyödyntää näitä oppeja ja työkaluja rakentaessaan MCP-yhteensopivia palveluja."
 
-Respond in Finnish using Markdown formatting. Focus on strategic benefits for humm.fi (max 200 words).`;
+Respond in Finnish using Markdown formatting. Anna kattavia 3-5 kappaleen vastauksia strategisista hyödyistä humm.fi:lle.`;
 
       } else if (context_type === "tech_lead") {
         // Tech Lead CV context with Humm Group specific information
@@ -570,7 +572,7 @@ ${keyLearnings}
 4. **Riskiarviointiin** ja lieventämisstrategioihin
 5. **Menestyksen mittareihin** ja seurattaviin KPI:hin
 
-**PAKOLLINEN:** Jos kysymys sisältää sanan "MCP", käytä VAIN yllä olevaa Model Context Protocol -määritelmää vastauksessasi. Pidä vastaukset strategisina ja toimintasuuntautuneina humm.fi:lle (max 200 sanaa).`;
+**PAKOLLINEN:** Jos kysymys sisältää sanan "MCP", käytä VAIN yllä olevaa Model Context Protocol -määritelmää vastauksessasi. Anna kattavia 3-5 kappaleen vastauksia jotka ovat strategisia ja toimintasuuntautuneita humm.fi:lle.`;
         
       } else {
         // general context - mix of everything
@@ -589,7 +591,7 @@ ${topCases}
 
 **Vastaa aina suomeksi** käyttäen **Markdown-muotoilua** (otsikot, listat, korostukset). Anna konkreettisia, hyödyllisiä tietoja ja käytännön näkemyksiä yllä olevien tietojen perusteella.
 
-Pidä vastaukset informatiivisina ja toimintasuuntautuneina (max 200 sanaa).`;
+Anna kattavia 3-5 kappaleen vastauksia jotka ovat informatiivisia ja toimintasuuntautuneita.`;
       }
 
       // Light sanitization to keep Finnish content while preventing ByteString errors
