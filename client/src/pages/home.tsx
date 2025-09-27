@@ -34,192 +34,155 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900 text-white font-sans min-h-screen">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-card/95">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Bot className="text-primary-foreground h-4 w-4" />
+    <div className="bg-white text-gray-900 font-sans min-h-screen flex flex-col">
+      {/* Clean Header */}
+      <header className="bg-white/95 border-b border-gray-100 sticky top-0 z-50 backdrop-blur-sm flex-shrink-0">
+        <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            <div className="flex items-center space-x-3 lg:space-x-4">
+              <div className="flex items-center space-x-3 lg:space-x-4">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+                  <Bot className="text-white h-4 w-4 lg:h-5 lg:w-5" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-foreground" data-testid="header-title">humm.fi</h1>
-                  <p className="text-xs text-muted-foreground">AI Asiakaspalvelu Showcase</p>
+                  <h1 className="text-xl lg:text-2xl font-semibold text-gray-900" data-testid="header-title">humm.fi</h1>
+                  <p className="text-xs lg:text-sm text-gray-500">AI Asiakaspalvelu Showcase</p>
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-sm text-muted-foreground flex items-center space-x-2">
-                <Building className="h-4 w-4" />
-                <span>Sisäinen käyttö</span>
+            <div className="flex items-center space-x-4 lg:space-x-6">
+              <div className="text-xs lg:text-sm text-gray-500 flex items-center space-x-2">
+                <Building className="h-3 w-3 lg:h-4 lg:w-4" />
+                <span className="hidden sm:inline">Sisäinen käyttö</span>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content Area - Cases */}
-          <div className="lg:col-span-2">
-            <PageHeader />
-
-            {/* CTA Section - Tech Lead and Impact Analysis */}
-            <div className="mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Tech Lead CTA */}
-              <Link href="/tech-lead-cv">
-                <Button 
-                  size="lg"
-                  className="w-full h-16 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
-                  data-testid="tech-lead-cta"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="flex items-center justify-center space-x-3 relative z-10">
-                    <Rocket className="h-6 w-6" />
-                    <div className="text-center">
-                      <div className="text-lg font-bold">Tech Lead ja Humm Group Oy</div>
-                      <div className="text-sm opacity-90">Minun visio roolista</div>
-                    </div>
-                    <Users className="h-6 w-6" />
-                  </div>
-                </Button>
-              </Link>
-              
-              {/* Impact Analysis CTA */}
-              <Link href="/impact-analysis">
-                <Button 
-                  size="lg"
-                  className="w-full h-16 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
-                  data-testid="impact-analysis-cta-top"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="flex items-center justify-center space-x-3 relative z-10">
-                    <TrendingUp className="h-6 w-6" />
-                    <div className="text-center">
-                      <div className="text-lg font-bold">AI-projektin vaikutus</div>
-                      <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
-                    </div>
-                    <BarChart className="h-6 w-6" />
-                  </div>
-                </Button>
-              </Link>
+      {/* Dual-Pane Layout - Responsive */}
+      <div className="flex flex-col lg:flex-row min-h-0 flex-1">
+        {/* Left Panel - AI Assistant */}
+        <div className="w-full lg:w-1/2 bg-white lg:border-r border-gray-100 flex flex-col min-h-0">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-6 border-b border-gray-50">
+            <div className="flex items-center space-x-3 mb-2">
+              <Bot className="h-5 w-5 lg:h-6 lg:w-6 text-blue-600" />
+              <h2 className="text-lg lg:text-xl font-semibold text-gray-900">AI Assistentti</h2>
             </div>
-
-            {/* Case Cards Grid */}
-            {isLoading ? (
-              <div className="space-y-6">
-                {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="shadow-sm" data-testid={`skeleton-card-${i}`}>
-                    <CardContent className="p-6 animate-in fade-in-0 duration-300" style={{ animationDelay: `${i * 150}ms` }}>
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center space-x-3">
-                          <Skeleton className="w-12 h-12 rounded-lg" />
-                          <div>
-                            <Skeleton className="h-6 w-32 mb-2" />
-                            <Skeleton className="h-4 w-24" />
-                          </div>
-                        </div>
-                        <Skeleton className="h-6 w-20 rounded-full" />
-                      </div>
-                      <div className="mb-4">
-                        <Skeleton className="h-4 w-40 mb-2" />
-                        <div className="space-y-2">
-                          <Skeleton className="h-4 w-full" />
-                          <Skeleton className="h-4 w-3/4" />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 mb-4">
-                        {[...Array(3)].map((_, j) => (
-                          <div key={j} className="text-center p-3">
-                            <Skeleton className="h-6 w-12 mx-auto mb-1 rounded" />
-                            <Skeleton className="h-3 w-16 mx-auto rounded" />
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mb-4">
-                        <Skeleton className="h-4 w-32 mb-2" />
-                        <div className="space-y-1">
-                          {[...Array(3)].map((_, k) => (
-                            <Skeleton key={k} className="h-3 w-full" />
-                          ))}
-                        </div>
-                      </div>
-                      <Skeleton className="h-10 w-full rounded" />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : cases?.length ? (
-              <div className="space-y-6" data-testid="cases-grid">
-                {cases.map((case_, index) => (
-                  <div
-                    key={case_.id}
-                    className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
-                    style={{ animationDelay: `${index * 100}ms` }}
-                  >
-                    <CaseCard case_={case_} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <Card data-testid="no-cases">
-                <CardContent className="pt-6 text-center">
-                  <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Ei caseja saatavilla</h3>
-                  <p className="text-muted-foreground">
-                    Caseja ei löytynyt tai ne ovat väliaikaisesti poissa käytöstä.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* AI Project Impact Analysis Section */}
-            <div className="mt-12 mb-8">
-              <Link href="/impact-analysis">
-                <Button 
-                  size="lg"
-                  className="w-full h-16 bg-gradient-to-r from-slate-600 via-slate-700 to-slate-800 hover:from-slate-700 hover:via-slate-800 hover:to-slate-900 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] relative overflow-hidden group"
-                  data-testid="impact-analysis-cta"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="flex items-center justify-center space-x-3 relative z-10">
-                    <TrendingUp className="h-6 w-6" />
-                    <div className="text-center">
-                      <div className="text-lg font-bold">Humm Group Oy onnistuneen AI-projektin vaikutus</div>
-                      <div className="text-sm opacity-90">Tehokkuuteen ja säästöihin</div>
-                    </div>
-                    <BarChart className="h-6 w-6" />
-                  </div>
-                </Button>
-              </Link>
-            </div>
+            <p className="text-gray-600 text-xs lg:text-sm">
+              Räätälöidyt vastaukset Humm Group Oy:n johdolle
+            </p>
           </div>
-
-          {/* AI Assistant - Enhanced Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
-                  <Bot className="h-5 w-5" />
-                  🤖 AI Assistentti johdolle
-                </h2>
-                <p className="text-gray-300 text-sm">
-                  Räätälöidyt vastaukset asiakaspalvelualan ammattilaisille ja Humm Group Oy:n johdolle.
-                </p>
-              </div>
-              <ChatInterface />
-            </div>
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <ChatInterface />
           </div>
         </div>
-        
-        {/* Progressive Loading Notice */}
-        <div className="mt-12 mb-6 text-center">
-          <p className="text-xs text-gray-500 italic">
-            Progressive loading ja micro-interactions on toteutettu design-periaatteella
-            'fast feedback, no surprises'. Tämä vähentää koettua viivettä ja parantaa konversiota.
-          </p>
+
+        {/* Right Panel - Case Explorer */}
+        <div className="w-full lg:w-1/2 bg-gray-50 flex flex-col min-h-0 border-t lg:border-t-0 border-gray-100">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-6 bg-white border-b border-gray-100">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
+              <div>
+                <h2 className="text-lg lg:text-xl font-semibold text-gray-900">Onnistuneet AI-caset</h2>
+                <p className="text-gray-600 text-xs lg:text-sm mt-1">Asiakaspalvelussa parannettu kokemus ja tehokkuus</p>
+              </div>
+              <div className="flex items-center space-x-2 lg:space-x-4">
+                <Link href="/tech-lead-cv">
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="text-xs lg:text-sm border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-2 lg:px-3"
+                    data-testid="tech-lead-cta"
+                  >
+                    <Users className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
+                    Tech Lead
+                  </Button>
+                </Link>
+                <Link href="/impact-analysis">
+                  <Button 
+                    variant="outline"
+                    size="sm"
+                    className="text-xs lg:text-sm border-gray-200 hover:border-gray-300 hover:bg-gray-50 px-2 lg:px-3"
+                    data-testid="impact-analysis-cta-top"
+                  >
+                    <BarChart className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
+                    Vaikutusanalyysi
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* Case Content Area */}
+          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-4 lg:space-y-6">
+          {/* Case Cards Grid */}
+          {isLoading ? (
+            <div className="space-y-4">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="bg-white shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200" data-testid={`skeleton-card-${i}`}>
+                  <CardContent className="p-6 animate-in fade-in-0 duration-300" style={{ animationDelay: `${i * 150}ms` }}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center space-x-3">
+                        <Skeleton className="w-12 h-12 rounded-lg" />
+                        <div>
+                          <Skeleton className="h-6 w-32 mb-2" />
+                          <Skeleton className="h-4 w-24" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-6 w-20 rounded-full" />
+                    </div>
+                    <div className="mb-4">
+                      <Skeleton className="h-4 w-40 mb-2" />
+                      <div className="space-y-2">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-3/4" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      {[...Array(3)].map((_, j) => (
+                        <div key={j} className="text-center p-3">
+                          <Skeleton className="h-6 w-12 mx-auto mb-1 rounded" />
+                          <Skeleton className="h-3 w-16 mx-auto rounded" />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mb-4">
+                      <Skeleton className="h-4 w-32 mb-2" />
+                      <div className="space-y-1">
+                        {[...Array(3)].map((_, k) => (
+                          <Skeleton key={k} className="h-3 w-full" />
+                        ))}
+                      </div>
+                    </div>
+                    <Skeleton className="h-10 w-full rounded" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : cases?.length ? (
+            <div className="space-y-4" data-testid="cases-grid">
+              {cases.map((case_, index) => (
+                <div
+                  key={case_.id}
+                  className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <CaseCard case_={case_} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Card data-testid="no-cases" className="bg-white shadow-sm border border-gray-100">
+              <CardContent className="pt-6 text-center">
+                <AlertCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Ei caseja saatavilla</h3>
+                <p className="text-gray-600">
+                  Caseja ei löytynyt tai ne ovat väliaikaisesti poissa käytöstä.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+          </div>
         </div>
       </div>
     </div>
