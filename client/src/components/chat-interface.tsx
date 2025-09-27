@@ -674,8 +674,8 @@ export function ChatInterface() {
   };
 
   return (
-    <div className="w-full">
-      <Card className="overflow-hidden shadow-xl border-0 bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm" data-testid="chat-interface">
+    <div className="w-full max-h-[calc(100vh-8rem)] flex flex-col">
+      <Card className="overflow-hidden shadow-xl border-0 bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm flex-1 flex flex-col" data-testid="chat-interface">
         {/* Chat Header */}
         <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-3 flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -851,86 +851,258 @@ export function ChatInterface() {
           </div>
         </div>
 
-        {/* MCP Section - TÄRKEÄ! */}
-        <div className={`border-t border-border bg-emerald-950 transition-all duration-300 ${
-          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 pb-6 max-h-none opacity-100'
+        {/* Scrollable Content Area for MCP and Questions */}
+        <div className={`flex-1 overflow-y-auto transition-all duration-300 ${
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0' : 'opacity-100'
         }`}>
-          <div className="flex items-center gap-2 mb-3">
-            <Shield className="h-5 w-5 text-emerald-600" />
-            <h4 className="text-sm font-semibold text-emerald-100">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
+          {/* MCP Section - TÄRKEÄ! */}
+          <div className="border-t border-border bg-emerald-950 p-4 pb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className="h-5 w-5 text-emerald-600" />
+              <h4 className="text-sm font-semibold text-emerald-100">Model Context Protocol (MCP) - TÄRKEÄ!</h4>
+            </div>
+            <p className="text-xs text-emerald-300 mb-3">
+              MCP mahdollistaa turvallisen AI-integraation yritysjärjestelmiin
+            </p>
+            <div className="grid grid-cols-1 gap-2">
+              {mcpQuestions.map((question) => {
+                const IconComponent = question.icon;
+                return (
+                  <PulseButton
+                    key={question.id}
+                    variant="outline"
+                    size="sm"
+                    pulse="subtle"
+                    className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white"
+                    onClick={() => handleQuestionClick(question.id)}
+                    loading={questionMutation.isPending}
+                    disabled={questionMutation.isPending}
+                    data-testid={`question-${question.id}`}
+                  >
+                    <IconComponent className="h-4 w-4 mr-2 text-emerald-600 flex-shrink-0" />
+                    <span className="leading-tight">{question.question}</span>
+                  </PulseButton>
+                );
+              })}
+            </div>
           </div>
-          <p className="text-xs text-emerald-300 mb-3">
-            MCP mahdollistaa turvallisen AI-integraation yritysjärjestelmiin
-          </p>
-          <div className="grid grid-cols-1 gap-2">
-            {mcpQuestions.map((question) => {
-              const IconComponent = question.icon;
-              return (
-                <PulseButton
-                  key={question.id}
-                  variant="outline"
-                  size="sm"
-                  pulse="subtle"
-                  className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white"
-                  onClick={() => handleQuestionClick(question.id)}
-                  loading={questionMutation.isPending}
-                  disabled={questionMutation.isPending}
-                  data-testid={`question-${question.id}`}
-                >
-                  <IconComponent className="h-4 w-4 mr-2 text-emerald-600 flex-shrink-0" />
-                  <span className="leading-tight">{question.question}</span>
-                </PulseButton>
-              );
-            })}
+
+          {/* AI Kysymykset aiheittain */}
+          <div className="border-t border-border p-4">
+            <h4 className="text-sm font-medium mb-3 text-foreground">AI-asiakaspalvelu kysymykset:</h4>
+            <div className="space-y-4">
+              {topicAreas.map((topic) => {
+                const TopicIcon = topic.icon;
+                return (
+                  <div key={topic.id} className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <TopicIcon className={`h-4 w-4 ${topic.color.replace('bg-', 'text-')}`} />
+                      <h5 className="text-xs font-medium text-foreground">{topic.title}</h5>
+                    </div>
+                    <div className="grid grid-cols-1 gap-1 ml-6">
+                      {topic.questions.map((question) => {
+                        const QuestionIcon = question.icon;
+                        return (
+                          <Button
+                            key={question.id}
+                            variant="ghost"
+                            size="sm"
+                            className="h-auto p-2 text-xs text-left justify-start hover:bg-muted"
+                            onClick={() => handleQuestionClick(question.id)}
+                            disabled={questionMutation.isPending}
+                            data-testid={`question-${question.id}`}
+                          >
+                            <QuestionIcon className="h-3 w-3 mr-2 text-muted-foreground flex-shrink-0" />
+                            <span className="leading-tight text-muted-foreground">{question.question}</span>
+                          </Button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
 
-        {/* AI Kysymykset aiheittain */}
-        <div className={`border-t border-border transition-all duration-300 ${
-          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-80 overflow-y-auto opacity-100'
-        }`}>
-          <h4 className="text-sm font-medium mb-3 text-foreground">AI-asiakaspalvelu kysymykset:</h4>
-          <div className="space-y-4">
-            {topicAreas.map((topic) => {
-              const TopicIcon = topic.icon;
-              return (
-                <div key={topic.id} className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <TopicIcon className={`h-4 w-4 ${topic.color.replace('bg-', 'text-')}`} />
-                    <h5 className="text-xs font-medium text-foreground">{topic.title}</h5>
-                  </div>
-                  <div className="grid grid-cols-1 gap-1 ml-6">
-                    {topic.questions.map((question) => {
-                      const QuestionIcon = question.icon;
-                      return (
-                        <Button
-                          key={question.id}
-                          variant="ghost"
-                          size="sm"
-                          className="h-auto p-2 text-xs text-left justify-start hover:bg-muted"
-                          onClick={() => handleQuestionClick(question.id)}
-                          disabled={questionMutation.isPending}
-                          data-testid={`question-${question.id}`}
-                        >
-                          <QuestionIcon className="h-3 w-3 mr-2 text-muted-foreground flex-shrink-0" />
-                          <span className="leading-tight text-muted-foreground">{question.question}</span>
-                        </Button>
-                      );
-                    })}
-                  </div>
+        {/* MCP Deep Analysis Button */}
+        <div className="p-4 border-t border-border">
+          <Dialog open={mcpModalOpen} onOpenChange={setMcpModalOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full bg-emerald-950 border-emerald-800 hover:bg-emerald-900 text-emerald-300"
+                data-testid="mcp-deep-analysis-button"
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                Syväanalyysi MCP
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh]">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold text-emerald-300 flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Model Context Protocol (MCP) - Syväanalyysi
+                </DialogTitle>
+                <DialogDescription>
+                  Kattava analyysi MCP:n käytöstä ja tietoturvaeduista AI-integraatioissa
+                </DialogDescription>
+              </DialogHeader>
+              <ScrollArea className="h-[70vh] pr-4">
+                <div className="space-y-6">
+                  {/* Johdanto */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                      <HelpCircle className="h-4 w-4" />
+                      Mikä on MCP ja miksi sitä tarvitaan?
+                    </h3>
+                    <div className="bg-emerald-950/30 p-4 rounded-lg border border-emerald-800/30">
+                      <p className="text-sm text-foreground mb-3">
+                        <strong className="text-emerald-400">Model Context Protocol (MCP)</strong> on avoin standardi, joka mahdollistaa AI-mallien turvallisen yhdistämisen ulkoisiin tietolähteisiin ja työkaluihin.
+                      </p>
+                      <ul className="list-disc list-inside text-sm text-muted-foreground space-y-2">
+                        <li>Standardoitu tapa AI-sovellusten integroimiseksi</li>
+                        <li>Parannettu tietoturva ja hallittavuus</li>
+                        <li>Skaalautuva arkkitehtuuri yrityskäyttöön</li>
+                        <li>Yhteensopivuus eri AI-mallien kanssa</li>
+                      </ul>
+                    </div>
+                  </section>
+
+                  {/* Tekniset hyödyt */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                      <Settings className="h-4 w-4" />
+                      Tekniset edut Humm Group Oy:lle
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                          <Shield className="h-4 w-4 text-emerald-500" />
+                          Tietoturva
+                        </h4>
+                        <ul className="text-sm text-muted-foreground space-y-1">
+                          <li>• Keskitetty autentikointi ja valtuutus</li>
+                          <li>• Salaus ja sertifikaattihallinta</li>
+                          <li>• Lokitus ja auditointi</li>
+                          <li>• Zero-trust arkkitehtuuri</li>
+                        </ul>
+                      </div>
+                      <div className="bg-slate-900/50 p-4 rounded-lg border border-slate-700">
+                        <h4 className="font-medium text-foreground mb-2 flex items-center gap-2">
+                          <Zap className="h-4 w-4 text-yellow-500" />
+                          Suorituskyky
+                        </h4>
+                        <ul className="text-sm text-muted-foreground space-y-1">
+                          <li>• Optimoidut API-kutsut</li>
+                          <li>• Välimuistitus ja caching</li>
+                          <li>• Kuormantasaus</li>
+                          <li>• Virheiden käsittely</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Käytännön toteutus */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                      <Code className="h-4 w-4" />
+                      Käytännön toteutus
+                    </h3>
+                    <div className="bg-slate-950 p-4 rounded-lg border border-slate-800">
+                      <h4 className="font-medium text-foreground mb-2">Vaiheittainen implementointi</h4>
+                      <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-2 ml-4">
+                        <li>MCP-serverin käyttöönotto (2-4 viikkoa)</li>
+                        <li>AI-mallien integrointi serveriin (1-2 viikkoa)</li>
+                        <li>Käyttöliittymän rakentaminen (2-3 viikkoa)</li>
+                        <li>Testaus ja viimeistely (1-2 viikkoa)</li>
+                      </ol>
+                      <div className="mt-4 p-3 bg-emerald-950/30 rounded border border-emerald-800/30">
+                        <p className="text-xs text-emerald-300">
+                          <strong>💡 Suositus:</strong> Aloita pilottiprojektilla asiakaspalvelussa ennen laajempaa käyttöönottoa.
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* ROI ja hyödyt */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                      <TrendingUp className="h-4 w-4" />
+                      ROI ja liiketoimintahyödyt
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="text-center p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                        <div className="text-2xl font-bold text-green-400 mb-2">35%</div>
+                        <div className="text-xs text-muted-foreground">Säästö asiakaspalvelukustannuksissa</div>
+                      </div>
+                      <div className="text-center p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                        <div className="text-2xl font-bold text-blue-400 mb-2">60%</div>
+                        <div className="text-xs text-muted-foreground">Nopeampi vastausaika</div>
+                      </div>
+                      <div className="text-center p-4 bg-slate-900/50 rounded-lg border border-slate-700">
+                        <div className="text-2xl font-bold text-purple-400 mb-2">85%</div>
+                        <div className="text-xs text-muted-foreground">Asiakastyytyväisyys</div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Riskit ja haasteet */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-3 text-yellow-600 dark:text-yellow-400 flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4" />
+                      Riskit ja niiden hallinta
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="border border-yellow-800/30 bg-yellow-950/20 p-3 rounded-lg">
+                        <h4 className="font-medium text-yellow-400 mb-1">Tekninen riski</h4>
+                        <p className="text-sm text-muted-foreground">Integraation monimutkaisuus ja riippuvuudet</p>
+                        <p className="text-xs text-yellow-300 mt-1">→ Ratkaisu: Vaiheittainen käyttöönotto ja kattava testaus</p>
+                      </div>
+                      <div className="border border-yellow-800/30 bg-yellow-950/20 p-3 rounded-lg">
+                        <h4 className="font-medium text-yellow-400 mb-1">Tietoturva riski</h4>
+                        <p className="text-sm text-muted-foreground">Uusien hyökkäysvektorien mahdollisuus</p>
+                        <p className="text-xs text-yellow-300 mt-1">→ Ratkaisu: Säännölliset tietoturva-auditoinnit ja päivitykset</p>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Yhteenveto ja suositukset */}
+                  <section>
+                    <h3 className="text-lg font-semibold mb-3 text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4" />
+                      Suositukset Humm Group Oy:lle
+                    </h3>
+                    <div className="bg-emerald-950/20 p-4 rounded-lg border border-emerald-800/30">
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-foreground">Aloita MCP-pilotilla asiakaspalvelussa Q2 2025</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-foreground">Investoi henkilöstön koulutukseen ja osaamisen kehittämiseen</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-foreground">Määrittele selkeät mittarit ja KPI:t seurantaa varten</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-foreground">Valmistele organisaatio muutokseen ja AI:n tuomiin mahdollisuuksiin</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </section>
                 </div>
-              );
-            })}
-          </div>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
         </div>
       </Card>
-
-      {/* MCP Deep Analysis Button */}
-      <div className="mt-6 mb-8">
-        <Dialog open={mcpModalOpen} onOpenChange={setMcpModalOpen}>
-          <DialogTrigger asChild>
-            <Button 
-              variant="outline" 
+    </div>
+  );
+} 
               className="w-full bg-emerald-950 border-emerald-800 hover:bg-emerald-900 text-emerald-300"
               data-testid="mcp-deep-analysis-button"
             >
