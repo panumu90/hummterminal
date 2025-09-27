@@ -224,6 +224,230 @@ export default function TechLeadCV() {
           padding: 28px 0;
         }
         
+        .content-subtitle {
+          color: var(--brand-2);
+          font-size: 1.1rem;
+          font-weight: 700;
+          margin: 24px 0 12px 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .skill-highlight {
+          background: rgba(37,99,235,.08);
+          border: 1px solid rgba(37,99,235,.2);
+          border-radius: 12px;
+          padding: 16px;
+          margin: 16px 0;
+        }
+        
+        .skill-highlight p {
+          margin: 8px 0;
+        }
+        
+        .philosophy-text {
+          background: rgba(255,255,255,.04);
+          border-left: 3px solid var(--brand-2);
+          padding: 16px;
+          border-radius: 0 8px 8px 0;
+          font-style: italic;
+          margin: 20px 0;
+        }
+        
+        .value-proposition {
+          background: linear-gradient(135deg, rgba(37,99,235,.1), rgba(16,58,122,.1));
+          border-radius: 16px;
+          padding: 20px;
+          margin: 24px 0;
+        }
+        
+        .value-proposition h4 {
+          margin: 0 0 16px 0;
+          color: var(--txt);
+        }
+        
+        .value-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 12px;
+          margin-top: 12px;
+        }
+        
+        .value-item {
+          background: rgba(255,255,255,.06);
+          padding: 12px;
+          border-radius: 8px;
+          text-align: center;
+          font-size: 0.9rem;
+        }
+        
+        .role-intro {
+          background: rgba(255,255,255,.02);
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 24px;
+        }
+        
+        .lead-text {
+          font-size: 1.1rem;
+          line-height: 1.7;
+        }
+        
+        .highlight-section {
+          color: var(--brand-2);
+          font-size: 1.2rem;
+          margin: 28px 0 16px 0;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .emphasis-box {
+          background: linear-gradient(135deg, rgba(37,99,235,.08), rgba(16,58,122,.06));
+          border: 1px solid rgba(37,99,235,.15);
+          border-radius: 16px;
+          padding: 24px;
+          margin: 16px 0;
+        }
+        
+        .critical-text {
+          background: linear-gradient(90deg, #ef4444, #dc2626);
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          font-weight: 800;
+          font-size: 1.1em;
+        }
+        
+        .commitment-list {
+          margin: 16px 0;
+          background: rgba(255,255,255,.04);
+          border-radius: 8px;
+          padding: 16px;
+        }
+        
+        .commitment-list p {
+          margin: 6px 0;
+          font-size: 0.95rem;
+        }
+        
+        .result-text {
+          background: rgba(34,197,94,.1);
+          border: 1px solid rgba(34,197,94,.2);
+          border-radius: 8px;
+          padding: 12px;
+          margin-top: 16px;
+          text-align: center;
+          font-weight: 600;
+        }
+        
+        .enhanced-list {
+          background: rgba(255,255,255,.02);
+          border-radius: 12px;
+          padding: 20px;
+          margin: 16px 0;
+        }
+        
+        .enhanced-list ul {
+          list-style: none;
+          padding: 0;
+        }
+        
+        .enhanced-list li {
+          padding: 8px 0;
+          padding-left: 24px;
+          position: relative;
+          border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+        
+        .enhanced-list li:last-child {
+          border-bottom: none;
+        }
+        
+        .enhanced-list li::before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          color: var(--brand-2);
+          font-weight: bold;
+        }
+        
+        /* Better spacing and visual hierarchy */
+        .section {
+          padding: 32px 0;
+        }
+        
+        .section.card {
+          background: rgba(255,255,255,.02);
+          border-radius: 20px;
+          border: 1px solid rgba(255,255,255,.06);
+          margin: 24px 0;
+          transition: all 0.3s ease;
+        }
+        
+        .section.card:hover {
+          background: rgba(255,255,255,.03);
+          border-color: rgba(37,99,235,.2);
+          transform: translateY(-2px);
+        }
+        
+        .section.pad {
+          padding: 32px;
+        }
+        
+        /* Enhanced content spacing */
+        .content > * + * {
+          margin-top: 20px;
+        }
+        
+        .full-content > * + * {
+          margin-top: 20px;
+        }
+        
+        /* Chip styling improvements */
+        .chip {
+          display: inline-block;
+          background: linear-gradient(135deg, var(--brand-2), var(--brand));
+          color: white;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          margin: 4px 8px 4px 0;
+          box-shadow: 0 2px 8px rgba(37,99,235,.3);
+          border: 1px solid rgba(255,255,255,.1);
+        }
+        
+        /* Better responsive text sizing */
+        .content-subtitle {
+          font-size: clamp(1rem, 2vw, 1.2rem);
+        }
+        
+        .highlight-section {
+          font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+        }
+        
+        /* Improved mobile spacing */
+        @media (max-width: 768px) {
+          .section.pad {
+            padding: 20px;
+          }
+          
+          .value-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+          }
+          
+          .commitment-list {
+            padding: 12px;
+          }
+          
+          .emphasis-box {
+            padding: 16px;
+          }
+        }
+        
         .cv-page h1, .cv-page h2, .cv-page h3 { 
           line-height: 1.2; 
           margin: .2rem 0 .6rem;
@@ -399,35 +623,58 @@ export default function TechLeadCV() {
           <section className="section card pad" aria-labelledby="h-mietteet">
             <h2 id="h-mietteet">Mietteitäni</h2>
             <div className="content">
-              <p>Olen nyt perehtynyt syvällisesti humm group oy:n toimintaan, sen liiketoiminnallisiin tunnuslukuihin, kilpailijoihin ja pohtinut minkalaista arvoa voisin yritykselle tuoda, vai voisinko ollenkaan...</p>
-              <p>Erikoisosaamiseni keskittyy kahteen avainasaan: <strong>järjestelmäintegraatioihin</strong> ja <strong>tekoälyn strategiseen hyödyntämiseen</strong> organisaatiossa. Hallitsen API-integraatiot, CRM-järjestelmien kytkennät, automaatiotyökalut ja datan siirtämisen eri järjestelmien välillä saumattomasti.</p>
-              <p>Tekoälyosaamiseni kattaa GPT-mallien hyödyntämisen, embedding-teknologiat, RAG (Retrieval-Augmented Generation) -arkkitehtuurit ja fine-tuning-prosessit. Osaan rakentaa AI-strategioita, implementoida niitä käytännössä ja mitata niiden liiketoimintavaikutuksia. Tämä sovellus toimii konkreettisena näyttönä kyvyistäni.</p>
-              <p>Usean vuoden kokemus suurien pörssiyhtiöiden seuraamisesta ja analysoimisesta antaa minulle pohjaa ja ymmärrystä, kuinka menestyneitä organisaatioita johdetaan.</p>
-              <p>Lähestymistapani liiketoimintaan on Steve Jobsin kaltainen, asiakaskokemus edellä , teknologia seuraa perästä (mutta en ole aivan yhtä mulkku. Olen oikeasti ihan hyvä tyyppi.) Minulla on nyt selkeä visio, kuinka lähtisin hoitamaan tech lead -roolia.</p>
-              <p>Haluan olla mukana jossain merkityksellisessä ja luoda oikeaa arvoa, siksi haen tähän tehtävään. Koen, että pystyn toimialan ulkopuolelta, mutta siihen nyt perehtyneenä tarjoamaan ajatuksia ja roadmappeja hummille, joihin muut eivät kykene.</p>
-              <p>Yrityksen talousluvut eivät ole erityisen vahvat, mutta tase on vahva</p>
-              <p>Kilpailijoihin perehtyessäni huomasin, että monet hyödyntävät jo tekoälyä ja automaatiota → voisinko tuoda arvoa tuomalla tähän käytännön osaamista?</p>
-              <p>Arvoa voisin ehkä tuoda ainakin kolmella tavalla: (1) tehokkuuden parantaminen, (2) uusien palvelumallien ideointi, (3) asiakaskokemuksen kehittäminen teknologian avulla.</p>
-              <p>Tulen täysin toisesta maailmasta ja luulen, että juuri jotain uutta Humm kaipaakin</p>
-              <h3>Henkilökohtaiset ominaisuudet</h3>
-              <p><strong>profiili:</strong></p>
-              <ul>
-                <li>Innovatiivisuus ja uteliaisuus uusia teknologioita kohtaan</li>
-                <li>Ongelmanratkaisukyky ja analyyttinen ajattelu</li>
-                <li>Itseohjautuvuus ja proaktiivisuus</li>
-                <li>Joustavuus ja sopeutumiskyky</li>
-                <li>Kyky johtaa ja kehittää tiimiä</li>
-                <li>Muutosjohtamisen taidot</li>
-              </ul>
-              <h3>Miksi nämä ominaisuudet ovat tärkeitä:</h3>
-              <ul>
-                <li>Tekoälyala kehittyy nopeasti, joten jatkuva oppiminen on välttämätöntä</li>
-                <li>Pienessä yrityksessä on usein monimutkaisia ongelmia, jotka vaativat luovia ratkaisuja</li>
-                <li>Resurssipula edellyttää itseohjautuvuutta ja kykyä toimia itsenäisesti</li>
-                <li>Nopeasti muuttuvassa ympäristössä joustavuus on valttia</li>
-                <li>Tiimin johtaminen ja kehittäminen ovat keskeisiä, jotta uudet teknologiat saadaan vietyä käytäntöön</li>
-                <li>Muutosjohtamisen avulla voidaan hallita siirtymää kohti tekoälyn hyödyntämistä ilman, että henkilöstö kokee liiallista epävarmuutta</li>
-              </ul>
+              <h3 className="content-subtitle">💼 Analyysi ja lähtökohdat</h3>
+              <p>Olen perehtynyt syvällisesti <strong>Humm Group Oy:n</strong> toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin. Pohdin tarkkaan, minkälaista arvoa voisin yritykselle tuoda.</p>
+              
+              <h3 className="content-subtitle">🎯 Ydinosaaminen</h3>
+              <p>Erikoisosaamiseni keskittyy kahteen kriittiseen alueeseen:</p>
+              <div className="skill-highlight">
+                <p><strong>1. Järjestelmäintegraatiot:</strong> API-integraatiot, CRM-järjestelmien kytkennät, automaatiotyökalut ja datan siirtäminen eri järjestelmien välillä saumattomasti.</p>
+                <p><strong>2. Tekoälyn strateginen hyödyntäminen:</strong> GPT-mallien hyödyntäminen, embedding-teknologiat, RAG-arkkitehtuurit ja fine-tuning-prosessit.</p>
+              </div>
+              
+              <h3 className="content-subtitle">🚀 Käytännön osaamisen todistus</h3>
+              <p>Osaan rakentaa <strong>AI-strategioita</strong>, implementoida niitä käytännössä ja mitata liiketoimintavaikutuksia. <em>Tämä sovellus toimii konkreettisena näyttönä kyvyistäni.</em></p>
+              
+              <h3 className="content-subtitle">💡 Liiketoimintaymmärrys</h3>
+              <p>Usean vuoden kokemus suurten pörssiyhtiöiden analysoinnista antaa perspektiiviä menestyneiden organisaatioiden johtamiseen.</p>
+              
+              <p className="philosophy-text">Lähestymistapani: <strong>asiakaskokemus edellä, teknologia seuraa</strong>. Haluan olla mukana merkityksellisessä työssä ja luoda todellista arvoa.</p>
+              
+              <div className="value-proposition">
+                <h4>🎯 Kolme arvonluontitapaa Hummille:</h4>
+                <div className="value-grid">
+                  <div className="value-item">📈 <strong>Tehokkuuden parantaminen</strong></div>
+                  <div className="value-item">💡 <strong>Uusien palvelumallien ideointi</strong></div>
+                  <div className="value-item">🎨 <strong>Asiakaskokemuksen kehittäminen</strong></div>
+                </div>
+              </div>
+              
+              <h3 className="content-subtitle">🔍 Markkinaanalyysi</h3>
+              <p>Kilpailijoihin perehtyessäni huomasin, että monet hyödyntävät jo tekoälyä ja automaatiota. <strong>Voisin tuoda arvoa käytännön AI-osaamisella.</strong></p>
+              <h3 className="content-subtitle">👤 Henkilökohtaiset vahvuudet</h3>
+              <div className="enhanced-list">
+                <ul>
+                  <li><strong>Innovatiivisuus</strong> ja uteliaisuus uusia teknologioita kohtaan</li>
+                  <li><strong>Ongelmanratkaisukyky</strong> ja analyyttinen ajattelu</li>
+                  <li><strong>Itseohjautuvuus</strong> ja proaktiivisuus</li>
+                  <li><strong>Joustavuus</strong> ja sopeutumiskyky</li>
+                  <li><strong>Tiimin johtaminen</strong> ja kehittäminen</li>
+                  <li><strong>Muutosjohtamisen</strong> taidot</li>
+                </ul>
+              </div>
+              
+              <h3 className="content-subtitle">❓ Miksi nämä ovat kriittisiä Tech Leadille</h3>
+              <div className="enhanced-list">
+                <ul>
+                  <li>Tekoälyala kehittyy nopeasti → <strong>jatkuva oppiminen on välttämätöntä</strong></li>
+                  <li>Pienessä yrityksessä on monimutkaisia ongelmia → <strong>luovuus ja ratkaisukeskeisyys</strong></li>
+                  <li>Resurssipula edellyttää → <strong>itseohjautuvuutta ja itsenäistä toimintaa</strong></li>
+                  <li>Nopea muutos → <strong>joustavuus on kilpailuetu</strong></li>
+                  <li>Teknologian käyttöönotto → <strong>tiimin johtaminen on avain</strong></li>
+                  <li>AI-siirtymä → <strong>muutosjohtaminen ilman henkilöstön epävarmuutta</strong></li>
+                </ul>
+              </div>
             </div>
           </section>
 
@@ -438,18 +685,37 @@ export default function TechLeadCV() {
                 <p>Rooli on erityisen vaativa, koska Humm Group on pieni yritys, joka on vasta aloittamassa tekoälymatkaansa. Tech Leadin on oltava sekä tekninen asiantuntija että strateginen ajattelija...</p>
               </div>
               <div className="full-content">
-                <p>Rooli on erityisen vaativa, koska Humm Group on pieni yritys, joka on vasta aloittamassa tekoälymatkaansa. Tech Leadin on oltava sekä tekninen asiantuntija että strateginen ajattelija, joka pystyy rakentamaan tekoälyosaamista yritykseen käytännössä.</p>
-                <h3>Jatkuva kehitys - elinehto AI-maailmassa</h3>
-                <p>Tekoälyala kehittyy eksponentiaalisesti. Jatkuva oppiminen ja kehittyminen eivät ole vain hyviä ominaisuuksia - ne ovat <strong>elinehtoja</strong> Tech Leadille AI-maailmassa. Seuraan aktiivisesti alan tutkimusta, kokeilen uusia teknologioita, osallistun AI-yhteisöihin ja teen jatkuvasti proof-of-concept -toteutuksia. Tämä varmiistaa, että Humm Group pysyy teknologisen kehityksen kärjessä.</p>
-                <ul>
-                  <li>Asiakaskokemuksen konsultointi ja asiakaspalvelun ulkoistus ovat alueita, joilla tekoäly voi tuottaa merkittävää arvoa</li>
-                  <li>Korkea henkilöstökustannusosuus (tyypillisesti 60-70% palveluyrityksissä) tarkoittaa, että automoinnilla on suuri potentiaali</li>
-                  <li>Asiakaspalvelun laadun parantaminen tekoälyllä voi suoraan vaikuttaa asiakastyytyväisyyteen ja säilyttämiseen</li>
-                  <li>Hummin täytyy kuitenkin säilyttää "oman brändinsä värit", eli yhdistelmä inhimillisyydestä ja teknologiasta</li>
-                  <li>Humm Groupin ydinliiketoiminta on asiakaskokemuksen parantaminen, joten Tech Leadin on ymmärrettävä tätä liiketoimintaa syvällisesti</li>
-                  <li>Teknologian on tuotettava mitattavaa arvoa asiakkaille ja yritykselle, pelkkä hype ei riitä</li>
-                  <li>Tech Leadin on kyettävä yhdistämään teknologinen ratkaisu liiketoiminnan tavoitteisiin (samat kpi:t?)</li>
-                </ul>
+                <div className="role-intro">
+                  <p className="lead-text">Rooli on erityisen vaativa, koska <strong>Humm Group</strong> on pieni yritys, joka on vasta aloittamassa tekoälymatkaansa. Tech Leadin on oltava sekä <strong>tekninen asiantuntija</strong> että <strong>strateginen ajattelija</strong>.</p>
+                </div>
+                
+                <h3 className="highlight-section">⚡ Jatkuva kehitys - elinehto AI-maailmassa</h3>
+                <div className="emphasis-box">
+                  <p>Tekoälyala kehittyy <strong>eksponentiaalisesti</strong>. Jatkuva oppiminen ja kehittyminen eivät ole vain hyviä ominaisuuksia - ne ovat <span className="critical-text">elinehtoja</span> Tech Leadille AI-maailmassa.</p>
+                  
+                  <div className="commitment-list">
+                    <p><strong>Sitoudun:</strong></p>
+                    <p>🔬 Seuraamaan aktiivisesti alan tutkimusta</p>
+                    <p>🧪 Kokeilemaan uusia teknologioita</p>
+                    <p>🤝 Osallistumaan AI-yhteisöihin</p>
+                    <p>⚙️ Tekemään jatkuvasti proof-of-concept -toteutuksia</p>
+                  </div>
+                  
+                  <p className="result-text">Tämä varmistaa, että <strong>Humm Group pysyy teknologisen kehityksen kärjessä</strong>.</p>
+                </div>
+                
+                <h3 className="content-subtitle">🎯 Liiketoiminnan ymmärrys ja mahdollisuudet</h3>
+                <div className="enhanced-list">
+                  <ul>
+                    <li><strong>Asiakaskokemus & ulkoistus:</strong> Merkittävä arvopotentiaali tekoälyllä</li>
+                    <li><strong>Henkilöstökustannukset:</strong> 60-70% osuus → automaation suuri potentiaali</li>
+                    <li><strong>Palvelun laatu:</strong> AI parantaa asiakastyytyväisyyttä ja säilyttämistä</li>
+                    <li><strong>Brändi-identiteetti:</strong> Säilytä "Hummin värit" - inhimillisyys + teknologia</li>
+                    <li><strong>Ydinliiketoiminta:</strong> Asiakaskokemus → syvä liiketoimintaymmärrys pakollinen</li>
+                    <li><strong>Arvotuotto:</strong> Mitattava hyöty, ei pelkkää hypetä</li>
+                    <li><strong>Strateginen linkitys:</strong> Teknologia → liiketoiminnan tavoitteet & KPI:t</li>
+                  </ul>
+                </div>
               </div>
               <button className="read-more-btn" data-target="rooli" data-testid="read-more-role">Lue lisää</button>
             </div>
@@ -462,31 +728,45 @@ export default function TechLeadCV() {
                 <p>Systemaattinen lähestymistapa Tech Lead -roolin onnistumiseen keskittyen kommunikointiin, joustavuuteen, arvon tuottamiseen ja kulttuurin muutokseen...</p>
               </div>
               <div className="full-content">
-                <h3>Kommunikointi ja läpinäkyvyys</h3>
-                <ul>
-                  <li>Pidä säännöllisiä palavereita johdon ja tiimin kanssa</li>
-                  <li>Jaa tietoa avoimesti edistymisestä ja haasteista</li>
-                  <li>Varmista, että kaikki ymmärtävät tekemisen merkityksen</li>
-                </ul>
-                <h3>Joustavuus ja iteratiivisuus</h3>
-                <ul>
-                  <li>Ole valmis muuttamaan suunnitelmia tarpeen mukaan</li>
-                  <li>Hyödynnä nopeita kokeiluja ja oppimista</li>
-                  <li>Vältä liian suuria ja hitaita hankkeita alussa</li>
-                </ul>
-                <h3>Liiketoiminnan arvon tuottaminen</h3>
-                <ul>
-                  <li>Keskity hankkeisiin, jotka tuottavat nopeasti arvoa</li>
-                  <li>Varmista, että teknologian investoinnit tuottavat ROI:a</li>
-                  <li>Mittaa ja viesti liiketoiminnallisia vaikutuksia</li>
-                </ul>
-                <h3>Kulttuurin muutos</h3>
-                <ul>
-                  <li>Tue tekoälyosaamisen kehittämistä koko organisaatiossa</li>
-                  <li>Varmista, että teknologia ei ole itseisarvo vaan työkalu</li>
-                  <li>Rakenna kokeilukulttuuria ja jatkuvaan oppimiseen</li>
-                </ul>
-                <p>Tämä lähestymistapa mahdollistaa systemaattisen ja hallitun lähdön Tech Lead -rooliin, jossa uusi johtaja ehtii ensin ymmärtää yrityksen ja sen tarpeet ennen kuin ryhtyy tekemään suuria muutoksia. Samalla se varmistaa, että ensimmäiset toimenpiteet tuottavat nopeasti arvoa ja vahvistavat luottamusta teknologian kehittämiseen.</p>
+                <h3 className="content-subtitle">💬 Kommunikointi ja läpinäkyvyys</h3>
+                <div className="enhanced-list">
+                  <ul>
+                    <li><strong>Säännölliset palaverit</strong> johdon ja tiimin kanssa</li>
+                    <li><strong>Avoin tiedonjako</strong> edistymisestä ja haasteista</li>
+                    <li><strong>Merkityksen kirkastaminen</strong> - kaikki ymmärtävät tekemisen tarkoituksen</li>
+                  </ul>
+                </div>
+                
+                <h3 className="content-subtitle">🔄 Joustavuus ja iteratiivisuus</h3>
+                <div className="enhanced-list">
+                  <ul>
+                    <li><strong>Ketteryys:</strong> Valmius muuttaa suunnitelmia tarpeen mukaan</li>
+                    <li><strong>Nopeat kokeilut:</strong> Oppiminen ja validointi ennen isoja investointeja</li>
+                    <li><strong>Realistinen sizing:</strong> Vältä liian suuria ja hitaita hankkeita alussa</li>
+                  </ul>
+                </div>
+                
+                <h3 className="content-subtitle">💰 Liiketoiminnan arvon tuottaminen</h3>
+                <div className="enhanced-list">
+                  <ul>
+                    <li><strong>Quick wins:</strong> Keskity hankkeisiin, jotka tuottavat nopeasti arvoa</li>
+                    <li><strong>ROI-fokus:</strong> Teknologiainvestointien tuottavuuden varmistaminen</li>
+                    <li><strong>Mittaaminen:</strong> Liiketoiminnallisten vaikutusten seuranta ja viestintä</li>
+                  </ul>
+                </div>
+                
+                <h3 className="content-subtitle">🎭 Kulttuurin muutos</h3>
+                <div className="enhanced-list">
+                  <ul>
+                    <li><strong>Osaamisen kehitys:</strong> Teko älyosaaminen koko organisaatiossa</li>
+                    <li><strong>Teknologia työkaluna:</strong> Ei itseisarvo vaan väline tavoitteisiin</li>
+                    <li><strong>Kokeilukulttuuri:</strong> Jatkuva oppiminen ja rohkeus testata</li>
+                  </ul>
+                </div>
+                
+                <div className="philosophy-text">
+                  <strong>Strateginen lähestymistapa:</strong> Systemaattinen ja hallittu aloitus Tech Lead -rooliin. Ensin ymmärrys yrityksestä ja tarpeista, sitten toimenpiteet. Ensimmäiset projektit tuottavat nopeasti arvoa ja vahvistavat luottamusta teknologian kehittämiseen.
+                </div>
               </div>
               <button className="read-more-btn" data-target="success" data-testid="read-more-success">Lue lisää</button>
             </div>
@@ -499,16 +779,26 @@ export default function TechLeadCV() {
                 <p>Tech Lead -rooli on strategisesti tärkeä Humm Group Oy:lle tekoälyn hyödyntämisessä ja kilpailuedun saavuttamisessa...</p>
               </div>
               <div className="full-content">
-                <p>Tech Lead -rooli on strategisesti tärkeä Humm Group Oy:lle tekoälyn hyödyntämisessä ja kilpailuedun saavuttamisessa. Onnistunut Tech Lead pystyy yhdistämään teknologisen osaamisen, liiketoimintaymmärryksen ja johtamistaidot.</p>
-                <p>Tekoälyn strateginen hyödyntäminen voi tuoda Humm Groupille merkittäviä hyötyjä:</p>
-                <ul>
-                  <li>Asiakaskokemuksen parantaminen</li>
-                  <li>Operatiivisen tehokkuuden lisääminen</li>
-                  <li>Uusien palveluiden kehittäminen</li>
-                  <li>Päätöksenteon tukeminen</li>
-                </ul>
-                <p>Seurattava dashboard on tärkeä työkalu Tech Leadille, joka mahdollistaa strategian ja toteutuksen jatkuvan seurannan, läpinäkyvyyden ja päätöksenteon tukemisen.</p>
-                <p>Onnistunut tekoälyn käyttöönotto edellyttää selkeää strategiaa, johdon sitoutumista ja systemaattista toteutusta. Tekoälyn käyttöönotto tarjoaa Humm Group Oy:lle mahdollisuuden erottua kilpailijoista, parantaa operatiivista tehokkuutta ja luoda uusia liiketoimintamahdollisuuksia.</p>
+                <div className="role-intro">
+                  <p className="lead-text">Tech Lead -rooli on <strong>strategisesti kriittinen</strong> Humm Group Oy:lle tekoälyn hyödyntämisessä ja kilpailuedun saavuttamisessa. Onnistunut Tech Lead yhdistää teknologisen osaamisen, liiketoimintaymmärryksen ja johtamistaidot.</p>
+                </div>
+                
+                <h3 className="content-subtitle">🚀 AI:n strategiset hyödyt Hummille</h3>
+                <div className="value-proposition">
+                  <div className="value-grid">
+                    <div className="value-item">👥 <strong>Asiakaskokemuksen parantaminen</strong></div>
+                    <div className="value-item">⚡ <strong>Operatiivisen tehokkuuden lisääminen</strong></div>
+                    <div className="value-item">🎯 <strong>Uusien palveluiden kehittäminen</strong></div>
+                    <div className="value-item">📊 <strong>Päätöksenteon tukeminen</strong></div>
+                  </div>
+                </div>
+                
+                <h3 className="content-subtitle">📈 Seuranta ja läpinäkyvyys</h3>
+                <p className="philosophy-text">Seurattava dashboard on <strong>välttämätön työkalu</strong> Tech Leadille - mahdollistaa strategian ja toteutuksen jatkuvan seurannan, läpinäkyvyyden ja päätöksenteon tukemisen.</p>
+                
+                <div className="result-text">
+                  <strong>Lopputulos:</strong> Onnistunut tekoälyn käyttöönotto edellyttää selkeää strategiaa, johdon sitoutumista ja systemaattista toteutusta. AI tarjoaa Hummille mahdollisuuden erottua kilpailijoista ja luoda uusia liiketoimintamahdollisuuksia.
+                </div>
               </div>
               <button className="read-more-btn" data-target="yhteenveto" data-testid="read-more-summary-final">Lue lisää</button>
             </div>
