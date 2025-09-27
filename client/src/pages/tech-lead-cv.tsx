@@ -125,15 +125,15 @@ export default function TechLeadCV() {
     <>
       <style>{`
         :root {
-          --bg: #1a1a1a;
-          --bg-elev: #2a2a2a;
-          --brand: #4a4a4a;
-          --brand-2: #6a6a6a;
-          --muted: #a8a8a8;
-          --txt: #e8e8e8;
-          --shadow: 0 4px 12px rgba(0,0,0,.2);
-          --radius: 6px;
-          --ring: 0 0 0 2px rgba(255,255,255,.1);
+          --bg: #0a1530;
+          --bg-elev: #0f1f46;
+          --brand: #103a7a;
+          --brand-2: #2563eb;
+          --muted: #a8b3cf;
+          --txt: #e8efff;
+          --shadow: 0 10px 30px rgba(15,31,70,.35);
+          --radius: 18px;
+          --ring: 0 0 0 3px rgba(37,99,235,.35);
         }
         
         .cv-page {
@@ -141,7 +141,9 @@ export default function TechLeadCV() {
           margin: 0;
           font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
           color: var(--txt);
-          background: var(--bg);
+          background: radial-gradient(1200px 600px at 20% -10%, #182a57 0%, transparent 60%), 
+                     radial-gradient(800px 600px at 100% 0%, #0c2b5f 0%, transparent 50%), 
+                     var(--bg);
           line-height: 1.6;
           scroll-behavior: smooth;
         }
@@ -155,9 +157,9 @@ export default function TechLeadCV() {
           position: sticky; 
           top: 0; 
           z-index: 20; 
-          background: rgba(26,26,26,.8); 
-          backdrop-filter: blur(8px); 
-          border-bottom: 1px solid rgba(255,255,255,.1);
+          background: rgba(10,21,48,.65); 
+          backdrop-filter: saturate(140%) blur(8px); 
+          border-bottom: 1px solid rgba(255,255,255,.06);
         }
         
         .head { 
@@ -182,9 +184,9 @@ export default function TechLeadCV() {
           position: sticky; 
           top: 66px; 
           z-index: 19; 
-          background: rgba(26,26,26,.7); 
-          backdrop-filter: blur(8px); 
-          border-bottom: 1px solid rgba(255,255,255,.1);
+          background: rgba(10,21,48,.55); 
+          backdrop-filter: saturate(140%) blur(8px); 
+          border-bottom: 1px solid rgba(255,255,255,.06);
         }
         
         .sectionnav .wrap { 
@@ -196,24 +198,26 @@ export default function TechLeadCV() {
         
         .pill { 
           appearance: none; 
-          border: 1px solid rgba(255,255,255,.15); 
-          background: rgba(255,255,255,.03); 
+          border: 1px solid rgba(255,255,255,.14); 
+          background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); 
           color: var(--txt); 
           padding: 8px 12px; 
-          border-radius: 4px; 
+          border-radius: 999px; 
           cursor: pointer; 
-          font-weight: 500; 
-          letter-spacing: .1px; 
-          transition: background .2s ease;
+          font-weight: 600; 
+          letter-spacing: .2px; 
+          transition: transform .08s ease, box-shadow .08s ease, background .2s ease;
         }
         
         .pill:hover { 
-          background: rgba(255,255,255,.06);
+          transform: translateY(-1px); 
+          box-shadow: var(--shadow);
         }
         
         .pill[aria-current="true"] { 
-          background: rgba(255,255,255,.1); 
-          border-color: rgba(255,255,255,.25);
+          background: linear-gradient(180deg, var(--brand-2), var(--brand)); 
+          border-color: transparent; 
+          box-shadow: var(--ring);
         }
         
         .section { 
@@ -385,7 +389,7 @@ export default function TechLeadCV() {
         
         .section.card:hover {
           background: rgba(255,255,255,.03);
-          border-color: rgba(255,255,255,.12);
+          border-color: rgba(37,99,235,.2);
           transform: translateY(-2px);
         }
         
@@ -402,17 +406,18 @@ export default function TechLeadCV() {
           margin-top: 20px;
         }
         
-        /* Professional chip styling */
+        /* Chip styling improvements */
         .chip {
           display: inline-block;
-          background: rgba(255,255,255,.06);
-          color: var(--txt);
-          padding: 6px 12px;
-          border-radius: 4px;
+          background: linear-gradient(135deg, var(--brand-2), var(--brand));
+          color: white;
+          padding: 8px 16px;
+          border-radius: 20px;
           font-size: 0.85rem;
           font-weight: 600;
           margin: 4px 8px 4px 0;
-          border: 1px solid rgba(255,255,255,.15);
+          box-shadow: 0 2px 8px rgba(37,99,235,.3);
+          border: 1px solid rgba(255,255,255,.1);
         }
         
         /* Better responsive text sizing */
@@ -458,7 +463,7 @@ export default function TechLeadCV() {
         }
         
         .cv-page p.lead { 
-          color: var(--muted);
+          color: #d7e3ff;
         }
         
         .card { 
@@ -502,12 +507,12 @@ export default function TechLeadCV() {
           position: fixed; 
           right: 18px; 
           bottom: 18px; 
-          border-radius: 4px; 
-          border: 1px solid rgba(255,255,255,.2); 
+          border-radius: 999px; 
+          border: 1px solid rgba(255,255,255,.18); 
           padding: 10px 12px; 
-          background: rgba(255,255,255,.1); 
-          color: var(--txt); 
-          font-weight: 600; 
+          background: rgba(30,144,255,.85); 
+          color: #021128; 
+          font-weight: 800; 
           cursor: pointer; 
           display: none; 
           z-index: 30;
@@ -548,24 +553,25 @@ export default function TechLeadCV() {
           left: 0;
           right: 0;
           height: 3rem;
-          background: linear-gradient(transparent, var(--bg));
+          background: linear-gradient(transparent, var(--bg-elev));
           pointer-events: none;
         }
 
         .read-more-btn {
           margin-top: 1rem;
           padding: 8px 16px;
-          background: rgba(255,255,255,.06);
-          border: 1px solid rgba(255,255,255,.15);
-          border-radius: 4px;
-          color: var(--txt);
-          font-weight: 500;
+          background: linear-gradient(180deg, var(--brand-2), var(--brand));
+          border: none;
+          border-radius: 6px;
+          color: white;
+          font-weight: 600;
           cursor: pointer;
-          transition: background 0.2s ease;
+          transition: all 0.2s ease;
         }
 
         .read-more-btn:hover {
-          background: rgba(255,255,255,.1);
+          transform: translateY(-1px);
+          box-shadow: var(--shadow);
         }
       `}</style>
 
