@@ -890,7 +890,7 @@ export function ChatInterface() {
       </Card>
 
       {/* MCP Deep Analysis Button */}
-      <div className="mt-6">
+      <div className="mt-6 mb-8">
         <Dialog open={mcpModalOpen} onOpenChange={setMcpModalOpen}>
           <DialogTrigger asChild>
             <Button 
