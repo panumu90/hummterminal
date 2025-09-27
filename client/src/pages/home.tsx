@@ -36,21 +36,21 @@ export default function Home() {
   return (
     <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900 text-white font-sans min-h-screen flex flex-col">
       {/* Netflix-style Header */}
-      <header className="bg-slate-900/90 border-b border-slate-700/50 sticky top-0 z-50 backdrop-blur-md flex-shrink-0">
+      <header className="bg-slate-900/90 border-b border-slate-700/50 sticky top-0 z-50 backdrop-blur-md flex-shrink-0 animate-in fade-in-0 duration-700">
         <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-18">
             <div className="flex items-center space-x-3 lg:space-x-4">
-              <div className="flex items-center space-x-3 lg:space-x-4">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="flex items-center space-x-3 lg:space-x-4 animate-in slide-in-from-left-4 duration-500">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
                   <Bot className="text-white h-4 w-4 lg:h-5 lg:w-5" />
                 </div>
                 <div>
-                  <h1 className="text-xl lg:text-2xl font-bold text-white" data-testid="header-title">humm.fi</h1>
-                  <p className="text-xs lg:text-sm text-slate-300">AI Asiakaspalvelu Showcase</p>
+                  <h1 className="text-xl lg:text-2xl font-bold text-white animate-in slide-in-from-left-2 duration-600 delay-100" data-testid="header-title">humm.fi</h1>
+                  <p className="text-xs lg:text-sm text-slate-300 animate-in slide-in-from-left-2 duration-600 delay-200">AI Asiakaspalvelu Showcase</p>
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4 lg:space-x-6">
+            <div className="flex items-center space-x-4 lg:space-x-6 animate-in slide-in-from-right-4 duration-500 delay-300">
               <div className="text-xs lg:text-sm text-slate-300 flex items-center space-x-2">
                 <Building className="h-3 w-3 lg:h-4 lg:w-4" />
                 <span className="hidden sm:inline">Sisäinen käyttö</span>
@@ -62,36 +62,36 @@ export default function Home() {
 
       {/* Netflix-style Split Layout */}
       <div className="flex flex-col lg:flex-row min-h-0 flex-1">
-        {/* Left Panel - AI Assistant (30%) */}
-        <div className="w-full lg:w-[35%] bg-slate-800/50 lg:border-r border-slate-700/50 flex flex-col min-h-0 backdrop-blur-sm">
+        {/* Left Panel - AI Assistant (35%) */}
+        <div className="w-full lg:w-[35%] bg-slate-800/50 lg:border-r border-slate-700/50 flex flex-col min-h-0 backdrop-blur-sm animate-in slide-in-from-left-6 duration-700 delay-400">
           <div className="px-4 sm:px-6 lg:px-6 py-4 lg:py-5 border-b border-slate-700/50">
-            <div className="flex items-center space-x-3 mb-2">
-              <Bot className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400" />
+            <div className="flex items-center space-x-3 mb-2 animate-in fade-in-0 duration-600 delay-500">
+              <Bot className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400 animate-pulse" />
               <h2 className="text-lg lg:text-xl font-bold text-white">AI Assistentti</h2>
             </div>
-            <p className="text-slate-300 text-xs lg:text-sm">
+            <p className="text-slate-300 text-xs lg:text-sm animate-in fade-in-0 duration-600 delay-600">
               🤖 Räätälöidyt vastaukset johdolle
             </p>
           </div>
-          <div className="flex-1 min-h-0 overflow-hidden">
+          <div className="flex-1 min-h-0 overflow-hidden animate-in fade-in-0 duration-800 delay-700">
             <ChatInterface />
           </div>
         </div>
 
-        {/* Right Panel - Case Explorer (70%) */}
-        <div className="w-full lg:w-[65%] bg-slate-900/30 flex flex-col min-h-0 border-t lg:border-t-0 border-slate-700/50">
+        {/* Right Panel - Case Explorer (65%) */}
+        <div className="w-full lg:w-[65%] bg-slate-900/30 flex flex-col min-h-0 border-t lg:border-t-0 border-slate-700/50 animate-in slide-in-from-right-6 duration-700 delay-500">
           <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-6 bg-slate-800/40 border-b border-slate-700/50 backdrop-blur-sm">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
-              <div>
+              <div className="animate-in fade-in-0 duration-600 delay-600">
                 <h2 className="text-lg lg:text-xl font-bold text-white">🎯 Onnistuneet AI-caset</h2>
                 <p className="text-slate-300 text-xs lg:text-sm mt-1">Asiakaspalvelussa parannettu kokemus ja tehokkuus</p>
               </div>
-              <div className="flex items-center space-x-2 lg:space-x-4">
+              <div className="flex items-center space-x-2 lg:space-x-4 animate-in slide-in-from-right-4 duration-600 delay-700">
                 <Link href="/tech-lead-cv">
                   <Button 
                     variant="outline"
                     size="sm"
-                    className="text-xs lg:text-sm border-slate-600 hover:border-slate-500 hover:bg-slate-700/50 text-slate-200 hover:text-white px-2 lg:px-3 transition-all duration-200"
+                    className="text-xs lg:text-sm border-slate-600 hover:border-slate-500 hover:bg-slate-700/50 text-slate-200 hover:text-white px-2 lg:px-3 transition-all duration-200 hover:scale-105"
                     data-testid="tech-lead-cta"
                   >
                     <Users className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
@@ -102,7 +102,7 @@ export default function Home() {
                   <Button 
                     variant="outline"
                     size="sm"
-                    className="text-xs lg:text-sm border-slate-600 hover:border-slate-500 hover:bg-slate-700/50 text-slate-200 hover:text-white px-2 lg:px-3 transition-all duration-200"
+                    className="text-xs lg:text-sm border-slate-600 hover:border-slate-500 hover:bg-slate-700/50 text-slate-200 hover:text-white px-2 lg:px-3 transition-all duration-200 hover:scale-105"
                     data-testid="impact-analysis-cta-top"
                   >
                     <BarChart className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
