@@ -797,6 +797,58 @@ Esimerkki: ["Mikä on investoinnin takaisinmaksuaika?", "Mitä riskejä toteutuk
       // Read the specific Tech Lead assets
       const techLeadAssets = await readTechLeadAssets();
       
+      // CV page content from the original website
+      const cvPageContent = `
+📄 **ALKUPERÄINEN CV-SIVUSTON SISÄLTÖ:**
+
+**TIIVISTELMÄ:**
+Asiakaskokemus ensin – teknologia seuraa. Tech Lead -hakemus Humm Group Oy:lle. Kaikki teksti sisältää alkuperäiset mietteeni.
+
+**ANALYYSI JA LÄHTÖKOHDAT:**
+Olen perehtynyt syvällisesti Humm Group Oy:n toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin. Pohdin tarkkaan, minkälaista arvoa voisin yritykselle tuoda.
+
+**YDINOSAAMINEN:**
+1. Järjestelmäintegraatiot: API-integraatiot, CRM-järjestelmien kytkennät, automaatiotyökalut ja datan siirtäminen eri järjestelmien välillä saumattomasti.
+2. Tekoälyn strateginen hyödyntäminen: GPT-mallien hyödyntäminen, embedding-teknologiat, RAG-arkkitehtuurit ja fine-tuning-prosessit.
+
+**KÄYTÄNNÖN OSAAMISEN TODISTUS:**
+Osaan rakentaa AI-strategioita, implementoida niitä käytännössä ja mitata liiketoimintavaikutuksia. Tämä sovellus toimii konkreettisena näyttönä kyvyistäni.
+
+**LIIKETOIMINTAYMMÄRRYS:**
+Usean vuoden kokemus suurten pörssiyhtiöiden analysoinnista antaa perspektiiviä menestyneiden organisaatioiden johtamiseen.
+
+**FILOSOFIA:**
+Lähestymistapani: asiakaskokemus edellä, teknologia seuraa. Haluan olla mukana merkityksellisessä työssä ja luoda todellista arvoa.
+
+**KOLME ARVONLUONTITAPAA HUMMILLE:**
+1. Tehokkuuden parantaminen
+2. Uusien palvelumallien ideointi  
+3. Asiakaskokemuksen kehittäminen
+
+**HENKILÖKOHTAISET VAHVUUDET:**
+- Innovatiivisuus ja uteliaisuus uusia teknologioita kohtaan
+- Ongelmanratkaisukyky ja analyyttinen ajattelu
+- Itseohjautuvuus ja proaktiivisuus
+- Joustavuus ja sopeutumiskyky
+- Tiimin johtaminen ja kehittäminen
+- Muutosjohtamisen taidot
+
+**TECH LEAD -ROOLIN VAATIMUKSET:**
+- Jatkuva oppiminen (tekoälyala kehittyy eksponentiaalisesti)
+- Sekä tekninen asiantuntija että strateginen ajattelija
+- Liiketoimintaymmärrys: asiakaskokemus & ulkoistus, henkilöstökustannukset 60-70%, palvelun laatu
+- Säilytä "Hummin värit" - inhimillisyys + teknologia
+
+**ONNISTUMISEN TEKIJÄT:**
+- Kommunikointi ja läpinäkyvyys
+- Joustavuus ja iteratiivisuus
+- Liiketoiminnan arvon tuottaminen (quick wins, ROI-fokus)
+- Kulttuurin muutos (osaamisen kehitys, teknologia työkaluna)
+
+**MIKSI MINÄ:**
+Yhdistän teknisen tekoälyosaamisen syvään ymmärrykseen asiakaskokemusliiketoiminnastanne. Lähestymistapani on käytännönläheinen: aloitan perehtymällä yrityksenne nykytilaan ennen ratkaisuja.
+`;
+
       // Enhanced AI-Panu persona for job interview context
       const enhancedAIPanuPersona = `
 🎯 **AI-PANU - VIRTUAALINEN TYÖHAASTATELTAVA**
@@ -834,6 +886,8 @@ Johdollani Humm välttäisi yleiset AI-teknologian implementointiin liittyvät s
 
       // Create the system prompt with limited context
       const systemPrompt = `${techLeadAssets}
+
+${cvPageContent}
 
 ${enhancedAIPanuPersona}
 
