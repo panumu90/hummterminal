@@ -670,7 +670,7 @@ export function ChatInterface() {
 
         {/* MCP Section - TÄRKEÄ! */}
         <div className={`border-b border-border bg-emerald-950 transition-all duration-300 ${
-          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 max-h-96 opacity-100'
+          isExpanded ? 'max-h-0 overflow-hidden opacity-0 p-0' : 'p-4 pb-6 max-h-none opacity-100'
         }`}>
           <div className="flex items-center gap-2 mb-3">
             <Shield className="h-5 w-5 text-emerald-600" />
