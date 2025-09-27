@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { PulseButton } from "@/components/ui/pulse-button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Check, Info, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -137,24 +138,17 @@ export function CaseCard({ case_ }: CaseCardProps) {
             </ul>
           </div>
 
-          <Button
+          <PulseButton
             onClick={handleImplementationClick}
-            disabled={implementationMutation.isPending}
+            loading={implementationMutation.isPending}
+            loadingText="Luodaan sisältöä..."
+            pulse="subtle"
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
             data-testid={`button-implementation-${case_.id}`}
           >
-            {implementationMutation.isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Luodaan yksityiskohtaista sisältöä...
-              </>
-            ) : (
-              <>
-                <Info className="mr-2 h-4 w-4" />
-                Lue lisää toteutuksesta
-              </>
-            )}
-          </Button>
+            <Info className="mr-2 h-4 w-4" />
+            Lue lisää toteutuksesta
+          </PulseButton>
         </CardContent>
       </Card>
 
@@ -173,15 +167,34 @@ export function CaseCard({ case_ }: CaseCardProps) {
           </DialogHeader>
           <div className="mt-4">
             {detailedContent ? (
-              <div className="prose prose-sm max-w-none text-foreground">
+              <div className="prose prose-sm max-w-none text-foreground animate-in fade-in-0 duration-500">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {detailedContent}
                 </ReactMarkdown>
               </div>
             ) : (
-              <div className="flex items-center justify-center p-8 text-muted-foreground">
-                <Loader2 className="mr-2 h-6 w-6 animate-spin" />
-                Luodaan yksityiskohtaista sisältöä...
+              <div className="space-y-4 p-4">
+                <div className="flex items-center justify-center mb-4 text-muted-foreground">
+                  <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                  Luodaan yksityiskohtaista sisältöä...
+                </div>
+                <div className="space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-4/5" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/5" />
+                  <div className="pt-2">
+                    <Skeleton className="h-6 w-1/3 mb-2" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                  </div>
+                  <div className="pt-2">
+                    <Skeleton className="h-6 w-1/4 mb-2" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-4/5" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </div>
+                </div>
               </div>
             )}
           </div>

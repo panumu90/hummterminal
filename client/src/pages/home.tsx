@@ -6,6 +6,7 @@ import { CaseCard } from "@/components/case-card";
 import { ChatInterface } from "@/components/chat-interface";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, Bot, Building, Rocket, Users, TrendingUp, BarChart } from "lucide-react";
 import type { Case } from "@/lib/types";
 
@@ -110,30 +111,56 @@ export default function Home() {
             {isLoading ? (
               <div className="space-y-6">
                 {[...Array(6)].map((_, i) => (
-                  <Card key={i} className="animate-pulse" data-testid={`skeleton-card-${i}`}>
-                    <CardContent className="p-6">
+                  <Card key={i} className="shadow-sm" data-testid={`skeleton-card-${i}`}>
+                    <CardContent className="p-6 animate-in fade-in-0 duration-300" style={{ animationDelay: `${i * 150}ms` }}>
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-muted rounded-lg"></div>
+                          <Skeleton className="w-12 h-12 rounded-lg" />
                           <div>
-                            <div className="h-6 bg-muted rounded w-32 mb-2"></div>
-                            <div className="h-4 bg-muted rounded w-24"></div>
+                            <Skeleton className="h-6 w-32 mb-2" />
+                            <Skeleton className="h-4 w-24" />
                           </div>
                         </div>
-                        <div className="h-6 bg-muted rounded w-20"></div>
+                        <Skeleton className="h-6 w-20 rounded-full" />
                       </div>
-                      <div className="space-y-2">
-                        <div className="h-4 bg-muted rounded w-full"></div>
-                        <div className="h-4 bg-muted rounded w-3/4"></div>
+                      <div className="mb-4">
+                        <Skeleton className="h-4 w-40 mb-2" />
+                        <div className="space-y-2">
+                          <Skeleton className="h-4 w-full" />
+                          <Skeleton className="h-4 w-3/4" />
+                        </div>
                       </div>
+                      <div className="grid grid-cols-3 gap-4 mb-4">
+                        {[...Array(3)].map((_, j) => (
+                          <div key={j} className="text-center p-3">
+                            <Skeleton className="h-6 w-12 mx-auto mb-1 rounded" />
+                            <Skeleton className="h-3 w-16 mx-auto rounded" />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mb-4">
+                        <Skeleton className="h-4 w-32 mb-2" />
+                        <div className="space-y-1">
+                          {[...Array(3)].map((_, k) => (
+                            <Skeleton key={k} className="h-3 w-full" />
+                          ))}
+                        </div>
+                      </div>
+                      <Skeleton className="h-10 w-full rounded" />
                     </CardContent>
                   </Card>
                 ))}
               </div>
             ) : cases?.length ? (
               <div className="space-y-6" data-testid="cases-grid">
-                {cases.map((case_) => (
-                  <CaseCard key={case_.id} case_={case_} />
+                {cases.map((case_, index) => (
+                  <div
+                    key={case_.id}
+                    className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <CaseCard case_={case_} />
+                  </div>
                 ))}
               </div>
             ) : (
