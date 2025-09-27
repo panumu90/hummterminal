@@ -46,15 +46,15 @@ function getBadgeClass(type: string) {
 
 function getCategoryColor(category: string) {
   const colorMap: Record<string, string> = {
-    "Maailmanluokka": "bg-green-500",
-    "B2B Malli": "bg-slate-600",
-    "Pankkisektori": "bg-yellow-500",
-    "Kotimainen": "bg-emerald-500",
-    "Pohjoismainen": "bg-orange-500",
-    "B2B Digitaalinen": "bg-purple-500"
+    "Maailmanluokka": "bg-emerald-600/80 border border-emerald-500/50",
+    "B2B Malli": "bg-slate-600/80 border border-slate-500/50",
+    "Pankkisektori": "bg-amber-600/80 border border-amber-500/50",
+    "Kotimainen": "bg-green-600/80 border border-green-500/50",
+    "Pohjoismainen": "bg-orange-600/80 border border-orange-500/50",
+    "B2B Digitaalinen": "bg-purple-600/80 border border-purple-500/50"
   };
   
-  return colorMap[category] || "bg-gray-500";
+  return colorMap[category] || "bg-gray-600/80 border border-gray-500/50";
 }
 
 export function CaseCard({ case_ }: CaseCardProps) {
@@ -153,46 +153,46 @@ export function CaseCard({ case_ }: CaseCardProps) {
       </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-slate-800/95 border border-slate-600/50 backdrop-blur-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center text-lg">
+            <DialogTitle className="flex items-center gap-2 text-white">
+              <div className="w-8 h-8 bg-slate-700/50 border border-slate-600/30 rounded-lg flex items-center justify-center text-lg">
                 {getIconElement(case_.icon)}
               </div>
               {case_.company} - Toteutuksen yksityiskohdat
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-slate-300">
               AI-generoitu syvyysanalyysi {case_.solution_name} -toteutuksesta
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4">
             {detailedContent ? (
-              <div className="prose prose-sm max-w-none text-foreground animate-in fade-in-0 duration-500">
+              <div className="prose prose-sm max-w-none text-slate-200 prose-headings:text-white prose-strong:text-white prose-code:text-blue-300 prose-pre:bg-slate-900/50 prose-pre:border prose-pre:border-slate-600/30 animate-in fade-in-0 duration-500">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {detailedContent}
                 </ReactMarkdown>
               </div>
             ) : (
               <div className="space-y-4 p-4">
-                <div className="flex items-center justify-center mb-4 text-muted-foreground">
-                  <Loader2 className="mr-2 h-6 w-6 animate-spin" />
+                <div className="flex items-center justify-center mb-4 text-slate-300">
+                  <Loader2 className="mr-2 h-6 w-6 animate-spin text-blue-400" />
                   Luodaan yksityiskohtaista sisältöä...
                 </div>
                 <div className="space-y-3">
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-4/5" />
-                  <Skeleton className="h-4 w-full" />
-                  <Skeleton className="h-4 w-3/5" />
+                  <Skeleton className="h-4 w-full bg-slate-700/50" />
+                  <Skeleton className="h-4 w-4/5 bg-slate-700/50" />
+                  <Skeleton className="h-4 w-full bg-slate-700/50" />
+                  <Skeleton className="h-4 w-3/5 bg-slate-700/50" />
                   <div className="pt-2">
-                    <Skeleton className="h-6 w-1/3 mb-2" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
+                    <Skeleton className="h-6 w-1/3 mb-2 bg-slate-700/50" />
+                    <Skeleton className="h-4 w-full bg-slate-700/50" />
+                    <Skeleton className="h-4 w-5/6 bg-slate-700/50" />
                   </div>
                   <div className="pt-2">
-                    <Skeleton className="h-6 w-1/4 mb-2" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-4/5" />
-                    <Skeleton className="h-4 w-2/3" />
+                    <Skeleton className="h-6 w-1/4 mb-2 bg-slate-700/50" />
+                    <Skeleton className="h-4 w-full bg-slate-700/50" />
+                    <Skeleton className="h-4 w-4/5 bg-slate-700/50" />
+                    <Skeleton className="h-4 w-2/3 bg-slate-700/50" />
                   </div>
                 </div>
               </div>
