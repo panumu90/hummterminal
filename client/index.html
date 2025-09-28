@@ -11,5 +11,98 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     
+    <!-- Tidio Live Chat Widget (Hidden) -->
+    <script>
+      // Initialize Tidio when configuration is available
+      window.initTidio = async function() {
+        try {
+          // Get Tidio configuration from server
+          const response = await fetch('/api/config');
+          const config = await response.json();
+          const tidioPublicKey = config.tidio?.publicKey;
+          
+          if (tidioPublicKey && tidioPublicKey.trim() !== '') {
+            console.log('Loading Tidio with public key:', tidioPublicKey.substring(0, 8) + '...');
+            
+            // Load Tidio script dynamically
+            const script = document.createElement('script');
+            script.src = `//code.tidio.co/${tidioPublicKey}.js`;
+            script.async = true;
+            document.head.appendChild(script);
+            
+            // Set up Tidio API helpers
+            window.tidioChatApi = {
+              isReady: false,
+              isHidden: false,
+              open: function() {
+                if (window.tidioChatApi.isReady && window.tidioChat) {
+                  window.tidioChat.show();
+                }
+              },
+              hide: function() {
+                if (window.tidioChatApi.isReady && window.tidioChat) {
+                  window.tidioChat.hide();
+                  window.tidioChatApi.isHidden = true;
+                }
+              },
+              sendMessage: function(message) {
+                if (window.tidioChatApi.isReady && window.tidioChat) {
+                  window.tidioChat.messageFromVisitor(message);
+                }
+              },
+              onMessage: function(callback) {
+                window.tidioChatApi.messageCallback = callback;
+              }
+            };
+            
+            // Listen for Tidio ready event
+            document.addEventListener('tidioChat-ready', function() {
+              console.log('Tidio chat ready');
+              window.tidioChatApi.isReady = true;
+              
+              // Hide the widget immediately - we use our own UI
+              if (window.tidioChat) {
+                window.tidioChat.hide();
+                window.tidioChatApi.isHidden = true;
+              }
+              
+              // Listen for messages from operators
+              if (window.tidioChat && window.tidioChat.on) {
+                window.tidioChat.on('message', function(data) {
+                  if (window.tidioChatApi.messageCallback && data.message && data.message.type === 'message') {
+                    window.tidioChatApi.messageCallback({
+                      content: data.message.content,
+                      isFromOperator: true,
+                      timestamp: Date.now()
+                    });
+                  }
+                });
+              }
+            });
+            
+            // Add CSS to ensure widget stays hidden
+            const style = document.createElement('style');
+            style.textContent = `
+              #tidio-chat, #tidio-chat-iframe, .tidio-chat-iframe {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                position: absolute !important;
+                left: -9999px !important;
+              }
+            `;
+            document.head.appendChild(style);
+            
+          } else {
+            console.log('Tidio not configured - public key not available');
+          }
+        } catch (error) {
+          console.error('Failed to load Tidio configuration:', error);
+        }
+      };
+      
+      // Initialize on page load
+      window.addEventListener('DOMContentLoaded', window.initTidio);
+    </script>
   </body>
 </html>

@@ -1087,6 +1087,59 @@ Huomaan että haluaisit keskustella suoraan ihmisen kanssa! Voin siirtää sinut
     }
   });
 
+  // Client configuration endpoint (updated for Tidio)
+  app.get("/api/config", (req, res) => {
+    res.json({
+      tidio: {
+        publicKey: process.env.VITE_TIDIO_PUBLIC_KEY || null,
+        configured: !!(process.env.VITE_TIDIO_PUBLIC_KEY && process.env.TIDIO_API_TOKEN)
+      }
+    });
+  });
+
+  // Tidio bridge endpoint for sending context to Tidio
+  app.post("/api/tidio/send-context", async (req, res) => {
+    try {
+      const contextSchema = z.object({
+        context: z.string().min(1, "Context cannot be empty"),
+        userMessage: z.string().optional(),
+        sessionId: z.string()
+      });
+      
+      const { context, userMessage, sessionId } = contextSchema.parse(req.body);
+      console.log("Tidio context forwarding for session:", sessionId);
+      
+      // In a real Tidio integration, this would send conversation history
+      // via Tidio's REST API or Bot API
+      const tidioApiToken = process.env.TIDIO_API_TOKEN;
+      if (!tidioApiToken || tidioApiToken.trim() === '') {
+        console.warn('TIDIO_API_TOKEN not configured');
+        return res.status(200).json({
+          success: false,
+          message: 'Tidio API token not configured - context will be sent via widget'
+        });
+      }
+
+      // For now, just log the context - real implementation would use Tidio API
+      console.log('📝 Context to send to Tidio:', context.substring(0, 200) + '...');
+      if (userMessage) {
+        console.log('💬 User message:', userMessage);
+      }
+      
+      res.json({ 
+        success: true,
+        message: 'Context prepared for Tidio handoff',
+        sessionId
+      });
+    } catch (error) {
+      console.error("Tidio context forwarding error:", error);
+      res.status(500).json({ 
+        success: false,
+        error: "Failed to process Tidio context forwarding" 
+      });
+    }
+  });
+
   // Get live chat messages for a session
   app.get("/api/live-chat/:session_id", (req, res) => {
     try {
