@@ -204,7 +204,7 @@ VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja
     }
   });
 
-  // Chat endpoint
+  // Chat endpoint with streaming support
   app.post("/api/chat", async (req, res) => {
     try {
       const { message, context_type } = chatRequestSchema.parse(req.body);
