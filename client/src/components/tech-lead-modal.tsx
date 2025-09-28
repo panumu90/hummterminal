@@ -9,7 +9,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { formatChatHistoryForHandoff, isLiveChatAvailable, sendLiveChatMessage } from "@/lib/tidio";
+import { handoffToTidio, isTidioConfigured, initializeTidio, onTidioMessage, sendMessageToTidio } from "@/lib/tidio";
 
 interface ChatMessage {
   content: string;
@@ -54,9 +54,9 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
         timestamp: Date.now(),
       }]);
       
-      // Handle live chat handoff when requested
+      // Handle Tidio handoff when requested
       if (data.handoff_requested) {
-        handleLiveChatHandoff(data.response);
+        handleTidioHandoff(data.response);
       }
     },
     onError: () => {
@@ -118,14 +118,16 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     setInputValue("");
     
     if (isLiveMode) {
-      // In live mode, send message to live chat endpoint
+      // In live mode, send message to Tidio
       try {
-        const response = await sendLiveChatMessage(message, sessionId, false);
+        sendMessageToTidio(message);
+        
+        // Add system confirmation message
         setMessages(prev => [...prev, {
-          content: response.response,
+          content: "💬 **Viesti lähetetty asiakaspalveluun**\n\nAsiakaspalvelijasi vastaa hetken kuluttua Tidio-järjestelmän kautta.",
           isUser: false,
           timestamp: Date.now(),
-          agent: response.agent
+          agent: "system"
         }]);
       } catch (error) {
         toast({
@@ -159,12 +161,13 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }
   };
 
-  // Handle handoff to live chat (same modal)
-  const handleLiveChatHandoff = async (aiResponse: string) => {
-    if (!isLiveChatAvailable()) {
+  // Handle handoff to Tidio (same modal)
+  const handleTidioHandoff = async (aiResponse: string) => {
+    const configured = await isTidioConfigured();
+    if (!configured) {
       toast({
         title: "Live chat ei käytettävissä",
-        description: "Live chat -toiminto ei ole tällä hetkellä käytettävissä.",
+        description: "Tidio-integraatio ei ole konfiguroitu. Ota yhteyttä sivuston ylläpitäjään.",
         variant: "destructive"
       });
       return;
@@ -173,7 +176,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     try {
       // Add system message about handoff
       setMessages(prev => [...prev, {
-        content: "🔄 **Siirretty live chattiin**\n\nTervehti asiakaspalvelija! Keskustelu jatkuu nyt tässä samassa ikkunassa.",
+        content: "🔄 **Siirretty live chattiin**\n\nTervehti asiakaspalvelija! Keskustelu jatkuu nyt tässä samassa ikkunassa, mutta taustalla toimii Tidio-järjestelmä.",
         isUser: false,
         timestamp: Date.now(),
         agent: "system"
@@ -182,22 +185,35 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
       // Wait a moment for UI update
       await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Log conversation history
-      const history = formatChatHistoryForHandoff(messages);
-      console.log('Live chat handoff history:', history);
+      // Perform handoff to Tidio (hidden widget)
+      const success = await handoffToTidio(messages, inputValue.trim(), sessionId);
       
-      // Switch to live mode
-      setIsLiveMode(true);
-      setInputValue("");
-      
-      toast({
-        title: "Siirretty live chattiin",
-        description: "Asiakaspalvelija voi nyt vastata tässä samassa ikkunassa.",
-      });
+      if (success) {
+        // Switch to live mode
+        setIsLiveMode(true);
+        setInputValue("");
+        
+        // Set up listener for operator messages
+        onTidioMessage((data) => {
+          setMessages(prev => [...prev, {
+            content: data.content,
+            isUser: false,
+            timestamp: data.timestamp,
+            agent: "human_operator"
+          }]);
+        });
+        
+        toast({
+          title: "Siirretty live chattiin",
+          description: "Asiakaspalvelija saa ilmoituksen ja voi vastata Tidio-järjestelmän kautta.",
+        });
+      } else {
+        throw new Error('Tidio handoff failed');
+      }
     } catch (error) {
       toast({
         title: "Virhe live chat -siirrossa",
-        description: "Keskustelua ei voitu siirtää. Yritä uudelleen.",
+        description: "Keskustelua ei voitu siirtää. Yritä uudelleen tai ota yhteyttä suoraan.",
         variant: "destructive"
       });
     }
@@ -213,10 +229,16 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }
   }, [techLeadChatMutation]);
 
-  // Send greeting when modal opens
+  // Initialize Tidio and send greeting when modal opens
   useEffect(() => {
-    if (isOpen && !hasGreeted) {
-      sendGreeting();
+    if (isOpen) {
+      // Initialize Tidio integration
+      initializeTidio();
+      
+      // Send greeting if not done yet
+      if (!hasGreeted) {
+        sendGreeting();
+      }
     }
   }, [isOpen, hasGreeted, sendGreeting]);
 
