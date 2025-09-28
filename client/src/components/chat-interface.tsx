@@ -526,35 +526,103 @@ export function ChatInterface() {
     }
   }, [modalMessages]);
 
-  const chatMutation = useMutation({
-    mutationFn: async (data: { message: string, context_type?: ContextType }) => {
-      const response = await apiRequest("POST", "/api/chat", { 
-        message: data.message || data,
-        context_type: data.context_type || selectedContext
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingMessage, setStreamingMessage] = useState("");
+  
+  const sendStreamingMessage = async (message: string, context_type?: ContextType) => {
+    if (isStreaming) return;
+    
+    setIsStreaming(true);
+    setStreamingMessage("");
+    
+    // Add user message immediately
+    setMessages(prev => [...prev, {
+      content: message,
+      isUser: true,
+      timestamp: Date.now()
+    }]);
+    
+    // Create placeholder for AI response  
+    const aiMessageIndex = messages.length + 1;
+    setMessages(prev => [...prev, {
+      content: "",
+      isUser: false,
+      timestamp: Date.now()
+    }]);
+    
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          message,
+          context_type: context_type || selectedContext
+        }),
       });
-      return response.json();
-    },
-    onSuccess: (data) => {
-      console.log("Chat response received:", data.response);
-      console.log("Follow-up suggestions received:", data.followUpSuggestions);
-      console.log("Has markdown headers:", data.response.includes('##') || data.response.includes('###'));
-      console.log("Has markdown bold:", data.response.includes('**'));
-      setMessages(prev => [...prev, {
-        content: data.response,
-        isUser: false,
-        timestamp: Date.now()
-      }]);
-      // Set follow-up suggestions
-      setFollowUpSuggestions(data.followUpSuggestions || []);
-    },
-    onError: () => {
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let fullResponse = "";
+      
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                
+                if (data.type === 'chunk') {
+                  fullResponse += data.text;
+                  
+                  // Update the AI message with streaming content
+                  setMessages(prev => prev.map((msg, idx) => 
+                    idx === aiMessageIndex 
+                      ? { ...msg, content: fullResponse }
+                      : msg
+                  ));
+                } else if (data.type === 'complete') {
+                  if (data.followUpSuggestions) {
+                    setFollowUpSuggestions(data.followUpSuggestions || []);
+                  }
+                } else if (data.type === 'error') {
+                  throw new Error(data.message);
+                }
+              } catch (parseError) {
+                console.error("Failed to parse SSE data:", parseError);
+              }
+            }
+          }
+        }
+      }
+      
+      console.log("Streaming response completed:", fullResponse);
+    } catch (error) {
+      console.error("Streaming error:", error);
       toast({
         title: "Virhe",
         description: "Viestin lähettäminen epäonnistui. Yritä uudelleen.",
         variant: "destructive"
       });
+      
+      // Remove placeholder message on error
+      setMessages(prev => prev.slice(0, -1));
+    } finally {
+      setIsStreaming(false);
+      setStreamingMessage("");
     }
-  });
+  };
 
   // Modal chat mutation for AI responses in modal
   const modalChatMutation = useMutation({
@@ -598,34 +666,20 @@ export function ChatInterface() {
 
   const handleSend = () => {
     const message = inputValue.trim();
-    if (!message || chatMutation.isPending) return;
-
-    // Add user message
-    setMessages(prev => [...prev, {
-      content: message,
-      isUser: true,
-      timestamp: Date.now()
-    }]);
+    if (!message || isStreaming) return;
 
     setInputValue("");
     // Clear previous follow-up suggestions when sending new message
     setFollowUpSuggestions([]);
-    chatMutation.mutate({ message: message });
+    sendStreamingMessage(message);
   };
 
   const handleFollowUpClick = (suggestion: string) => {
-    if (chatMutation.isPending) return;
-
-    // Add user message
-    setMessages(prev => [...prev, {
-      content: suggestion,
-      isUser: true,
-      timestamp: Date.now()
-    }]);
+    if (isStreaming) return;
 
     // Clear follow-up suggestions immediately when one is clicked
     setFollowUpSuggestions([]);
-    chatMutation.mutate({ message: suggestion });
+    sendStreamingMessage(suggestion);
   };
 
   // Modal chat functions
@@ -750,7 +804,7 @@ export function ChatInterface() {
               </div>
             </div>
           ))}
-          {chatMutation.isPending && (
+          {isStreaming && (
             <div className="chat-message animate-in fade-in-0 duration-300" data-testid="loading-message">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
@@ -793,7 +847,7 @@ export function ChatInterface() {
                   className="text-left h-auto py-3 px-4 justify-start whitespace-normal bg-slate-700/50 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-slate-500 animate-in fade-in-0 slide-in-from-bottom-2 duration-300"
                   style={{animationDelay: `${index * 100}ms`}}
                   onClick={() => handleFollowUpClick(suggestion)}
-                  loading={chatMutation.isPending}
+                  loading={isStreaming}
                   data-testid={`follow-up-input-${index}`}
                 >
                   <span className="text-xs leading-relaxed">{suggestion}</span>
@@ -812,13 +866,13 @@ export function ChatInterface() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              disabled={chatMutation.isPending}
+              disabled={isStreaming}
               className="flex-1 h-12 text-base bg-slate-800/50 border-slate-600 focus:border-primary text-slate-100 placeholder:text-slate-400"
               data-testid="chat-input"
             />
             <PulseButton
               onClick={handleSend}
-              loading={chatMutation.isPending}
+              loading={isStreaming}
               disabled={!inputValue.trim()}
               size="lg"
               pulse="subtle"

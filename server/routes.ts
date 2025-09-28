@@ -204,7 +204,7 @@ VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja
     }
   });
 
-  // Chat endpoint
+  // Chat endpoint with streaming support
   app.post("/api/chat", async (req, res) => {
     try {
       const { message, context_type } = chatRequestSchema.parse(req.body);
@@ -651,79 +651,97 @@ Jatkokysymysten tulee keskittyä:
 
 TÄRKEÄÄ: Vastaa VAIN JSON-muodossa, älä lisää muuta tekstiä.`;
 
-      // Single optimized Claude request with structured response
-      let response;
+      // Setup Server-Sent Events for streaming response
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Cache-Control'
+      });
+
       let aiResponse = "";
       let followUpSuggestions: string[] = [];
       
       try {
-        console.log(`Making optimized Claude API call with model: ${DEFAULT_MODEL_STR}, message length: ${normalizeText(message).length}`);
-        response = await anthropic.messages.create({
+        console.log(`Making streaming Claude API call with model: ${DEFAULT_MODEL_STR}, message length: ${normalizeText(message).length}`);
+        
+        // Send initial message to indicate streaming started
+        res.write(`data: ${JSON.stringify({ type: 'start' })}\n\n`);
+        
+        const streamResponse = await anthropic.messages.create({
           model: DEFAULT_MODEL_STR,
-          max_tokens: 2500, // Increased to accommodate both response and questions
+          max_tokens: 2500,
           temperature: 0.8,
           system: enhancedSystemPrompt,
           messages: [
             { role: 'user', content: normalizeText(message) }
-          ]
+          ],
+          stream: true
         });
-        
-        const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
-        console.log("Claude structured response:", rawResponse ? `"${rawResponse.substring(0, 200)}..."` : "null/empty");
-        
-        if (rawResponse) {
-          try {
-            // Clean the response - remove markdown formatting, etc.
-            const cleanContent = rawResponse.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-            console.log("Cleaned structured content:", cleanContent.substring(0, 100) + "...");
+
+        for await (const chunk of streamResponse) {
+          if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+            const text = chunk.delta.text;
+            aiResponse += text;
             
-            const structuredResponse = JSON.parse(cleanContent);
-            
-            if (structuredResponse.response) {
-              aiResponse = structuredResponse.response;
-              console.log("Extracted response length:", aiResponse.length);
-            }
-            
-            if (structuredResponse.followUpQuestions && Array.isArray(structuredResponse.followUpQuestions)) {
-              followUpSuggestions = structuredResponse.followUpQuestions.slice(0, 3);
-              console.log("Extracted follow-up suggestions:", followUpSuggestions);
-            }
-          } catch (parseError) {
-            console.log("Failed to parse structured JSON response:", parseError);
-            // Fallback: treat as plain text response
-            aiResponse = rawResponse;
-            followUpSuggestions = getContextualFallback(message);
+            // Send incremental text to frontend
+            res.write(`data: ${JSON.stringify({ 
+              type: 'chunk', 
+              text: text 
+            })}\n\n`);
           }
         }
         
-        // If parsing failed or response is empty, use fallbacks
-        if (!aiResponse) {
-          aiResponse = "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
-        }
-        if (followUpSuggestions.length === 0) {
+        console.log("Streaming response completed, length:", aiResponse.length);
+        
+        // Try to parse as JSON for structured response, otherwise use as plain text
+        let finalResponse = aiResponse;
+        try {
+          // Clean the response - remove markdown formatting, etc.
+          const cleanContent = aiResponse.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+          const structuredResponse = JSON.parse(cleanContent);
+          
+          if (structuredResponse.response) {
+            finalResponse = structuredResponse.response;
+          }
+          
+          if (structuredResponse.followUpQuestions && Array.isArray(structuredResponse.followUpQuestions)) {
+            followUpSuggestions = structuredResponse.followUpQuestions.slice(0, 3);
+          }
+        } catch (parseError) {
+          // Use as plain text response
+          finalResponse = aiResponse;
           followUpSuggestions = getContextualFallback(message);
         }
         
-      } catch (error: any) {
-        console.error("Claude request failed:", error.name, error.message, error.stack);
-        // Return graceful fallback instead of 500
-        return res.status(200).json({
-          response: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit silti tarkastella case-esimerkkejä sivun vasemmasta reunasta ja kokeilla kysyä uudelleen hetken päästä.',
-          followUpSuggestions: getContextualFallback(message)
+        // Send completion signal with follow-up suggestions
+        res.write(`data: ${JSON.stringify({ 
+          type: 'complete',
+          followUpSuggestions: followUpSuggestions.filter(s => s.length > 5)
+        })}\n\n`);
+        
+        // Save chat message
+        await storage.saveChatMessage({
+          message,
+          response: finalResponse,
+          timestamp: Date.now()
         });
+        
+      } catch (error: any) {
+        console.error("Claude streaming failed:", error.name, error.message);
+        
+        // Send error message via SSE
+        res.write(`data: ${JSON.stringify({ 
+          type: 'error',
+          message: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit kokeilla kysyä uudelleen hetken päästä.',
+          followUpSuggestions: getContextualFallback(message)
+        })}\n\n`);
       }
-
-      // Save chat message
-      await storage.saveChatMessage({
-        message,
-        response: aiResponse,
-        timestamp: Date.now()
-      });
-
-      res.json({ 
-        response: aiResponse,
-        followUpSuggestions: followUpSuggestions.filter(s => s.length > 5) // Filter out empty/short suggestions
-      });
+      
+      // Close the SSE connection
+      res.write(`data: ${JSON.stringify({ type: 'end' })}\n\n`);
+      res.end();
     } catch (error) {
       console.error("Chat error:", error);
       res.status(500).json({ error: "Failed to process chat message" });
@@ -936,34 +954,67 @@ Pidä vastaukset tiiveinä 2-3 kappaleessa. Keskity VAIN olennaisiin Tech Lead -
           .trim();
       };
 
-      // Make Claude API call
-      let response;
+      // Setup Server-Sent Events for Tech Lead streaming response
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Cache-Control'
+      });
+
+      let aiResponse = "";
+      
       try {
-        console.log(`Making Tech Lead Claude API call, message length: ${normalizeText(message).length}`);
-        response = await anthropic.messages.create({
+        console.log(`Making streaming Tech Lead Claude API call, message length: ${normalizeText(message).length}`);
+        
+        // Send initial message to indicate streaming started
+        res.write(`data: ${JSON.stringify({ type: 'start' })}\n\n`);
+        
+        const streamResponse = await anthropic.messages.create({
           model: DEFAULT_MODEL_STR,
           max_tokens: 800,
           temperature: 0.8,
           system: systemPrompt,
           messages: [
             { role: 'user', content: normalizeText(message) }
-          ]
+          ],
+          stream: true
         });
-        console.log("Tech Lead Claude response content length:", response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text.length : 0);
+
+        for await (const chunk of streamResponse) {
+          if (chunk.type === 'content_block_delta' && chunk.delta.type === 'text_delta') {
+            const text = chunk.delta.text;
+            aiResponse += text;
+            
+            // Send incremental text to frontend
+            res.write(`data: ${JSON.stringify({ 
+              type: 'chunk', 
+              text: text 
+            })}\n\n`);
+          }
+        }
+        
+        console.log("Tech Lead streaming response completed, length:", aiResponse.length);
+        
+        // Send completion signal
+        res.write(`data: ${JSON.stringify({ 
+          type: 'complete'
+        })}\n\n`);
+        
       } catch (error: any) {
-        console.error("Tech Lead Claude request failed:", error);
-        return res.status(200).json({
-          response: 'Anteeksi, tapahtui virhe AI-Panussa. Kokeile kysyä uudelleen hetken päästä.'
-        });
+        console.error("Tech Lead Claude streaming failed:", error.name, error.message);
+        
+        // Send error message via SSE
+        res.write(`data: ${JSON.stringify({ 
+          type: 'error',
+          message: 'Anteeksi, tapahtui virhe AI-Panussa. Kokeile kysyä uudelleen hetken päästä.'
+        })}\n\n`);
       }
-
-      // Extract response
-      const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
-      const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
-
-      res.json({ 
-        response: aiResponse
-      });
+      
+      // Close the SSE connection
+      res.write(`data: ${JSON.stringify({ type: 'end' })}\n\n`);
+      res.end();
     } catch (error) {
       console.error("Tech Lead chat error:", error);
       res.status(500).json({ error: "Failed to process Tech Lead chat message" });
