@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { questionAnswers, mcpContent } from "./question-answers";
 import Anthropic from '@anthropic-ai/sdk';
 import { z } from "zod";
+import { getCachedData } from "./cache";
 
 // DON'T DELETE THIS COMMENT - Blueprint: javascript_anthropic integration
 /*
@@ -26,11 +27,11 @@ const chatRequestSchema = z.object({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Get all cases
+  // Get all cases (from cache for better performance)
   app.get("/api/cases", async (req, res) => {
     try {
-      const cases = await storage.getAllCases();
-      res.json(cases);
+      const cachedData = getCachedData();
+      res.json(cachedData.cases);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch cases" });
     }
@@ -216,9 +217,10 @@ VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja
         });
       }
       
-      // Get context data based on selected context type
-      const cases = await storage.getAllCases();
-      const trends = await storage.getAllTrends();
+      // Get context data from cache (much faster than storage calls)
+      const cachedData = getCachedData();
+      const cases = cachedData.cases;
+      const trends = cachedData.trends;
       const normalizeText = (text: string) => {
         // Aggressive normalization to prevent ByteString errors
         return text
@@ -363,8 +365,8 @@ ${contents.join('\n\n')}
         }
       };
       
-      // Read attached assets for all contexts
-      const attachedContent = await readAttachedAssets();
+      // Get attached assets from cache (much faster than file I/O)
+      const attachedContent = cachedData.attachedAssets;
       
       // Create content based on context type
       let systemPrompt = "";
@@ -551,7 +553,7 @@ Pysy roolissasi Tech Lead -hakijana ja korosta kokemustasi AI-integraatioista ja
         ).join("\n\n");
         
         const keyLearnings = cases.map(c => 
-          `${normalizeText(c.company)}: ${Array.isArray(c.learning_points) ? c.learning_points.map(p => normalizeText(p)).slice(0, 2).join("; ") : ""}`
+          `${normalizeText(c.company)}: ${Array.isArray(c.learning_points) ? c.learning_points.map((p: string) => normalizeText(p)).slice(0, 2).join("; ") : ""}`
         ).join("\n\n");
         
         // Add MCP-specific knowledge for strategic context
@@ -628,95 +630,83 @@ Anna kattavia 3-5 kappaleen vastauksia jotka ovat informatiivisia ja toimintasuu
         console.log(`Non-ASCII chars found in ${context_type} systemPrompt:`, problematicChars.slice(0, 10));
       }
       
-      // Try Claude request with retry for transient failures
+      // Enhanced system prompt to get both response and follow-up questions in one call
+      const enhancedSystemPrompt = systemPrompt + `
+
+VASTAUSMUOTO: Vastaa AINA seuraavassa JSON-muodossa:
+{
+  "response": "Kattava 3-5 kappaleen vastaus kysymykseen...",
+  "followUpQuestions": ["Jatkokysymys1?", "Jatkokysymys2?"]
+}
+
+Jatkokysymysten tulee keskittyä:
+- Liiketoimintavaikutuksiin ja ROI:hin  
+- Toteutuksen aikatauluihin ja resursseihin
+- Riskeihin ja haasteisiin
+- Sopii Humm Group Oy:n johdolle
+
+TÄRKEÄÄ: Vastaa VAIN JSON-muodossa, älä lisää muuta tekstiä.`;
+
+      // Single optimized Claude request with structured response
       let response;
+      let aiResponse = "";
+      let followUpSuggestions: string[] = [];
+      
       try {
-        console.log(`Making Claude API call with model: ${DEFAULT_MODEL_STR}, message length: ${normalizeText(message).length}`);
+        console.log(`Making optimized Claude API call with model: ${DEFAULT_MODEL_STR}, message length: ${normalizeText(message).length}`);
         response = await anthropic.messages.create({
           model: DEFAULT_MODEL_STR,
-          max_tokens: 2000,
+          max_tokens: 2500, // Increased to accommodate both response and questions
           temperature: 0.8,
-          system: systemPrompt,
+          system: enhancedSystemPrompt,
           messages: [
             { role: 'user', content: normalizeText(message) }
           ]
         });
-        console.log("Claude response content length:", response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text.length : 0);
+        
+        const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
+        console.log("Claude structured response:", rawResponse ? `"${rawResponse.substring(0, 200)}..."` : "null/empty");
+        
+        if (rawResponse) {
+          try {
+            // Clean the response - remove markdown formatting, etc.
+            const cleanContent = rawResponse.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+            console.log("Cleaned structured content:", cleanContent.substring(0, 100) + "...");
+            
+            const structuredResponse = JSON.parse(cleanContent);
+            
+            if (structuredResponse.response) {
+              aiResponse = structuredResponse.response;
+              console.log("Extracted response length:", aiResponse.length);
+            }
+            
+            if (structuredResponse.followUpQuestions && Array.isArray(structuredResponse.followUpQuestions)) {
+              followUpSuggestions = structuredResponse.followUpQuestions.slice(0, 3);
+              console.log("Extracted follow-up suggestions:", followUpSuggestions);
+            }
+          } catch (parseError) {
+            console.log("Failed to parse structured JSON response:", parseError);
+            // Fallback: treat as plain text response
+            aiResponse = rawResponse;
+            followUpSuggestions = getContextualFallback(message);
+          }
+        }
+        
+        // If parsing failed or response is empty, use fallbacks
+        if (!aiResponse) {
+          aiResponse = "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
+        }
+        if (followUpSuggestions.length === 0) {
+          followUpSuggestions = getContextualFallback(message);
+        }
+        
       } catch (error: any) {
         console.error("Claude request failed:", error.name, error.message, error.stack);
         // Return graceful fallback instead of 500
         return res.status(200).json({
-          response: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit silti tarkastella case-esimerkkejä sivun vasemmasta reunasta ja kokeilla kysyä uudelleen hetken päästä.'
+          response: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit silti tarkastella case-esimerkkejä sivun vasemmasta reunasta ja kokeilla kysyä uudelleen hetken päästä.',
+          followUpSuggestions: getContextualFallback(message)
         });
-      }
-
-      // Extract text from Claude response properly
-      const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
-      console.log("Claude Sonnet 4 raw response:", rawResponse ? `"${rawResponse.substring(0, 100)}..."` : "null/empty");
-      console.log("Response extraction debug - content:", !!response.content, "text:", !!rawResponse);
-      
-      const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
-
-      // Generate smart follow-up questions based on user's question and AI response
-      let followUpSuggestions: string[] = [];
-      try {
-        const followUpResponse = await anthropic.messages.create({
-          model: DEFAULT_MODEL_STR,
-          max_tokens: 300,
-          temperature: 0.7,
-          system: `Luo 2-3 lyhyttä jatkokysymystä johdolle aiheesta: "${message}". 
-
-Kysymysten tulee keskittyä:
-- Liiketoimintavaikutuksiin ja ROI:hin
-- Toteutuksen aikatauluihin ja resursseihin
-- Riskeihin ja haasteisiin
-
-TÄRKEITÄ SÄÄNTÖJÄ:
-- Vastaa VAIN JSON-muodossa: ["kysymys1", "kysymys2"]
-- Älä kirjoita muuta tekstiä
-- Kysymykset suomeksi
-- Sopii Humm Group Oy:n johdolle
-
-Esimerkki: ["Mikä on investoinnin takaisinmaksuaika?", "Mitä riskejä toteutuksessa on?"]`,
-          messages: [
-            { role: 'user', content: `Aihe: ${normalizeText(message)}` }
-          ]
-        });
-
-        const followUpContent = followUpResponse.content?.[0] && followUpResponse.content[0].type === 'text' ? followUpResponse.content[0].text : undefined;
-        console.log("Follow-up response content:", followUpContent);
-        
-        if (followUpContent) {
-          try {
-            // Clean the response first - remove markdown formatting, etc.
-            const cleanContent = followUpContent.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
-            console.log("Cleaned follow-up content:", cleanContent);
-            
-            const parsedSuggestions = JSON.parse(cleanContent);
-            if (Array.isArray(parsedSuggestions)) {
-              followUpSuggestions = parsedSuggestions.slice(0, 3); // Max 3 suggestions
-              console.log("Parsed follow-up suggestions:", followUpSuggestions);
-            }
-          } catch (parseError) {
-            console.log("Failed to parse follow-up suggestions JSON:", followUpContent);
-            console.log("Parse error:", (parseError as Error).message);
-            
-            // Better fallback: try to extract questions from text
-            const questionMatches = followUpContent.match(/"([^"]*\?[^"]*)"/g);
-            if (questionMatches) {
-              followUpSuggestions = questionMatches.slice(0, 3).map(q => q.replace(/"/g, '').trim());
-              console.log("Extracted questions from text:", followUpSuggestions);
-            } else {
-              // Use contextual fallback based on the message topic
-              followUpSuggestions = getContextualFallback(message);
-            }
-          }
-        } else {
-          followUpSuggestions = getContextualFallback(message);
-        }
-      } catch (followUpError) {
-        console.error("Follow-up generation failed:", followUpError);
-        followUpSuggestions = getContextualFallback(message);
       }
 
       // Save chat message
@@ -746,10 +736,10 @@ Esimerkki: ["Mikä on investoinnin takaisinmaksuaika?", "Mitä riskejä toteutuk
       const { message } = messageSchema.parse(req.body);
       console.log("Tech Lead chat message:", message);
       
-      // Check if Gemini API key is available
-      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === '') {
+      // Check if Anthropic API key is available
+      if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
         return res.status(200).json({
-          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan Gemini API-avain toimiakseen.'
+          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan Anthropic API-avain toimiakseen.'
         });
       }
 
