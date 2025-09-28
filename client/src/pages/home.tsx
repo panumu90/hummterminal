@@ -4,7 +4,6 @@ import { Link } from "wouter";
 import { PageHeader } from "@/components/page-header";
 import { CaseCard } from "@/components/case-card";
 import { ChatInterface } from "@/components/chat-interface";
-import { TechLeadModal } from "@/components/tech-lead-modal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PulseButton } from "@/components/ui/pulse-button";
@@ -25,7 +24,13 @@ interface ChatMessage {
   timestamp: number;
 }
 
-export default function Home() {
+// Tech Lead Modal Component
+function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [hasGreeted, setHasGreeted] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+  const [followUpSuggestions] = useState<string[]>([
+    "Mitä arvoa voisit tuoda Hummille?",
     "Kerro taustastasi ja osaamisestasi",
     "Mikä on ydinosaamistasi?",
     "Miksi juuri sinut?"

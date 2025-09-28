@@ -33,106 +33,53 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   ]);
   const { toast } = useToast();
 
-  const [isStreaming, setIsStreaming] = useState(false);
-  
-  const sendStreamingMessage = async (message: string) => {
-    if (isStreaming) return;
-    
-    setIsStreaming(true);
-    
-    // Add user message immediately
-    setMessages(prev => [...prev, {
-      content: message,
-      isUser: true,
-      timestamp: Date.now()
-    }]);
-    
-    // Create placeholder for AI response  
-    const aiMessageIndex = messages.length + 1;
-    setMessages(prev => [...prev, {
-      content: "",
-      isUser: false,
-      timestamp: Date.now()
-    }]);
-    
-    try {
-      const response = await fetch("/api/tech-lead-chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message }),
+  const techLeadChatMutation = useMutation({
+    mutationFn: async (data: { message: string }) => {
+      const response = await apiRequest("POST", "/api/tech-lead-chat", { 
+        message: data.message
       });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let fullResponse = "";
-      
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
-          
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              try {
-                const data = JSON.parse(line.slice(6));
-                
-                if (data.type === 'chunk') {
-                  fullResponse += data.text;
-                  
-                  // Update the AI message with streaming content
-                  setMessages(prev => prev.map((msg, idx) => 
-                    idx === aiMessageIndex 
-                      ? { ...msg, content: fullResponse }
-                      : msg
-                  ));
-                } else if (data.type === 'error') {
-                  throw new Error(data.message);
-                }
-              } catch (parseError) {
-                console.error("Failed to parse SSE data:", parseError);
-              }
-            }
-          }
-        }
-      }
-      
-      console.log("Tech Lead streaming response completed:", fullResponse);
-    } catch (error) {
-      console.error("Tech Lead streaming error:", error);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      setMessages(prev => [...prev, {
+        content: data.response,
+        isUser: false,
+        timestamp: Date.now()
+      }]);
+    },
+    onError: () => {
       toast({
         title: "Virhe",
         description: "Viestin lähettäminen epäonnistui. Yritä uudelleen.",
         variant: "destructive"
       });
-      
-      // Remove placeholder message on error
-      setMessages(prev => prev.slice(0, -1));
-    } finally {
-      setIsStreaming(false);
     }
-  };
+  });
 
   const handleSend = () => {
     const message = inputValue.trim();
-    if (!message || isStreaming) return;
+    if (!message || techLeadChatMutation.isPending) return;
+
+    setMessages(prev => [...prev, {
+      content: message,
+      isUser: true,
+      timestamp: Date.now()
+    }]);
 
     setInputValue("");
-    sendStreamingMessage(message);
+    techLeadChatMutation.mutate({ message });
   };
 
   const handleExampleClick = (question: string) => {
-    if (isStreaming) return;
+    if (techLeadChatMutation.isPending) return;
 
-    sendStreamingMessage(question);
+    setMessages(prev => [...prev, {
+      content: question,
+      isUser: true,
+      timestamp: Date.now()
+    }]);
+
+    techLeadChatMutation.mutate({ message: question });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -144,11 +91,13 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
 
   // Optimized greeting function to avoid dependency on mutation object
   const sendGreeting = useCallback(() => {
-    if (!isStreaming) {
+    if (!techLeadChatMutation.isPending) {
       setHasGreeted(true);
-      sendStreamingMessage("Tervehdi käyttäjää AI-Panuna ja esittäydy lyhyesti Humm Group Oy:n Tech Lead -hakijana. Kerro että olet tutustunut heidän toimintaansa ja olet valmis vastaamaan kysymyksiin.");
+      techLeadChatMutation.mutate({ 
+        message: "Tervehdi käyttäjää AI-Panuna ja esittäydy lyhyesti Humm Group Oy:n Tech Lead -hakijana. Kerro että olet tutustunut heidän toimintaansa ja olet valmis vastaamaan kysymyksiin."
+      });
     }
-  }, [isStreaming, sendStreamingMessage]);
+  }, [techLeadChatMutation]);
 
   // Send automatic greeting when modal opens
   useEffect(() => {
@@ -215,7 +164,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                 </div>
               ))}
               
-              {isStreaming && (
+              {techLeadChatMutation.isPending && (
                 <div className="flex justify-start">
                   <div className="flex items-start space-x-3 max-w-[80%]">
                     <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -252,7 +201,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                   pulse="subtle"
                   className="text-left h-auto py-3 px-4 justify-start text-slate-200 bg-slate-700/30 hover:bg-slate-600/50 border-slate-600 hover:border-blue-500 transition-all duration-200"
                   onClick={() => handleExampleClick(suggestion)}
-                  loading={isStreaming}
+                  loading={techLeadChatMutation.isPending}
                   data-testid={`tech-lead-example-${index}`}
                 >
                   <span className="text-xs">{suggestion}</span>
@@ -269,13 +218,13 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              disabled={isStreaming}
+              disabled={techLeadChatMutation.isPending}
               className="flex-1 bg-slate-700/50 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
               data-testid="tech-lead-chat-input"
             />
             <PulseButton
               onClick={handleSend}
-              loading={isStreaming}
+              loading={techLeadChatMutation.isPending}
               disabled={!inputValue.trim()}
               pulse="subtle"
               className="px-4 bg-blue-600 hover:bg-blue-700"
