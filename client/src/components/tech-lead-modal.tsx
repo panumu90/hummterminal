@@ -4,11 +4,12 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { PulseButton } from "@/components/ui/pulse-button";
-import { Bot, User, Send, Star, Users } from "lucide-react";
+import { Bot, User, Send, Star, Users, ExternalLink } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { handoffToTidio, isTidioConfigured, initializeTidio } from "@/lib/tidio";
 
 interface ChatMessage {
   content: string;
@@ -25,6 +26,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hasGreeted, setHasGreeted] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [isHandedOff, setIsHandedOff] = useState(false);
   const [sessionId] = useState(() => Date.now().toString());
   const [followUpSuggestions] = useState<string[]>([
     "Mitä arvoa voisit tuoda Hummille?",
@@ -48,7 +50,10 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
         timestamp: Date.now(),
       }]);
       
-      // TODO: Implement Tidio handoff when handoff_requested is true
+      // Handle Tidio handoff when requested
+      if (data.handoff_requested) {
+        handleTidioHandoff(data.response);
+      }
     },
     onError: () => {
       toast({
@@ -62,7 +67,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
 
   const handleSend = () => {
     const message = inputValue.trim();
-    if (!message || techLeadChatMutation.isPending) return;
+    if (!message || techLeadChatMutation.isPending || isHandedOff) return;
 
     setMessages(prev => [...prev, {
       content: message,
@@ -75,7 +80,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   };
 
   const handleExampleClick = (question: string) => {
-    if (techLeadChatMutation.isPending) return;
+    if (techLeadChatMutation.isPending || isHandedOff) return;
 
     setMessages(prev => [...prev, {
       content: question,
@@ -93,6 +98,52 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }
   };
 
+  // Handle handoff to Tidio
+  const handleTidioHandoff = async (aiResponse: string) => {
+    const configured = await isTidioConfigured();
+    if (!configured) {
+      toast({
+        title: "Live chat ei käytettävissä",
+        description: "Tidio-integraatio ei ole konfiguroitu. Ota yhteyttä sivuston ylläpitäjään.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Add system message about handoff
+      setMessages(prev => [...prev, {
+        content: "🔄 **Siirretään keskustelu live chattiin**\n\nKeskustelu siirretään nyt Tidio live chattiin, jossa voit keskustella suoraan asiakaspalvelun kanssa. Chat-ikkuna avautuu automaattisesti.",
+        isUser: false,
+        timestamp: Date.now()
+      }]);
+
+      // Wait a moment for UI update
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Perform handoff to Tidio
+      const success = await handoffToTidio(messages, inputValue.trim());
+      
+      if (success) {
+        setIsHandedOff(true);
+        setInputValue("");
+        
+        toast({
+          title: "Siirretty live chattiin",
+          description: "Keskustelu jatkuu Tidio live chatissa. Chat-ikkuna on avattu.",
+        });
+      } else {
+        throw new Error('Handoff failed');
+      }
+    } catch (error) {
+      toast({
+        title: "Virhe live chat -siirrossa",
+        description: "Keskustelua ei voitu siirtää. Yritä uudelleen tai ota yhteyttä suoraan.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Optimized greeting function to avoid dependency on mutation object
   const sendGreeting = useCallback(() => {
     if (!techLeadChatMutation.isPending) {
@@ -103,12 +154,25 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }
   }, [techLeadChatMutation]);
 
-  // Send automatic greeting when modal opens
+  // Initialize Tidio and send greeting when modal opens
   useEffect(() => {
-    if (isOpen && !hasGreeted) {
-      sendGreeting();
+    if (isOpen) {
+      // Initialize Tidio integration
+      initializeTidio();
+      
+      // Send greeting if not done yet
+      if (!hasGreeted) {
+        sendGreeting();
+      }
     }
   }, [isOpen, hasGreeted, sendGreeting]);
+
+  // Reset state when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      setIsHandedOff(false);
+    }
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -118,10 +182,13 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
               <Users className="h-4 w-4 text-white" />
             </div>
-            Tech Lead - Panu Murtokangas
+            {isHandedOff ? "🔄 Siirretty Live Chattiin" : "Tech Lead - Panu Murtokangas"}
           </DialogTitle>
           <DialogDescription className="text-slate-300">
-            CV-chat: Keskustele taustastani ja osaamisestani Humm Group Oy:n kontekstissa
+            {isHandedOff 
+              ? "Keskustelu siirretty Tidio live chattiin. Voit sulkea tämän ikkunan."
+              : "CV-chat: Keskustele taustastani ja osaamisestani Humm Group Oy:n kontekstissa"
+            }
           </DialogDescription>
         </DialogHeader>
         
@@ -219,28 +286,49 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
           </div>
 
           {/* Chat Input */}
-          <div className="flex space-x-3">
-            <Input
-              type="text"
-              placeholder="Kysy minulta mitä tahansa Tech Lead -roolista..."
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              disabled={techLeadChatMutation.isPending}
-              className="flex-1 bg-slate-700/50 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
-              data-testid="tech-lead-chat-input"
-            />
-            <PulseButton
-              onClick={handleSend}
-              loading={techLeadChatMutation.isPending}
-              disabled={!inputValue.trim()}
-              pulse="subtle"
-              className="px-4 bg-blue-600 hover:bg-blue-700"
-              data-testid="tech-lead-send-button"
-            >
-              <Send className="h-4 w-4" />
-            </PulseButton>
-          </div>
+          {!isHandedOff ? (
+            <div className="flex space-x-3">
+              <Input
+                type="text"
+                placeholder="Kysy minulta mitä tahansa Tech Lead -roolista..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={techLeadChatMutation.isPending}
+                className="flex-1 bg-slate-700/50 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
+                data-testid="tech-lead-chat-input"
+              />
+              <PulseButton
+                onClick={handleSend}
+                loading={techLeadChatMutation.isPending}
+                disabled={!inputValue.trim()}
+                pulse="subtle"
+                className="px-4 bg-blue-600 hover:bg-blue-700"
+                data-testid="tech-lead-send-button"
+              >
+                <Send className="h-4 w-4" />
+              </PulseButton>
+            </div>
+          ) : (
+            <div className="bg-green-900/20 border border-green-600/30 rounded-lg p-4 text-center">
+              <div className="flex items-center justify-center gap-2 text-green-400 font-medium mb-2">
+                <ExternalLink className="h-4 w-4" />
+                Keskustelu siirretty live chattiin
+              </div>
+              <p className="text-sm text-slate-300 mb-3">
+                Keskustelu jatkuu Tidio live chat -ikkunassa. Jos chat ei auennut automaattisesti, etsi chat-kuvake sivun oikeasta alakulmasta.
+              </p>
+              <PulseButton
+                onClick={onClose}
+                variant="outline"
+                size="sm"
+                className="border-green-600/50 text-green-400 hover:bg-green-900/30"
+                data-testid="close-after-handoff"
+              >
+                Sulje tämä ikkuna
+              </PulseButton>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
