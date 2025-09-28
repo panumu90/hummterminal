@@ -32,6 +32,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const [lastMessageTimestamp, setLastMessageTimestamp] = useState(0);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+  const [tidioConfigured, setTidioConfigured] = useState(false);
   const [followUpSuggestions] = useState<string[]>([
     "Mitä arvoa voisit tuoda Hummille?",
     "Kerro taustastasi ja osaamisestasi",
@@ -235,6 +236,9 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
       // Initialize Tidio integration
       initializeTidio();
       
+      // Check Tidio configuration
+      isTidioConfigured().then(setTidioConfigured);
+      
       // Send greeting if not done yet
       if (!hasGreeted) {
         sendGreeting();
@@ -393,6 +397,22 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
               ))}
             </div>
           </div>
+
+          {/* Live Chat Button */}
+          {tidioConfigured && !isLiveMode && (
+            <div className="border-t border-slate-600/50 pt-4 mb-4">
+              <PulseButton
+                onClick={() => handleTidioHandoff("")}
+                variant="outline"
+                pulse="subtle"
+                className="w-full bg-green-600/20 hover:bg-green-600/30 border-green-500/50 hover:border-green-400 text-green-100 transition-all duration-200"
+                data-testid="live-chat-button"
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Siirry live chattiin
+              </PulseButton>
+            </div>
+          )}
 
           {/* Chat Input */}
           <div className="flex space-x-3">
