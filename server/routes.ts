@@ -2,14 +2,23 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { questionAnswers, mcpContent } from "./question-answers";
-import { GoogleGenAI } from "@google/genai";
+import Anthropic from '@anthropic-ai/sdk';
 import { z } from "zod";
 
-// DON'T DELETE THIS COMMENT - Blueprint: javascript_gemini integration
-const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+// DON'T DELETE THIS COMMENT - Blueprint: javascript_anthropic integration
+/*
+<important_code_snippet_instructions>
+The newest Anthropic model is "claude-sonnet-4-20250514", not "claude-3-7-sonnet-20250219", "claude-3-5-sonnet-20241022" nor "claude-3-sonnet-20240229". 
+If the user doesn't specify a model, always prefer using "claude-sonnet-4-20250514" as it is the latest model.
+</important_code_snippet_instructions>
+*/
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+});
 
-// Use Gemini 2.5 Pro which excels at coding and multilingual tasks
-const GEMINI_MODEL = "gemini-2.5-pro";
+// <important_do_not_delete>
+const DEFAULT_MODEL_STR = "claude-sonnet-4-20250514";
+// </important_do_not_delete>
 
 const chatRequestSchema = z.object({
   message: z.string().min(1).max(1000),
@@ -73,20 +82,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
               return replacements[char] || char;
             });
 
-          const enhancementResponse = await gemini.models.generateContent({
-            model: GEMINI_MODEL, // using Gemini 2.5 Pro for enhanced responses
-            config: {
-              systemInstruction: `Toimit asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. sinulta kysytään paljon asiakaspalvelu-alasta ja tehtäväsi on vastata täsmällisesti kysymyksiin, käyttäen dataa, joka sinulle on annettu, mutta myös omaa tietoasi. Olet proaktiivinen. Käyttäjäsi ovat asiakaspalvelualan ammattilaisia, mutta tekoälystä eillä on vain perusymmärrys. Yritä saada heissä "wau" efekti aikaan, kun vastaat kysymyksiin, anna aina lähdeviittaukset mukaan, jos mahdollista.
+          const enhancementResponse = await anthropic.messages.create({
+            model: DEFAULT_MODEL_STR, // using Claude Sonnet 4 for enhanced responses
+            max_tokens: 1000,
+            temperature: 0.7,
+            system: `Toimit asiantuntijana, joka auttaa Humm group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. sinulta kysytään paljon asiakaspalvelu-alasta ja tehtäväsi on vastata täsmällisesti kysymyksiin, käyttäen dataa, joka sinulle on annettu, mutta myös omaa tietoasi. Olet proaktiivinen. Käyttäjäsi ovat asiakaspalvelualan ammattilaisia, mutta tekoälystä eillä on vain perusymmärrys. Yritä saada heissä "wau" efekti aikaan, kun vastaat kysymyksiin, anna aina lähdeviittaukset mukaan, jos mahdollista.
 
 VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja hyödyllisiä.`,
-              maxOutputTokens: 1000,
-              temperature: 0.7
-            },
-            contents: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}`
+            messages: [
+              { role: 'user', content: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}` }
+            ]
           });
 
-          if (enhancementResponse.text) {
-            finalAnswer = enhancementResponse.text;
+          if (enhancementResponse.content[0] && enhancementResponse.content[0].type === 'text') {
+            finalAnswer = enhancementResponse.content[0].text;
           }
         } catch (aiError) {
           console.error("AI enhancement failed:", aiError);
@@ -200,10 +209,10 @@ VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja
       const { message, context_type } = chatRequestSchema.parse(req.body);
       console.log("Received message:", message, "Context:", context_type);
       
-      // Check if Gemini API key is available
-      if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === '') {
+      // Check if Anthropic API key is available
+      if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
         return res.status(200).json({
-          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan Gemini API-avain toimiakseen. Voit tarkastella case-esimerkkejä sivun vasemmasta reunasta.'
+          response: 'Anteeksi, AI-avustaja ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan Anthropic API-avain toimiakseen. Voit tarkastella case-esimerkkejä sivun vasemmasta reunasta.'
         });
       }
       
@@ -619,42 +628,43 @@ Anna kattavia 3-5 kappaleen vastauksia jotka ovat informatiivisia ja toimintasuu
         console.log(`Non-ASCII chars found in ${context_type} systemPrompt:`, problematicChars.slice(0, 10));
       }
       
-      // Try Gemini request with retry for transient failures
+      // Try Claude request with retry for transient failures
       let response;
       try {
-        console.log(`Making Gemini API call with model: ${GEMINI_MODEL}, message length: ${normalizeText(message).length}`);
-        response = await gemini.models.generateContent({
-          model: GEMINI_MODEL,
-          config: {
-            systemInstruction: systemPrompt,
-            maxOutputTokens: 2000,
-            temperature: 0.8
-          },
-          contents: normalizeText(message)
+        console.log(`Making Claude API call with model: ${DEFAULT_MODEL_STR}, message length: ${normalizeText(message).length}`);
+        response = await anthropic.messages.create({
+          model: DEFAULT_MODEL_STR,
+          max_tokens: 2000,
+          temperature: 0.8,
+          system: systemPrompt,
+          messages: [
+            { role: 'user', content: normalizeText(message) }
+          ]
         });
-        console.log("Gemini response candidates:", response.candidates?.length, "finish reason:", response.candidates?.[0]?.finishReason);
+        console.log("Claude response content length:", response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text.length : 0);
       } catch (error: any) {
-        console.error("Gemini request failed:", error.name, error.message, error.stack);
+        console.error("Claude request failed:", error.name, error.message, error.stack);
         // Return graceful fallback instead of 500
         return res.status(200).json({
           response: 'Anteeksi, tapahtui virhe AI-avustajassa. Voit silti tarkastella case-esimerkkejä sivun vasemmasta reunasta ja kokeilla kysyä uudelleen hetken päästä.'
         });
       }
 
-      // Extract text from Gemini response properly
-      const rawResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || response.text;
-      console.log("Gemini 2.5 Pro raw response:", rawResponse ? `"${rawResponse.substring(0, 100)}..."` : "null/empty");
-      console.log("Response extraction debug - candidates:", !!response.candidates, "content:", !!response.candidates?.[0]?.content, "parts:", !!response.candidates?.[0]?.content?.parts);
+      // Extract text from Claude response properly
+      const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
+      console.log("Claude Sonnet 4 raw response:", rawResponse ? `"${rawResponse.substring(0, 100)}..."` : "null/empty");
+      console.log("Response extraction debug - content:", !!response.content, "text:", !!rawResponse);
       
       const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
 
       // Generate smart follow-up questions based on user's question and AI response
       let followUpSuggestions: string[] = [];
       try {
-        const followUpResponse = await gemini.models.generateContent({
-          model: GEMINI_MODEL,
-          config: {
-            systemInstruction: `Luo 2-3 lyhyttä jatkokysymystä johdolle aiheesta: "${message}". 
+        const followUpResponse = await anthropic.messages.create({
+          model: DEFAULT_MODEL_STR,
+          max_tokens: 300,
+          temperature: 0.7,
+          system: `Luo 2-3 lyhyttä jatkokysymystä johdolle aiheesta: "${message}". 
 
 Kysymysten tulee keskittyä:
 - Liiketoimintavaikutuksiin ja ROI:hin
@@ -668,13 +678,12 @@ TÄRKEITÄ SÄÄNTÖJÄ:
 - Sopii Humm Group Oy:n johdolle
 
 Esimerkki: ["Mikä on investoinnin takaisinmaksuaika?", "Mitä riskejä toteutuksessa on?"]`,
-            maxOutputTokens: 300,
-            temperature: 0.7
-          },
-          contents: `Aihe: ${normalizeText(message)}`
+          messages: [
+            { role: 'user', content: `Aihe: ${normalizeText(message)}` }
+          ]
         });
 
-        const followUpContent = followUpResponse.candidates?.[0]?.content?.parts?.[0]?.text || followUpResponse.text;
+        const followUpContent = followUpResponse.content?.[0] && followUpResponse.content[0].type === 'text' ? followUpResponse.content[0].text : undefined;
         console.log("Follow-up response content:", followUpContent);
         
         if (followUpContent) {
@@ -933,29 +942,29 @@ Pidä vastaukset tiiveinä 2-3 kappaleessa. Keskity VAIN olennaisiin Tech Lead -
           .trim();
       };
 
-      // Make Gemini API call
+      // Make Claude API call
       let response;
       try {
-        console.log(`Making Tech Lead Gemini API call, message length: ${normalizeText(message).length}`);
-        response = await gemini.models.generateContent({
-          model: GEMINI_MODEL,
-          config: {
-            systemInstruction: systemPrompt,
-            maxOutputTokens: 800,
-            temperature: 0.8
-          },
-          contents: normalizeText(message)
+        console.log(`Making Tech Lead Claude API call, message length: ${normalizeText(message).length}`);
+        response = await anthropic.messages.create({
+          model: DEFAULT_MODEL_STR,
+          max_tokens: 800,
+          temperature: 0.8,
+          system: systemPrompt,
+          messages: [
+            { role: 'user', content: normalizeText(message) }
+          ]
         });
-        console.log("Tech Lead Gemini response candidates:", response.candidates?.length);
+        console.log("Tech Lead Claude response content length:", response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text.length : 0);
       } catch (error: any) {
-        console.error("Tech Lead Gemini request failed:", error);
+        console.error("Tech Lead Claude request failed:", error);
         return res.status(200).json({
           response: 'Anteeksi, tapahtui virhe AI-Panussa. Kokeile kysyä uudelleen hetken päästä.'
         });
       }
 
       // Extract response
-      const rawResponse = response.candidates?.[0]?.content?.parts?.[0]?.text || response.text;
+      const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
       const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
 
       res.json({ 
@@ -1065,16 +1074,18 @@ Keskity käytännöllisiin, mitattaviin tuloksiin ja konkreettisiin oppimiskohti
 
       const normalizedPrompt = normalizeText(prompt);
 
-      // Generate content using Gemini API
-      const result = await gemini.models.generateContent({
-        model: GEMINI_MODEL,
-        config: {
-          systemInstruction: `Toimit asiantuntijana, joka auttaa Humm Group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. Keskity käytännöllisiin, mitattaviin tuloksiin ja konkreettisiin oppimiskohtiin joita Humm Group Oy voi hyödyntää omassa AI-strategiassaan.`
-        },
-        contents: normalizedPrompt
+      // Generate content using Claude API
+      const result = await anthropic.messages.create({
+        model: DEFAULT_MODEL_STR,
+        max_tokens: 2000,
+        temperature: 0.7,
+        system: `Toimit asiantuntijana, joka auttaa Humm Group Oy:ta ottamaan tekoäly käyttöön organisaatiossa. Keskity käytännöllisiin, mitattaviin tuloksiin ja konkreettisiin oppimiskohtiin joita Humm Group Oy voi hyödyntää omassa AI-strategiassaan.`,
+        messages: [
+          { role: 'user', content: normalizedPrompt }
+        ]
       });
       
-      let generatedText = result.candidates?.[0]?.content?.parts?.[0]?.text || 
+      let generatedText = result.content?.[0] && result.content[0].type === 'text' ? result.content[0].text : 
         "Sisällön luomisessa tapahtui virhe. Yritä uudelleen myöhemmin.";
 
       // Clean up the response
