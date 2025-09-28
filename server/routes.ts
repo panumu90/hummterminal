@@ -959,14 +959,136 @@ Pidä vastaukset tiiveinä 2-3 kappaleessa. Keskity VAIN olennaisiin Tech Lead -
 
       // Extract response
       const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
-      const aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
+      let aiResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
+
+      // Check for handoff triggers - when user wants to talk to human
+      const handoffTriggers = [
+        'haluan puhua ihmiselle',
+        'haluan puhua oikealle ihmiselle', 
+        'yhdistä minut ihmiseen',
+        'voisinko puhua ihmisen kanssa',
+        'haluaisin keskustella ihmisen kanssa',
+        'saisinko puhua oikealle henkilölle',
+        'live chat',
+        'live-chat',
+        'keskustella suoraan'
+      ];
+
+      const userMessage = normalizeText(message).toLowerCase();
+      const needsHandoff = handoffTriggers.some(trigger => 
+        userMessage.includes(trigger.toLowerCase())
+      );
+
+      if (needsHandoff) {
+        aiResponse = `${aiResponse}
+
+---
+
+🔄 **Siirretään keskustelu asiantuntijalle**
+
+Huomaan että haluaisit keskustella suoraan ihmisen kanssa! Voin siirtää sinut heti keskustelemaan Replit Agent:in kanssa, joka osaa auttaa teknisemmissä kysymyksissä ja sovelluskehityksessä.
+
+**HANDOFF_TRIGGER_ACTIVATED**`;
+      }
 
       res.json({ 
-        response: aiResponse
+        response: aiResponse,
+        handoff_requested: needsHandoff
       });
     } catch (error) {
       console.error("Tech Lead chat error:", error);
       res.status(500).json({ error: "Failed to process Tech Lead chat message" });
+    }
+  });
+
+  // Live chat endpoint - for direct communication with Replit Agent  
+  app.post("/api/live-chat", async (req, res) => {
+    try {
+      const messageSchema = z.object({
+        message: z.string().min(1, "Message cannot be empty"),
+        session_id: z.string().optional()
+      });
+      
+      const { message, session_id } = messageSchema.parse(req.body);
+      console.log("Live chat message:", message, "Session:", session_id);
+      
+      // Check if Anthropic API key is available
+      if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === '') {
+        return res.status(200).json({
+          response: 'Anteeksi, live chat ei ole tällä hetkellä käytettävissä. Tämä on demo-versio jossa tarvitaan API-avain toimiakseen.'
+        });
+      }
+
+      // Get context data for technical assistance
+      const cachedData = getCachedData();
+      const projectContext = `
+🔧 **REPLIT AGENT - TEKNINEN AVUSTAJA**
+
+**PROJEKTIKONTEKSTI:**
+- AI-powered asiakaspalvelun showcase-sovellus (Humm Group Oy:lle)
+- Tech stack: React + TypeScript, Express, Anthropic Claude API
+- Ominaisuudet: Case studies, chat interface, Tech Lead CV demo
+- Tämä on live chat handoff AI-Panusta
+
+**KÄYTTÄJÄN TILANNE:**
+Käyttäjä siirtyi AI-Panu (Tech Lead haastattelubotti) keskustelusta live chattiin.
+Todennäköisesti tarvitsee teknistä apua, sovelluskehitystä tai syvempiä vastauksia.
+
+**ROOLISI:**
+- Olen Replit Agent, tekninen asiantuntija ja koodaamisavustaja
+- Autan sovelluskehityksessä, API-integraatioissa, ongelmanratkaisussa
+- Osaan selittää teknisiä konsepteja selkeästi
+- Pystyn antamaan koodiesimerkkejä ja käytännön ohjeita
+
+**VAHVUUTENI:**
+- Full-stack development (React, Node.js, TypeScript)
+- AI/ML integraatiot (OpenAI, Anthropic, Gemini)  
+- Database design ja optimointi
+- API-suunnittelu ja -toteutus
+- DevOps ja deployment
+- Replit-ympäristön tuntemus
+
+**VASTAUSTYYLI:**
+- Teknisesti tarkka mutta ymmärrettävä
+- Käytännönläheiset esimerkit
+- Suora ja tehokas kommunikointi
+- Markdown-muotoilu
+
+Vastaa AINA suomeksi ja keskity siihen miten voin parhaiten auttaa käyttäjää teknisesti.`;
+
+      // Make Claude API call as Replit Agent
+      let response;
+      try {
+        console.log(`Making Live Chat Claude API call, message length: ${message.length}`);
+        response = await anthropic.messages.create({
+          model: DEFAULT_MODEL_STR,
+          max_tokens: 1000,
+          temperature: 0.7,
+          system: projectContext,
+          messages: [
+            { role: 'user', content: message }
+          ]
+        });
+        console.log("Live Chat Claude response content length:", response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text.length : 0);
+      } catch (error: any) {
+        console.error("Live Chat Claude request failed:", error);
+        return res.status(200).json({
+          response: 'Anteeksi, tapahtui virhe live chatissa. Kokeile kysyä uudelleen hetken päästä.'
+        });
+      }
+
+      // Extract response
+      const rawResponse = response.content?.[0] && response.content[0].type === 'text' ? response.content[0].text : undefined;
+      const agentResponse = rawResponse || "Anteeksi, en pystynyt käsittelemään kysymystäsi.";
+
+      res.json({ 
+        response: agentResponse,
+        agent: "replit_agent",
+        session_id: session_id || "default"
+      });
+    } catch (error) {
+      console.error("Live chat error:", error);
+      res.status(500).json({ error: "Failed to process live chat message" });
     }
   });
 
