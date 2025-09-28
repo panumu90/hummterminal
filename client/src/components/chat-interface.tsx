@@ -468,7 +468,13 @@ export function ChatInterface() {
     }
   });
 
+  const [clickedButton, setClickedButton] = useState<string | null>(null);
+
   const handleQuestionClick = (questionId: string) => {
+    // Add click animation
+    setClickedButton(questionId);
+    setTimeout(() => setClickedButton(null), 200);
+
     // Special handling for MCP deep analysis - open modal instead of chat
     if (questionId === "mcp-deep-analysis") {
       setMcpModalOpen(true);
@@ -751,25 +757,35 @@ export function ChatInterface() {
             </div>
           ))}
           {chatMutation.isPending && (
-            <div className="chat-message animate-in fade-in-0 duration-300" data-testid="loading-message">
+            <div className="chat-message animate-in fade-in-0 slide-in-from-left-3 duration-500" data-testid="loading-message">
               <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                  <Bot className="h-4 w-4 text-primary-foreground animate-pulse" />
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                  <Bot className="h-4 w-4 text-primary-foreground animate-spin" style={{animation: 'spin 2s linear infinite'}} />
                 </div>
-                <div className="bg-muted rounded-lg p-3 max-w-2xl">
-                  <div className="flex items-center space-x-2 mb-2">
+                <div className="bg-muted rounded-lg p-3 max-w-2xl relative overflow-hidden">
+                  {/* Enhanced typing animation */}
+                  <div className="flex items-center space-x-2 mb-3">
                     <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0s', animationDuration: '1.4s'}}></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.2s', animationDuration: '1.4s'}}></div>
+                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.4s', animationDuration: '1.4s'}}></div>
                     </div>
-                    <p className="text-sm text-muted-foreground">AI miettii vastausta...</p>
+                    <p className="text-sm text-muted-foreground animate-pulse">🤖 AI kirjoittaa vastausta...</p>
+                    <div className="ml-auto">
+                      <div className="w-1 h-4 bg-primary animate-pulse" style={{animation: 'pulse 1s ease-in-out infinite'}}></div>
+                    </div>
                   </div>
+                  {/* Progressive skeleton loading */}
                   <div className="space-y-2">
-                    <Skeleton className="h-3 w-full" />
-                    <Skeleton className="h-3 w-4/5" />
-                    <Skeleton className="h-3 w-3/5" />
+                    <Skeleton className="h-3 w-full animate-pulse" style={{animationDelay: '0s'}} />
+                    <Skeleton className="h-3 w-4/5 animate-pulse" style={{animationDelay: '0.3s'}} />
+                    <Skeleton className="h-3 w-3/5 animate-pulse" style={{animationDelay: '0.6s'}} />
                   </div>
+                  {/* Shimmer effect */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 animate-shimmer" style={{
+                    animation: 'shimmer 2s ease-in-out infinite',
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)'
+                  }}></div>
                 </div>
               </div>
             </div>
@@ -871,7 +887,9 @@ export function ChatInterface() {
                   variant="outline"
                   size="sm"
                   pulse="subtle"
-                  className="h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white"
+                  className={`h-auto p-3 text-xs text-left justify-start border-emerald-800 hover:bg-emerald-900 hover:border-emerald-700 text-emerald-50 hover:text-white transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] ${
+                    clickedButton === question.id ? 'scale-[0.95] bg-emerald-800/50' : ''
+                  }`}
                   onClick={() => handleQuestionClick(question.id)}
                   loading={questionMutation.isPending}
                   disabled={questionMutation.isPending}
@@ -896,7 +914,9 @@ export function ChatInterface() {
               variant="outline"
               size="lg"
               pulse="subtle"
-              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-purple-500 transition-all duration-200"
+              className={`w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-purple-500 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] hover:shadow-lg ${
+                clickedButton === "hyperpersonalization-trend" ? 'scale-[0.98] bg-slate-600/60 border-purple-400' : ''
+              }`}
               onClick={() => handleQuestionClick("hyperpersonalization-trend")}
               disabled={questionMutation.isPending}
               data-testid="featured-question-personalization"
@@ -912,7 +932,9 @@ export function ChatInterface() {
               variant="outline"
               size="lg"
               pulse="subtle"
-              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-orange-500 transition-all duration-200"
+              className={`w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-orange-500 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] hover:shadow-lg ${
+                clickedButton === "proactive-service-trend" ? 'scale-[0.98] bg-slate-600/60 border-orange-400' : ''
+              }`}
               onClick={() => handleQuestionClick("proactive-service-trend")}
               disabled={questionMutation.isPending}
               data-testid="featured-question-proactive"
@@ -928,7 +950,9 @@ export function ChatInterface() {
               variant="outline"
               size="lg"
               pulse="subtle"
-              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-blue-500 transition-all duration-200"
+              className={`w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-blue-500 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] hover:shadow-lg ${
+                clickedButton === "cx-trends-2025-featured" ? 'scale-[0.98] bg-slate-600/60 border-blue-400' : ''
+              }`}
               onClick={() => handleQuestionClick("cx-trends-2025-featured")}
               disabled={questionMutation.isPending}
               data-testid="featured-question-trends"
@@ -944,7 +968,9 @@ export function ChatInterface() {
               variant="outline"
               size="lg"
               pulse="subtle"
-              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-green-500 transition-all duration-200"
+              className={`w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-green-500 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] hover:shadow-lg ${
+                clickedButton === "roi-measurement" ? 'scale-[0.98] bg-slate-600/60 border-green-400' : ''
+              }`}
               onClick={() => handleQuestionClick("roi-measurement")}
               disabled={questionMutation.isPending}
               data-testid="featured-question-roi"
@@ -960,7 +986,9 @@ export function ChatInterface() {
               variant="outline"
               size="lg"
               pulse="subtle"
-              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-red-500 transition-all duration-200"
+              className={`w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-red-500 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] hover:shadow-lg ${
+                clickedButton === "reduce-manual-work" ? 'scale-[0.98] bg-slate-600/60 border-red-400' : ''
+              }`}
               onClick={() => handleQuestionClick("reduce-manual-work")}
               disabled={questionMutation.isPending}
               data-testid="featured-question-automation"
@@ -976,7 +1004,9 @@ export function ChatInterface() {
               variant="outline"
               size="lg"
               pulse="subtle"
-              className="w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-cyan-500 transition-all duration-200"
+              className={`w-full h-auto p-4 text-left justify-start bg-slate-700/30 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-cyan-500 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] hover:shadow-lg ${
+                clickedButton === "data-quality" ? 'scale-[0.98] bg-slate-600/60 border-cyan-400' : ''
+              }`}
               onClick={() => handleQuestionClick("data-quality")}
               disabled={questionMutation.isPending}
               data-testid="featured-question-data"
@@ -1025,7 +1055,9 @@ export function ChatInterface() {
                           key={question.id}
                           variant="ghost"
                           size="sm"
-                          className="h-auto p-3 text-xs text-left justify-start hover:bg-slate-700/50 text-slate-300 hover:text-white"
+                          className={`h-auto p-3 text-xs text-left justify-start hover:bg-slate-700/50 text-slate-300 hover:text-white transition-all duration-150 hover:scale-[1.02] active:scale-[0.98] ${
+                            clickedButton === question.id ? 'scale-[0.96] bg-slate-700/40' : ''
+                          }`}
                           onClick={() => handleQuestionClick(question.id)}
                           disabled={questionMutation.isPending}
                           data-testid={`question-${question.id}`}
@@ -1295,7 +1327,7 @@ export function ChatInterface() {
           <ScrollArea className="h-[60vh] pr-4 border rounded-lg">
             <div className="p-4 space-y-4">
               {modalMessages.map((message, index) => (
-                <div key={index} className="chat-message" data-testid={`modal-message-${index}`}>
+                <div key={index} className="chat-message animate-in fade-in-0 slide-in-from-bottom-2 duration-500" data-testid={`modal-message-${index}`} style={{animationDelay: `${index * 100}ms`}}>
                   <div className={`flex items-start space-x-3 ${message.isUser ? 'flex-row-reverse' : ''}`}>
                     <div className={`w-8 h-8 ${message.isUser ? 'bg-secondary' : 'bg-primary'} rounded-full flex items-center justify-center flex-shrink-0`}>
                       {message.isUser ? (
@@ -1337,41 +1369,26 @@ export function ChatInterface() {
               ))}
               
               {modalChatMutation.isPending && (
-                <div className="chat-message" data-testid="modal-loading-message">
+                <div className="chat-message animate-in fade-in-0 slide-in-from-left-4 duration-700" data-testid="modal-loading-message">
                   <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                      <Bot className="h-4 w-4 text-primary-foreground animate-pulse" />
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                      <Bot className="h-4 w-4 text-primary-foreground" style={{animation: 'spin 3s linear infinite'}} />
                     </div>
-                    <div className="bg-muted rounded-lg p-3 max-w-xs">
-                      <p className="text-sm text-muted-foreground">Kirjoittaa...</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Modal Follow-up Suggestions */}
-              {modalFollowUpSuggestions.length > 0 && (
-                <div className="chat-message" data-testid="modal-follow-up-suggestions">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
-                      <MessageCircle className="h-4 w-4 text-accent-foreground" />
-                    </div>
-                    <div className="bg-accent/50 rounded-lg p-3 max-w-2xl">
-                      <p className="text-sm font-medium mb-2 text-accent-foreground">Jatkokysymyksiä:</p>
-                      <div className="space-y-2">
-                        {modalFollowUpSuggestions.map((suggestion, index) => (
-                          <Button
-                            key={index}
-                            variant="outline"
-                            size="sm"
-                            className="text-left h-auto py-2 px-3 justify-start whitespace-normal bg-background/80 hover:bg-background text-foreground"
-                            onClick={() => handleModalFollowUpClick(suggestion)}
-                            data-testid={`modal-follow-up-${index}`}
-                          >
-                            {suggestion}
-                          </Button>
-                        ))}
+                    <div className="bg-muted rounded-lg p-3 max-w-md relative overflow-hidden">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="flex space-x-1">
+                          <div className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{animationDelay: '0s', animationDuration: '1.6s'}}></div>
+                          <div className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.3s', animationDuration: '1.6s'}}></div>
+                          <div className="w-2.5 h-2.5 bg-primary rounded-full animate-bounce" style={{animationDelay: '0.6s', animationDuration: '1.6s'}}></div>
+                        </div>
+                        <p className="text-sm text-muted-foreground animate-pulse">🤖 AI kirjoittaa...</p>
+                        <div className="w-1 h-4 bg-primary animate-pulse ml-2"></div>
                       </div>
+                      {/* Shimmer effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -skew-x-12" style={{
+                        animation: 'shimmer 2.2s ease-in-out infinite',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)'
+                      }}></div>
                     </div>
                   </div>
                 </div>
@@ -1380,6 +1397,36 @@ export function ChatInterface() {
               <div ref={modalMessagesEndRef} />
             </div>
           </ScrollArea>
+          
+          {/* Modal Follow-up Suggestions */}
+          {modalFollowUpSuggestions.length > 0 && (
+            <div className="border-t border-border bg-slate-800/30 p-4" data-testid="modal-follow-up-suggestions">
+              <p className="text-sm font-medium mb-3 text-slate-200">💡 Jatkokysymyksiä:</p>
+              <div className="grid grid-cols-1 gap-2">
+                {modalFollowUpSuggestions.map((suggestion, index) => (
+                  <PulseButton
+                    key={index}
+                    variant="outline"
+                    size="sm"
+                    pulse="subtle"
+                    className={`text-left h-auto py-3 px-4 justify-start whitespace-normal bg-slate-700/50 hover:bg-slate-600/50 text-slate-100 border-slate-600 hover:border-slate-500 animate-in fade-in-0 slide-in-from-bottom-2 duration-300 transition-all hover:scale-[1.02] active:scale-[0.98] hover:shadow-md ${
+                      clickedButton === `modal-follow-${index}` ? 'scale-[0.96] bg-slate-600/60' : ''
+                    }`}
+                    style={{animationDelay: `${index * 100}ms`}}
+                    onClick={() => {
+                      setClickedButton(`modal-follow-${index}`);
+                      setTimeout(() => setClickedButton(null), 200);
+                      handleModalFollowUpClick(suggestion);
+                    }}
+                    loading={modalChatMutation.isPending}
+                    data-testid={`modal-follow-up-${index}`}
+                  >
+                    <span className="text-xs leading-relaxed">{suggestion}</span>
+                  </PulseButton>
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* Modal Chat Input */}
           <div className="border-t border-border p-4 bg-background">
@@ -1409,32 +1456,8 @@ export function ChatInterface() {
           </div>
         </DialogContent>
       </Dialog>
-      </div>
-
-      {/* Quick Stats */}
-      <Card className="mt-6" data-testid="quick-stats">
-        <CardContent className="p-4">
-          <h4 className="font-semibold text-foreground mb-3">Yhteenveto tuloksista</h4>
-          <div className="space-y-3">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Keskimääräinen automaatioaste</span>
-              <span className="font-semibold text-foreground" data-testid="stat-automation">60-95%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Vastausajan parannus</span>
-              <span className="font-semibold text-foreground" data-testid="stat-response">Tunneista sekunteihin</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Asiakastyytyväisyys</span>
-              <span className="font-semibold text-foreground" data-testid="stat-satisfaction">+10pp keskimäärin</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Saatavuus</span>
-              <span className="font-semibold text-foreground" data-testid="stat-availability">24/7</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }
+
+export default ChatInterface;
