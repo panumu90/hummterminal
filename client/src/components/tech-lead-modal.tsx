@@ -409,7 +409,6 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                 >
                   <Users className="h-4 w-4 mr-2" />
                   Siirry live chattiin
-                  {tidioConfigured ? " (Configured)" : " (Debug)"}
                 </PulseButton>
               </div>
             )}
