@@ -396,24 +396,24 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                 </PulseButton>
               ))}
             </div>
+            
+            {/* Live Chat Button - moved inside examples section */}
+            {!isLiveMode && (
+              <div className="mt-4 pt-4 border-t border-slate-500/30">
+                <PulseButton
+                  onClick={() => handleTidioHandoff("")}
+                  variant="outline"
+                  pulse="subtle"
+                  className="w-full bg-green-600/20 hover:bg-green-600/30 border-green-500/50 hover:border-green-400 text-green-100 transition-all duration-200"
+                  data-testid="live-chat-button"
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                  Siirry live chattiin
+                  {tidioConfigured ? " (Configured)" : " (Debug)"}
+                </PulseButton>
+              </div>
+            )}
           </div>
-
-          {/* Live Chat Button */}
-          {(tidioConfigured || true) && !isLiveMode && (
-            <div className="border-t border-slate-600/50 pt-4 mb-4">
-              <PulseButton
-                onClick={() => handleTidioHandoff("")}
-                variant="outline"
-                pulse="subtle"
-                className="w-full bg-green-600/20 hover:bg-green-600/30 border-green-500/50 hover:border-green-400 text-green-100 transition-all duration-200"
-                data-testid="live-chat-button"
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Siirry live chattiin
-                {tidioConfigured ? " (Configured)" : " (Debug)"}
-              </PulseButton>
-            </div>
-          )}
 
           {/* Chat Input */}
           <div className="flex space-x-3">
