@@ -399,7 +399,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
           </div>
 
           {/* Live Chat Button */}
-          {tidioConfigured && !isLiveMode && (
+          {(tidioConfigured || true) && !isLiveMode && (
             <div className="border-t border-slate-600/50 pt-4 mb-4">
               <PulseButton
                 onClick={() => handleTidioHandoff("")}
@@ -410,6 +410,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
               >
                 <Users className="h-4 w-4 mr-2" />
                 Siirry live chattiin
+                {tidioConfigured ? " (Configured)" : " (Debug)"}
               </PulseButton>
             </div>
           )}
