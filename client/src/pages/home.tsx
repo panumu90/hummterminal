@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { PageHeader } from "@/components/page-header";
@@ -26,18 +26,8 @@ interface ChatMessage {
 
 // Tech Lead Modal Component
 function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      content: "Moro Hummilaiset, olen nyt viikon ajan saanut perehtyä  Humm Group Oy:n toimintaan, liiketoiminnallisiin tunnuslukuihin ja kilpailijoihin. Pohdin tarkkaan, minkälaista arvoa voisin yritykselle tuoda Tech Lead -roolissa. Olen saanut selkeän käsityksen roolissa pärjäämisen edellytyksistä ja näen, että olisin todennäköisesti ainoa hakija, joka voi aikuisten oikeasti viedä firmanne AI-agendaa eteenpäin",
-      isUser: false,
-      timestamp: Date.now() - 1000
-    },
-    {
-      content: "AI-skene etenee sellaista vauhtia, että kellään normaalilla ihmisellä ei ole aikaa eikä kiinnostusta sitä seurata. Minulle tämä on elämäntapa. Tulen taustaltani täysin eri maailmasta ja luulen, että se on hummille vain hyvä asia -- kukaan vanha aspa konkari ei hyvinkään todennäköisesti näe eteenpäin yhtä kirkkaasti. Uudessa ajassa vanhoista malleista ei ole hyötyä -- täytyy mukautua!  Kysy minulta mitä vain, niin ai-Panu vastaa",
-      isUser: false,
-      timestamp: Date.now()
-    }
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [hasGreeted, setHasGreeted] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [followUpSuggestions] = useState<string[]>([
     "Mitä arvoa voisit tuoda Hummille?",
@@ -102,6 +92,17 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
       handleSend();
     }
   };
+
+  // Send automatic greeting when modal opens
+  useEffect(() => {
+    if (isOpen && !hasGreeted && !techLeadChatMutation.isPending) {
+      setHasGreeted(true);
+      // Send a greeting prompt to Claude to generate a natural introduction
+      techLeadChatMutation.mutate({ 
+        message: "Tervehdi käyttäjää AI-Panuna ja esittäydy lyhyesti Humm Group Oy:n Tech Lead -hakijana. Kerro että olet tutustunut heidän toimintaansa ja olet valmis vastaamaan kysymyksiin."
+      });
+    }
+  }, [isOpen, hasGreeted, techLeadChatMutation]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
