@@ -1001,6 +1001,15 @@ Huomaan että haluaisit keskustella suoraan ihmisen kanssa! Voin siirtää sinut
     }
   });
 
+  // Live chat messages storage (in-memory for demo)
+  const liveChatMessages = new Map<string, Array<{
+    id: string;
+    message: string;
+    is_human: boolean;
+    timestamp: number;
+    agent: string;
+  }>>();
+
   // Live chat endpoint for human operator responses
   app.post("/api/live-chat", async (req, res) => {
     try {
@@ -1013,27 +1022,103 @@ Huomaan että haluaisit keskustella suoraan ihmisen kanssa! Voin siirtää sinut
       const { message, session_id, is_human } = messageSchema.parse(req.body);
       console.log(`Live chat ${is_human ? '(HUMAN)' : '(USER)'} message:`, message.substring(0, 100));
       
+      // Ensure session exists
+      if (!liveChatMessages.has(session_id)) {
+        liveChatMessages.set(session_id, []);
+      }
+      
+      const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const timestamp = Date.now();
+      
       if (is_human) {
-        // Human operator response - just store and return
-        // In a real implementation, this would save to database and notify the user
+        // Human operator response - store and return
+        const humanMessage = {
+          id: messageId,
+          message,
+          is_human: true,
+          timestamp,
+          agent: "human_operator"
+        };
+        
+        liveChatMessages.get(session_id)!.push(humanMessage);
+        
         res.json({ 
           response: message,
           agent: "human_operator",
           session_id: session_id,
-          timestamp: Date.now()
+          message_id: messageId,
+          timestamp
         });
       } else {
-        // User message in live chat mode - for now, indicate waiting for human
+        // User message in live chat mode - store user message and auto-respond
+        const userMessage = {
+          id: messageId,
+          message,
+          is_human: false,
+          timestamp,
+          agent: "user"
+        };
+        
+        liveChatMessages.get(session_id)!.push(userMessage);
+        
+        // Auto-respond with waiting message
+        const waitingMessageId = `msg_${Date.now() + 1}_${Math.random().toString(36).substr(2, 9)}`;
+        const waitingMessage = {
+          id: waitingMessageId,
+          message: "💬 **Viestiäsi käsitellään...**\n\nAsiakaspalvelijamme vastaa sinulle hetken kuluttua. Kiitos kärsivällisyydestäsi!",
+          is_human: false,
+          timestamp: timestamp + 100,
+          agent: "system"
+        };
+        
+        liveChatMessages.get(session_id)!.push(waitingMessage);
+        
         res.json({ 
-          response: "💬 **Viestiäsi käsitellään...**\n\nAsiakaspalvelijamme vastaa sinulle hetken kuluttua. Kiitos kärsivällisyydestäsi!",
+          response: waitingMessage.message,
           agent: "system",
           session_id: session_id,
-          timestamp: Date.now()
+          message_id: waitingMessageId,
+          timestamp: waitingMessage.timestamp
         });
       }
     } catch (error) {
       console.error("Live chat error:", error);
       res.status(500).json({ error: "Failed to process live chat message" });
+    }
+  });
+
+  // Get live chat messages for a session
+  app.get("/api/live-chat/:session_id", (req, res) => {
+    try {
+      const { session_id } = req.params;
+      const { since } = req.query;
+      
+      if (!liveChatMessages.has(session_id)) {
+        return res.json({ messages: [] });
+      }
+      
+      let messages = liveChatMessages.get(session_id)!;
+      
+      // Filter messages since timestamp if provided
+      if (since && typeof since === 'string') {
+        const sinceTimestamp = parseInt(since, 10);
+        if (!isNaN(sinceTimestamp)) {
+          messages = messages.filter(msg => msg.timestamp > sinceTimestamp);
+        }
+      }
+      
+      res.json({ 
+        messages: messages.map(msg => ({
+          id: msg.id,
+          content: msg.message,
+          isUser: !msg.is_human && msg.agent === 'user',
+          timestamp: msg.timestamp,
+          agent: msg.agent
+        }))
+      });
+    } catch (error) {
+      console.error("Live chat fetch error:", error);
+      res.status(500).json({ error: "Failed to fetch live chat messages" });
     }
   });
 

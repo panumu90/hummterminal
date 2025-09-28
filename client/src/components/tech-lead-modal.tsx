@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -29,7 +29,9 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [isLiveMode, setIsLiveMode] = useState(false);
   const [isHandedOff, setIsHandedOff] = useState(false);
-  const [sessionId] = useState(() => Date.now().toString());
+  const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const [lastMessageTimestamp, setLastMessageTimestamp] = useState(0);
+  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [followUpSuggestions] = useState<string[]>([
     "Mitä arvoa voisit tuoda Hummille?",
     "Kerro taustastasi ja osaamisestasi",
@@ -65,6 +67,42 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
       });
     }
   });
+
+  // Poll for new live chat messages
+  const pollLiveChatMessages = useCallback(async () => {
+    if (!isLiveMode) return;
+    
+    try {
+      const response = await fetch(`/api/live-chat/${sessionId}?since=${lastMessageTimestamp}`);
+      if (!response.ok) return;
+      
+      const data = await response.json();
+      if (data.messages && data.messages.length > 0) {
+        setMessages(prev => {
+          const newMessages = [...prev];
+          data.messages.forEach((msg: any) => {
+            // Avoid duplicates
+            const exists = newMessages.some(existing => existing.timestamp === msg.timestamp && existing.content === msg.content);
+            if (!exists) {
+              newMessages.push({
+                content: msg.content,
+                isUser: msg.isUser,
+                timestamp: msg.timestamp,
+                agent: msg.agent
+              });
+            }
+          });
+          return newMessages;
+        });
+        
+        // Update last timestamp
+        const latestTimestamp = Math.max(...data.messages.map((msg: any) => msg.timestamp));
+        setLastMessageTimestamp(latestTimestamp);
+      }
+    } catch (error) {
+      console.error('Failed to poll live chat messages:', error);
+    }
+  }, [isLiveMode, sessionId, lastMessageTimestamp]);
 
 
   const handleSend = async () => {
@@ -187,8 +225,35 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     if (!isOpen) {
       setIsLiveMode(false);
       setIsHandedOff(false);
+      // Clear polling interval
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        setPollingInterval(null);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, pollingInterval]);
+
+  // Start/stop polling when live mode changes
+  useEffect(() => {
+    if (isLiveMode) {
+      // Set last message timestamp to now when entering live mode
+      setLastMessageTimestamp(Date.now());
+      
+      // Start polling for new messages every 2 seconds
+      const interval = setInterval(pollLiveChatMessages, 2000);
+      setPollingInterval(interval);
+      
+      return () => {
+        clearInterval(interval);
+      };
+    } else {
+      // Stop polling when leaving live mode
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        setPollingInterval(null);
+      }
+    }
+  }, [isLiveMode, pollLiveChatMessages]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
