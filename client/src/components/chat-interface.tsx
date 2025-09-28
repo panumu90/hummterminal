@@ -408,9 +408,9 @@ export function ChatInterface() {
     "Millaista osaamista AI-projekti vaatii tiimiltä?"
   ];
 
-  // Placeholder-tekstin rotaatio
+  // Optimized placeholder rotation - avoid unnecessary re-renders
   useEffect(() => {
-    if (inputValue) return; // Älä vaihda jos käyttäjä kirjoittaa
+    if (inputValue) return; // Don't rotate when user is typing
     
     const interval = setInterval(() => {
       setPlaceholderText(prev => {
@@ -418,10 +418,10 @@ export function ChatInterface() {
         const nextIndex = (currentIndex + 1) % rotatingQuestions.length;
         return rotatingQuestions[nextIndex];
       });
-    }, 3000); // Vaihda 3 sekunnin välein
+    }, 4000); // Increased interval to reduce render frequency
 
     return () => clearInterval(interval);
-  }, [inputValue, rotatingQuestions]);
+  }, [inputValue]); // Removed rotatingQuestions dependency to prevent unnecessary re-renders
   
   // New modal state for AI responses
   const [aiModalOpen, setAiModalOpen] = useState(false);

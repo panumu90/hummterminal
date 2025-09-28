@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { PageHeader } from "@/components/page-header";
@@ -93,16 +93,22 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
     }
   };
 
-  // Send automatic greeting when modal opens
-  useEffect(() => {
-    if (isOpen && !hasGreeted && !techLeadChatMutation.isPending) {
+  // Optimized greeting function to avoid dependency on mutation object
+  const sendGreeting = useCallback(() => {
+    if (!techLeadChatMutation.isPending) {
       setHasGreeted(true);
-      // Send a greeting prompt to Claude to generate a natural introduction
       techLeadChatMutation.mutate({ 
         message: "Tervehdi käyttäjää AI-Panuna ja esittäydy lyhyesti Humm Group Oy:n Tech Lead -hakijana. Kerro että olet tutustunut heidän toimintaansa ja olet valmis vastaamaan kysymyksiin."
       });
     }
-  }, [isOpen, hasGreeted, techLeadChatMutation]);
+  }, [techLeadChatMutation]);
+
+  // Send automatic greeting when modal opens
+  useEffect(() => {
+    if (isOpen && !hasGreeted) {
+      sendGreeting();
+    }
+  }, [isOpen, hasGreeted, sendGreeting]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
