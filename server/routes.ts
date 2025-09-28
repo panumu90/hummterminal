@@ -221,8 +221,12 @@ VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja
       const cachedData = getCachedData();
       const cases = cachedData.cases;
       const trends = cachedData.trends;
-      const normalizeText = (text: string) => {
-        // Aggressive normalization to prevent ByteString errors
+      const normalizeText = (text: string | undefined | null) => {
+        // Defensive normalization to prevent ByteString errors and handle undefined/null
+        if (!text || typeof text !== 'string') {
+          return '';
+        }
+        
         return text
           .replace(/[^\x00-\x7F]/g, (char) => {
             // Replace common Unicode characters with ASCII equivalents

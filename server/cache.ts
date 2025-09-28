@@ -163,25 +163,50 @@ ${contents.join('\n\n')}
  * Load cases data - in production this could come from database
  */
 async function loadCasesData(): Promise<any[]> {
-  // For now, return static cases data
+  // For now, return static cases data with all required fields for CaseCard
   // In production, this could read from database or files
   return [
     {
       "id": "alibaba",
       "company": "Alibaba",
-      "country": "Kiina",
+      "country": "Kiina", 
       "industry": "E-commerce & Cloud",
-      "solution": "AI-powered customer service",
+      "category": "AI Asiakaspalvelu",
+      "icon": "🛒",
+      "solution_name": "AI-powered customer service",
       "description": "Alibaba käyttää tekoälyä asiakaspalvelussaan vastatakseen miljooniin kysymyksiin vuodessa. Heidän AI-järjestelmänsä osaa ratkaista 95% asiakkaiden ongelmista ilman ihmisen väliintuloa.",
+      "key_metrics": [
+        {
+          "type": "time",
+          "value": "< 1s",
+          "label": "Vastausaika"
+        },
+        {
+          "type": "percentage", 
+          "value": "95%",
+          "label": "Ratkaisuaste"
+        },
+        {
+          "type": "savings",
+          "value": "70%",
+          "label": "Säästöt"
+        }
+      ],
+      "learning_points": [
+        "Tekoäly pystyy käsittelemään 95% asiakaskysymyksistä itsenäisesti",
+        "Merkittävät kustannussäästöt henkilöstökuluissa",
+        "Asiakastyytyväisyys nousi automatisoidun palvelun myötä",
+        "Skaalautuvuus mahdollistaa miljoonien kysymysten käsittelyn"
+      ],
       "metrics": {
-        "response_time": "< 1 sekunti",
+        "response_time": "< 1 sekunti", 
         "resolution_rate": "95%",
         "cost_savings": "70%",
         "customer_satisfaction": "4.8/5"
       },
       "implementation": {
         "duration": "18 kuukautta",
-        "team_size": "25 henkilöä",
+        "team_size": "25 henkilöä", 
         "technology": ["Natural Language Processing", "Machine Learning", "Cloud Computing"],
         "challenges": ["Kielien moninaisuus", "Skaalautuvuus", "Integraatio legacy-järjestelmiin"]
       }

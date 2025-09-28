@@ -116,7 +116,7 @@ export function CaseCard({ case_ }: CaseCardProps) {
           </div>
 
           <div className="grid grid-cols-3 gap-4 mb-4">
-            {case_.key_metrics.map((metric, index) => (
+            {(case_.key_metrics || []).map((metric, index) => (
               <div key={index} className="text-center p-3 bg-slate-700/30 rounded-lg border border-slate-600/30 backdrop-blur-sm" data-testid={`metric-${case_.id}-${index}`}>
                 <div className={`${getBadgeClass(metric.type)} text-white px-2 py-1 rounded text-xs font-bold mb-1 shadow-sm`}>
                   {metric.value}
@@ -129,7 +129,7 @@ export function CaseCard({ case_ }: CaseCardProps) {
           <div className="border-t border-slate-600/50 pt-4 mb-4">
             <h5 className="font-medium text-white mb-2">Keskeiset oppimiskohteet:</h5>
             <ul className="text-sm text-slate-300 space-y-1">
-              {case_.learning_points.map((point, index) => (
+              {(case_.learning_points || []).map((point, index) => (
                 <li key={index} className="flex items-start space-x-2" data-testid={`learning-point-${case_.id}-${index}`}>
                   <Check className="h-3 w-3 text-blue-400 mt-1 flex-shrink-0" />
                   <span>{point}</span>
