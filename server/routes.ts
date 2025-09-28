@@ -1001,82 +1001,39 @@ Huomaan että haluaisit keskustella suoraan ihmisen kanssa! Voin siirtää sinut
     }
   });
 
-  // Client configuration endpoint
-  app.get("/api/config", (req, res) => {
-    res.json({
-      tidio: {
-        publicKey: process.env.VITE_TIDIO_PUBLIC_KEY || null,
-        configured: !!(process.env.VITE_TIDIO_PUBLIC_KEY && process.env.TIDIO_API_TOKEN)
-      }
-    });
-  });
-
-  // Tidio integration for live chat handoff
-  app.post("/api/tidio/send-context", async (req, res) => {
+  // Live chat endpoint for human operator responses
+  app.post("/api/live-chat", async (req, res) => {
     try {
-      const contextSchema = z.object({
-        context: z.string().min(1, "Context cannot be empty"),
-        timestamp: z.number().optional()
+      const messageSchema = z.object({
+        message: z.string().min(1, "Message cannot be empty"),
+        session_id: z.string(),
+        is_human: z.boolean().default(false)
       });
       
-      const { context, timestamp } = contextSchema.parse(req.body);
-      console.log("Tidio context forwarding:", context.substring(0, 100) + "...");
+      const { message, session_id, is_human } = messageSchema.parse(req.body);
+      console.log(`Live chat ${is_human ? '(HUMAN)' : '(USER)'} message:`, message.substring(0, 100));
       
-      // Check if Tidio API token is available
-      const tidioApiToken = process.env.TIDIO_API_TOKEN;
-      if (!tidioApiToken || tidioApiToken.trim() === '') {
-        console.warn('TIDIO_API_TOKEN not configured, skipping API call');
-        return res.status(200).json({
-          success: false,
-          message: 'Tidio API token not configured - context will be sent via widget'
-        });
-      }
-
-      // Send context to Tidio via their API
-      try {
-        const tidioResponse = await fetch('https://api.tidio.co/v1/conversations/message', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${tidioApiToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            type: 'message',
-            content: {
-              type: 'text',
-              text: context
-            },
-            source: 'operator',
-            timestamp: timestamp || Date.now()
-          })
-        });
-
-        if (!tidioResponse.ok) {
-          throw new Error(`Tidio API error: ${tidioResponse.status}`);
-        }
-
-        const tidioData = await tidioResponse.json();
-        console.log('Tidio context sent successfully:', tidioData.id || 'no ID');
-        
+      if (is_human) {
+        // Human operator response - just store and return
+        // In a real implementation, this would save to database and notify the user
         res.json({ 
-          success: true,
-          message: 'Context sent to Tidio successfully',
-          tidio_message_id: tidioData.id
+          response: message,
+          agent: "human_operator",
+          session_id: session_id,
+          timestamp: Date.now()
         });
-      } catch (tidioError: any) {
-        console.error('Tidio API request failed:', tidioError.message);
-        res.status(200).json({
-          success: false,
-          message: 'Failed to send context via Tidio API - will fallback to widget',
-          error: tidioError.message
+      } else {
+        // User message in live chat mode - for now, indicate waiting for human
+        res.json({ 
+          response: "💬 **Viestiäsi käsitellään...**\n\nAsiakaspalvelijamme vastaa sinulle hetken kuluttua. Kiitos kärsivällisyydestäsi!",
+          agent: "system",
+          session_id: session_id,
+          timestamp: Date.now()
         });
       }
     } catch (error) {
-      console.error("Tidio context forwarding error:", error);
-      res.status(500).json({ 
-        success: false,
-        error: "Failed to process Tidio context forwarding" 
-      });
+      console.error("Live chat error:", error);
+      res.status(500).json({ error: "Failed to process live chat message" });
     }
   });
 

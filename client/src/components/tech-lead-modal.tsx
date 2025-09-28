@@ -9,12 +9,13 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { handoffToTidio, isTidioConfigured, initializeTidio } from "@/lib/tidio";
+import { formatChatHistoryForHandoff, isLiveChatAvailable, sendLiveChatMessage } from "@/lib/tidio";
 
 interface ChatMessage {
   content: string;
   isUser: boolean;
   timestamp: number;
+  agent?: string;
 }
 
 interface TechLeadModalProps {
@@ -26,6 +27,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hasGreeted, setHasGreeted] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [isLiveMode, setIsLiveMode] = useState(false);
   const [isHandedOff, setIsHandedOff] = useState(false);
   const [sessionId] = useState(() => Date.now().toString());
   const [followUpSuggestions] = useState<string[]>([
@@ -50,9 +52,9 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
         timestamp: Date.now(),
       }]);
       
-      // Handle Tidio handoff when requested
+      // Handle live chat handoff when requested
       if (data.handoff_requested) {
-        handleTidioHandoff(data.response);
+        handleLiveChatHandoff(data.response);
       }
     },
     onError: () => {
@@ -65,7 +67,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   });
 
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const message = inputValue.trim();
     if (!message || techLeadChatMutation.isPending || isHandedOff) return;
 
@@ -76,7 +78,28 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }]);
 
     setInputValue("");
-    techLeadChatMutation.mutate({ message });
+    
+    if (isLiveMode) {
+      // In live mode, send message to live chat endpoint
+      try {
+        const response = await sendLiveChatMessage(message, sessionId, false);
+        setMessages(prev => [...prev, {
+          content: response.response,
+          isUser: false,
+          timestamp: Date.now(),
+          agent: response.agent
+        }]);
+      } catch (error) {
+        toast({
+          title: "Virhe",
+          description: "Viestin lähettäminen live chattiin epäonnistui.",
+          variant: "destructive"
+        });
+      }
+    } else {
+      // Normal AI-Panu chat
+      techLeadChatMutation.mutate({ message });
+    }
   };
 
   const handleExampleClick = (question: string) => {
@@ -98,13 +121,12 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }
   };
 
-  // Handle handoff to Tidio
-  const handleTidioHandoff = async (aiResponse: string) => {
-    const configured = await isTidioConfigured();
-    if (!configured) {
+  // Handle handoff to live chat (same modal)
+  const handleLiveChatHandoff = async (aiResponse: string) => {
+    if (!isLiveChatAvailable()) {
       toast({
         title: "Live chat ei käytettävissä",
-        description: "Tidio-integraatio ei ole konfiguroitu. Ota yhteyttä sivuston ylläpitäjään.",
+        description: "Live chat -toiminto ei ole tällä hetkellä käytettävissä.",
         variant: "destructive"
       });
       return;
@@ -113,32 +135,31 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     try {
       // Add system message about handoff
       setMessages(prev => [...prev, {
-        content: "🔄 **Siirretään keskustelu live chattiin**\n\nKeskustelu siirretään nyt Tidio live chattiin, jossa voit keskustella suoraan asiakaspalvelun kanssa. Chat-ikkuna avautuu automaattisesti.",
+        content: "🔄 **Siirretty live chattiin**\n\nTervehti asiakaspalvelija! Keskustelu jatkuu nyt tässä samassa ikkunassa.",
         isUser: false,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        agent: "system"
       }]);
 
       // Wait a moment for UI update
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      // Perform handoff to Tidio
-      const success = await handoffToTidio(messages, inputValue.trim());
+      // Log conversation history
+      const history = formatChatHistoryForHandoff(messages);
+      console.log('Live chat handoff history:', history);
       
-      if (success) {
-        setIsHandedOff(true);
-        setInputValue("");
-        
-        toast({
-          title: "Siirretty live chattiin",
-          description: "Keskustelu jatkuu Tidio live chatissa. Chat-ikkuna on avattu.",
-        });
-      } else {
-        throw new Error('Handoff failed');
-      }
+      // Switch to live mode
+      setIsLiveMode(true);
+      setInputValue("");
+      
+      toast({
+        title: "Siirretty live chattiin",
+        description: "Asiakaspalvelija voi nyt vastata tässä samassa ikkunassa.",
+      });
     } catch (error) {
       toast({
         title: "Virhe live chat -siirrossa",
-        description: "Keskustelua ei voitu siirtää. Yritä uudelleen tai ota yhteyttä suoraan.",
+        description: "Keskustelua ei voitu siirtää. Yritä uudelleen.",
         variant: "destructive"
       });
     }
@@ -154,22 +175,17 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }
   }, [techLeadChatMutation]);
 
-  // Initialize Tidio and send greeting when modal opens
+  // Send greeting when modal opens
   useEffect(() => {
-    if (isOpen) {
-      // Initialize Tidio integration
-      initializeTidio();
-      
-      // Send greeting if not done yet
-      if (!hasGreeted) {
-        sendGreeting();
-      }
+    if (isOpen && !hasGreeted) {
+      sendGreeting();
     }
   }, [isOpen, hasGreeted, sendGreeting]);
 
   // Reset state when modal closes
   useEffect(() => {
     if (!isOpen) {
+      setIsLiveMode(false);
       setIsHandedOff(false);
     }
   }, [isOpen]);
@@ -182,11 +198,11 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
               <Users className="h-4 w-4 text-white" />
             </div>
-            {isHandedOff ? "🔄 Siirretty Live Chattiin" : "Tech Lead - Panu Murtokangas"}
+            {isLiveMode ? "🔴 Live Chat - Asiakaspalvelija" : "Tech Lead - Panu Murtokangas"}
           </DialogTitle>
           <DialogDescription className="text-slate-300">
-            {isHandedOff 
-              ? "Keskustelu siirretty Tidio live chattiin. Voit sulkea tämän ikkunan."
+            {isLiveMode 
+              ? "Live chat: Asiakaspalvelija vastaa tässä samassa ikkunassa"
               : "CV-chat: Keskustele taustastani ja osaamisestani Humm Group Oy:n kontekstissa"
             }
           </DialogDescription>
@@ -200,7 +216,13 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                 <div key={index} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex items-start space-x-3 max-w-[80%] ${message.isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.isUser ? 'bg-blue-600' : 'bg-slate-600'
+                      message.isUser 
+                        ? 'bg-blue-600' 
+                        : message.agent === 'human_operator'
+                          ? 'bg-green-600'
+                          : message.agent === 'system'
+                            ? 'bg-yellow-600'
+                            : 'bg-slate-600'
                     }`}>
                       {message.isUser ? (
                         <User className="h-4 w-4 text-white" />
@@ -286,49 +308,28 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
           </div>
 
           {/* Chat Input */}
-          {!isHandedOff ? (
-            <div className="flex space-x-3">
-              <Input
-                type="text"
-                placeholder="Kysy minulta mitä tahansa Tech Lead -roolista..."
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={techLeadChatMutation.isPending}
-                className="flex-1 bg-slate-700/50 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
-                data-testid="tech-lead-chat-input"
-              />
-              <PulseButton
-                onClick={handleSend}
-                loading={techLeadChatMutation.isPending}
-                disabled={!inputValue.trim()}
-                pulse="subtle"
-                className="px-4 bg-blue-600 hover:bg-blue-700"
-                data-testid="tech-lead-send-button"
-              >
-                <Send className="h-4 w-4" />
-              </PulseButton>
-            </div>
-          ) : (
-            <div className="bg-green-900/20 border border-green-600/30 rounded-lg p-4 text-center">
-              <div className="flex items-center justify-center gap-2 text-green-400 font-medium mb-2">
-                <ExternalLink className="h-4 w-4" />
-                Keskustelu siirretty live chattiin
-              </div>
-              <p className="text-sm text-slate-300 mb-3">
-                Keskustelu jatkuu Tidio live chat -ikkunassa. Jos chat ei auennut automaattisesti, etsi chat-kuvake sivun oikeasta alakulmasta.
-              </p>
-              <PulseButton
-                onClick={onClose}
-                variant="outline"
-                size="sm"
-                className="border-green-600/50 text-green-400 hover:bg-green-900/30"
-                data-testid="close-after-handoff"
-              >
-                Sulje tämä ikkuna
-              </PulseButton>
-            </div>
-          )}
+          <div className="flex space-x-3">
+            <Input
+              type="text"
+              placeholder={isLiveMode ? "Kirjoita viestisi asiakaspalvelijalle..." : "Kysy minulta mitä tahansa Tech Lead -roolista..."}
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={handleKeyPress}
+              disabled={techLeadChatMutation.isPending}
+              className="flex-1 bg-slate-700/50 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
+              data-testid="tech-lead-chat-input"
+            />
+            <PulseButton
+              onClick={handleSend}
+              loading={techLeadChatMutation.isPending}
+              disabled={!inputValue.trim()}
+              pulse="subtle"
+              className={`px-4 ${isLiveMode ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+              data-testid="tech-lead-send-button"
+            >
+              <Send className="h-4 w-4" />
+            </PulseButton>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

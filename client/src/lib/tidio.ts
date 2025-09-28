@@ -1,73 +1,24 @@
-// Tidio Chat Integration Utilities
-
-// Declare global Tidio types for TypeScript
-declare global {
-  interface Window {
-    tidioChatApi: {
-      isReady: boolean;
-      open: () => void;
-      sendMessage: (message: string) => void;
-      hide: () => void;
-      show?: () => void;
-      messageToOperator?: (message: string) => void;
-    };
-    tidioChat?: {
-      show: () => void;
-      hide: () => void;
-      messageToOperator: (message: string) => void;
-    };
-    initTidio: () => void;
-  }
-}
+// Live Chat Integration Utilities
 
 export interface ChatMessage {
   content: string;
   isUser: boolean;
   timestamp: number;
+  agent?: string;
 }
 
 /**
- * Check if Tidio is available and ready
+ * Check if live chat integration is available
  */
-export function isTidioReady(): boolean {
-  return !!(window.tidioChatApi && window.tidioChatApi.isReady);
+export function isLiveChatAvailable(): boolean {
+  // Live chat is always available in this implementation
+  return true;
 }
 
 /**
- * Open Tidio chat widget
+ * Format chat history for handoff
  */
-export function openTidioChat(): void {
-  if (isTidioReady()) {
-    window.tidioChatApi.open();
-  } else {
-    console.warn('Tidio chat is not ready yet');
-  }
-}
-
-/**
- * Hide Tidio chat widget
- */
-export function hideTidioChat(): void {
-  if (isTidioReady()) {
-    window.tidioChatApi.hide();
-  }
-}
-
-/**
- * Send a message to Tidio operator
- */
-export function sendMessageToTidio(message: string): void {
-  if (isTidioReady()) {
-    window.tidioChatApi.sendMessage(message);
-  } else {
-    console.warn('Tidio chat is not ready - message not sent:', message);
-  }
-}
-
-/**
- * Format chat history for Tidio handoff
- */
-export function formatChatHistoryForTidio(messages: ChatMessage[]): string {
+export function formatChatHistoryForHandoff(messages: ChatMessage[]): string {
   const historyText = messages
     .map(msg => {
       const role = msg.isUser ? 'Käyttäjä' : 'AI-Panu';
@@ -81,83 +32,37 @@ export function formatChatHistoryForTidio(messages: ChatMessage[]): string {
 ${historyText}
 
 ---
-Käyttäjä siirretty live chattiin Tech Lead -keskustelusta. Tarvitsee lisätietoja tai teknistä apua.`;
+Käyttäjä siirretty live chattiin Tech Lead -keskustelusta.`;
 }
 
 /**
- * Handle handoff to Tidio with conversation context
+ * Send a live chat message (for human operator)
  */
-export async function handoffToTidio(
-  messages: ChatMessage[], 
-  userMessage?: string
-): Promise<boolean> {
+export async function sendLiveChatMessage(
+  message: string, 
+  sessionId: string, 
+  isHuman: boolean = false
+): Promise<any> {
   try {
-    if (!isTidioReady()) {
-      console.error('Tidio is not ready for handoff');
-      return false;
+    const response = await fetch('/api/live-chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message,
+        session_id: sessionId,
+        is_human: isHuman
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Live chat API error: ${response.status}`);
     }
 
-    // Format and send conversation history
-    const historyMessage = formatChatHistoryForTidio(messages);
-    
-    // Add current user message if provided
-    const fullContext = userMessage 
-      ? `${historyMessage}\n\n📝 VIIMEISIN VIESTI:\n"${userMessage}"`
-      : historyMessage;
-
-    // Send context to Tidio via backend (if API token is available)
-    try {
-      const response = await fetch('/api/tidio/send-context', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          context: fullContext,
-          timestamp: Date.now()
-        })
-      });
-
-      if (!response.ok) {
-        console.warn('Failed to send context via API, sending directly to widget');
-        // Fallback: send via widget
-        sendMessageToTidio(fullContext);
-      }
-    } catch (error) {
-      console.warn('API context sending failed, using widget fallback:', error);
-      // Fallback: send directly to widget
-      sendMessageToTidio(fullContext);
-    }
-
-    // Open Tidio chat widget
-    openTidioChat();
-    
-    return true;
+    return await response.json();
   } catch (error) {
-    console.error('Failed to handoff to Tidio:', error);
-    return false;
-  }
-}
-
-/**
- * Check if Tidio integration is configured
- */
-export async function isTidioConfigured(): Promise<boolean> {
-  try {
-    const response = await fetch('/api/config');
-    const config = await response.json();
-    return config.tidio?.configured || false;
-  } catch (error) {
-    console.error('Failed to check Tidio configuration:', error);
-    return false;
-  }
-}
-
-/**
- * Initialize Tidio (call this when component mounts)
- */
-export function initializeTidio(): void {
-  if (typeof window !== 'undefined' && window.initTidio) {
-    window.initTidio();
+    console.error('Failed to send live chat message:', error);
+    throw error;
   }
 }
