@@ -14,7 +14,6 @@ interface ChatMessage {
   content: string;
   isUser: boolean;
   timestamp: number;
-  agent?: string; // "ai_panu" or "replit_agent"
 }
 
 interface TechLeadModalProps {
@@ -26,7 +25,6 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hasGreeted, setHasGreeted] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [isLiveMode, setIsLiveMode] = useState(false);
   const [sessionId] = useState(() => Date.now().toString());
   const [followUpSuggestions] = useState<string[]>([
     "Mitä arvoa voisit tuoda Hummille?",
@@ -48,19 +46,9 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
         content: data.response,
         isUser: false,
         timestamp: Date.now(),
-        agent: "ai_panu"
       }]);
       
-      // Check if handoff was requested
-      if (data.handoff_requested) {
-        setIsLiveMode(true);
-        setMessages(prev => [...prev, {
-          content: "🔄 **Live chat aktivoitu** - Nyt puhut suoraan Replit Agent:in kanssa, joka voi auttaa teknisemmissä kysymyksissä!",
-          isUser: false,
-          timestamp: Date.now(),
-          agent: "system"
-        }]);
-      }
+      // TODO: Implement Tidio handoff when handoff_requested is true
     },
     onError: () => {
       toast({
@@ -71,35 +59,10 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }
   });
 
-  const liveChatMutation = useMutation({
-    mutationFn: async (data: { message: string }) => {
-      const response = await apiRequest("POST", "/api/live-chat", { 
-        message: data.message,
-        session_id: sessionId
-      });
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setMessages(prev => [...prev, {
-        content: data.response,
-        isUser: false,
-        timestamp: Date.now(),
-        agent: "replit_agent"
-      }]);
-    },
-    onError: () => {
-      toast({
-        title: "Virhe",
-        description: "Live chat viestin lähettäminen epäonnistui. Yritä uudelleen.",
-        variant: "destructive"
-      });
-    }
-  });
 
   const handleSend = () => {
     const message = inputValue.trim();
-    const activeMutation = isLiveMode ? liveChatMutation : techLeadChatMutation;
-    if (!message || activeMutation.isPending) return;
+    if (!message || techLeadChatMutation.isPending) return;
 
     setMessages(prev => [...prev, {
       content: message,
@@ -108,12 +71,11 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
     }]);
 
     setInputValue("");
-    activeMutation.mutate({ message });
+    techLeadChatMutation.mutate({ message });
   };
 
   const handleExampleClick = (question: string) => {
-    const activeMutation = isLiveMode ? liveChatMutation : techLeadChatMutation;
-    if (activeMutation.isPending) return;
+    if (techLeadChatMutation.isPending) return;
 
     setMessages(prev => [...prev, {
       content: question,
@@ -121,7 +83,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
       timestamp: Date.now()
     }]);
 
-    activeMutation.mutate({ message: question });
+    techLeadChatMutation.mutate({ message: question });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -153,24 +115,13 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
       <DialogContent className="max-w-4xl max-h-[90vh] bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-slate-600/50">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-white flex items-center gap-3">
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-              isLiveMode 
-                ? "bg-gradient-to-r from-green-600 to-green-700 animate-pulse" 
-                : "bg-gradient-to-r from-blue-600 to-blue-700"
-            }`}>
-              {isLiveMode ? (
-                <Users className="h-4 w-4 text-white" />
-              ) : (
-                <Users className="h-4 w-4 text-white" />
-              )}
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg flex items-center justify-center">
+              <Users className="h-4 w-4 text-white" />
             </div>
-            {isLiveMode ? "🔴 Live Chat - Replit Agent" : "Tech Lead - Panu Murtokangas"}
+            Tech Lead - Panu Murtokangas
           </DialogTitle>
           <DialogDescription className="text-slate-300">
-            {isLiveMode 
-              ? "Live chat: Tekninen avustaja auttaa sovelluskehityksessä ja ongelmanratkaisussa"
-              : "CV-chat: Keskustele taustastani ja osaamisestani Humm Group Oy:n kontekstissa"
-            }
+            CV-chat: Keskustele taustastani ja osaamisestani Humm Group Oy:n kontekstissa
           </DialogDescription>
         </DialogHeader>
         
@@ -182,13 +133,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                 <div key={index} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex items-start space-x-3 max-w-[80%] ${message.isUser ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.isUser 
-                        ? 'bg-blue-600' 
-                        : message.agent === 'replit_agent'
-                          ? 'bg-green-600'
-                          : message.agent === 'system'
-                            ? 'bg-yellow-600'
-                            : 'bg-slate-600'
+                      message.isUser ? 'bg-blue-600' : 'bg-slate-600'
                     }`}>
                       {message.isUser ? (
                         <User className="h-4 w-4 text-white" />
@@ -225,7 +170,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                 </div>
               ))}
               
-              {(techLeadChatMutation.isPending || liveChatMutation.isPending) && (
+              {techLeadChatMutation.isPending && (
                 <div className="flex justify-start">
                   <div className="flex items-start space-x-3 max-w-[80%]">
                     <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -239,7 +184,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                           <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                         </div>
                         <span className="text-xs text-slate-300">
-                          {isLiveMode ? "Replit Agent kirjoittaa..." : "Mietin vastausta..."}
+                          Mietin vastausta...
                         </span>
                       </div>
                     </div>
@@ -264,7 +209,7 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
                   pulse="subtle"
                   className="text-left h-auto py-3 px-4 justify-start text-slate-200 bg-slate-700/30 hover:bg-slate-600/50 border-slate-600 hover:border-blue-500 transition-all duration-200"
                   onClick={() => handleExampleClick(suggestion)}
-                  loading={techLeadChatMutation.isPending || liveChatMutation.isPending}
+                  loading={techLeadChatMutation.isPending}
                   data-testid={`tech-lead-example-${index}`}
                 >
                   <span className="text-xs">{suggestion}</span>
@@ -281,16 +226,16 @@ export function TechLeadModal({ isOpen, onClose }: TechLeadModalProps) {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
-              disabled={techLeadChatMutation.isPending || liveChatMutation.isPending}
+              disabled={techLeadChatMutation.isPending}
               className="flex-1 bg-slate-700/50 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
               data-testid="tech-lead-chat-input"
             />
             <PulseButton
               onClick={handleSend}
-              loading={techLeadChatMutation.isPending || liveChatMutation.isPending}
+              loading={techLeadChatMutation.isPending}
               disabled={!inputValue.trim()}
               pulse="subtle"
-              className={`px-4 ${isLiveMode ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+              className="px-4 bg-blue-600 hover:bg-blue-700"
               data-testid="tech-lead-send-button"
             >
               <Send className="h-4 w-4" />
