@@ -34,6 +34,7 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [hasGreeted, setHasGreeted] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [jobApplicationOpen, setJobApplicationOpen] = useState(false);
   const [followUpSuggestions] = useState<string[]>([
     "Kerro kokemuksestasi makro-talouden analyysistä ja AI-timing ikkunasta",
     "Miten näet teknologian roolin Hummin €10M visiossa?",
@@ -249,8 +250,166 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
               <Send className="h-4 w-4" />
             </PulseButton>
           </div>
+
+          {/* Job Application Button */}
+          <div className="mt-4 pt-4 border-t border-slate-600/50">
+            <PulseButton
+              onClick={() => setJobApplicationOpen(true)}
+              variant="outline"
+              className="w-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 border-blue-500/50 text-white"
+              pulse="subtle"
+              data-testid="job-application-button"
+            >
+              <Briefcase className="h-4 w-4 mr-2" />
+              Työhakemus
+            </PulseButton>
+          </div>
         </div>
       </DialogContent>
+
+      {/* Job Application Modal */}
+      <Dialog open={jobApplicationOpen} onOpenChange={setJobApplicationOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-xl border-slate-600/50">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-white flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-700 rounded-lg flex items-center justify-center">
+                <Briefcase className="h-4 w-4 text-white" />
+              </div>
+              Työhakemus: Tech Lead - Panu Murtokangas
+            </DialogTitle>
+            <DialogDescription className="text-slate-300">
+              Humm Group Oy:n teknologiajohtajan rooli ja visio
+            </DialogDescription>
+          </DialogHeader>
+          
+          <ScrollArea className="h-[70vh] pr-4">
+            <div className="prose prose-invert prose-sm max-w-none">
+              <div className="text-slate-200 space-y-6">
+                <section>
+                  <h2 className="text-xl font-bold text-white mb-3">Nykytila ja potentiaali</h2>
+                  <p className="mb-3">
+                    Näen Hummissa suuren potentiaalin kasvattaa liikevaihtoa, mutta ennen kaikkea käyttökatetta ja tehokkuutta. Se lienee teknologiajohtajan tehtävän ydin.
+                  </p>
+                  <p className="mb-3">
+                    Hummilla on selkeästi vahva liiketoimintaosaaminen sekä myynti- ja markkinointitaidot, sillä se on onnistunut saamaan isoja asiakkuuksia, vaikka markkina Suomessa on rajallinen eikä kunnollista talouskasvua ole pitkään aikaan nähty.
+                  </p>
+                  <p className="mb-3">
+                    Humm on kilpailijoihinsa nähden pieni organisaatio, mutta se on brändännyt itsensä hyvin. Palveluiden keskiössä ovat laatu ja ihmisläheisyys. Yrityksen tulos on kuitenkin heikentynyt viime vuosina, eikä merkittävää kasvua ole tullut.
+                  </p>
+                  <p className="mb-3 font-semibold text-blue-400">
+                    Paikalleen jämähtäminen on ensiaskel tuhoon. Haluan todella päästä ottamaan askelta kohti hallittua, mutta nopeaa kasvua.
+                  </p>
+                  <p className="mb-3">
+                    Tase on kuitenkin vahva, mikä antaa erittäin hyvät lähtökohdat uudelle nousulle. Kilpailija-analyysi viittaa siihen, että tavanomainen asiakaspalvelun ulkoistusbisnes on hiipumassa.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-xl font-bold text-white mb-3">Teknologiajohtajan rooli kasvun mahdollistajana</h2>
+                  <p className="mb-3">
+                    Teknologiajohtajan roolia Hummin tulevaisuuden kannalta ei voi riittävästi korostaa. Hummilla on kaikki lähtökohdat nostaa liikevaihto 10 miljoonan euron tasolle ja parantaa samalla kannattavuutta – kyllä, kymmenen miljoonaa, luit oikein.
+                  </p>
+                  <p className="mb-3">
+                    Mikäli Humm on valmis nousemaan seuraavalle tasolle, sen aika on nyt. On käytävä läpi jokaikinen pullonkaula ja otettava uusi teknologia vastaan hallitusti. Samalla on mukauduttava uusien innovaatioiden syntyyn ja rakennettava dynaaminen roadmap: <span className="font-bold text-blue-400">"Humm to 10 million in five years."</span>
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-xl font-bold text-white mb-3">Oikea hetki toimia</h2>
+                  <p className="mb-3">
+                    Humm on ottamassa nyt oikeaa askelta oikeaan aikaan.
+                  </p>
+                  <p className="mb-3">
+                    Agentic AI ja uusi MCP-protokolla tarjoavat ensimmäistä kertaa aidosti liiketoimintaa tehostavia ja luotettavia ratkaisuja asiakaspalvelualalle.
+                  </p>
+                  <p className="mb-3 font-semibold">
+                    Tällä hetkellä on 2–5 vuoden aikaikkuna, jolloin on tehtävä iso organisaatiomuutos:
+                  </p>
+                  <ul className="list-disc pl-6 mb-3 text-slate-200">
+                    <li>2 vuotta sitten muutos olisi ollut liian aikainen</li>
+                    <li>2 vuoden päästä se olisi jo liian myöhäinen</li>
+                  </ul>
+                  <p className="mb-3">
+                    Tekoäly voi toimia Humm Group Oy:lle sekä tasa-arvoistajana että erottautumiskeinona. Suuremmat kilpailijat liikkuvat hitaasti ja pienemmiltä toimijoilta puuttuu osaaminen – tämä avaa Hummille mahdollisuuden tarjota ketterästi räätälöityjä, kehittyneitä ratkaisuja Suomen markkinoilla. Paikallisen kielen ja kulttuurin ymmärrys on merkittävä kilpailuetu.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-xl font-bold text-white mb-3">Konkreettiset askeleet ja riskienhallinta</h2>
+                  <p className="mb-3">
+                    Pelkkä teknologiajohtajan palkkaaminen ei riitä. Koko organisaation on mukauduttava, ja henkilöstöä täytyy kouluttaa uuden teknologian käyttöön.
+                  </p>
+                  <p className="mb-3">
+                    Teknologiajohtajan vastuulla on varmistaa, että uutta ei oteta käyttöön vain teknologian vuoksi, vaan siitä saadaan mitattavaa hyötyä. Selkein tapa aloittaa on AI-vastausluonnokset tiketteihin ja one-click-send -toiminto työntekijälle.
+                  </p>
+                  <p className="mb-3">
+                    Luoda datalla johdettu ympäristö ja koota nykyinen data, niin että tekoälyn käyttöönotto helpottuisi.
+                  </p>
+                  <p className="mb-3">
+                    Keskeistä on asiakasdatan hyödyntäminen eettisesti ja tehokkaasti, sillä tekoäly menestyy datan avulla. Tämä luo perustan Hummin tekoälystrategialle.
+                  </p>
+                  <p className="mb-3 font-semibold text-blue-400">
+                    Yhtälö on selkeä: vahva tase + oikea aikaikkuna + oikeat roolitukset + oikea teknologia ja toteutus = todellinen kilpailuetu.
+                  </p>
+                  <p className="mb-3">
+                    Koska ketteryys on Hummin etu markkinoilla, uuden teknologiajohtajan on aloitettava konkreettiset toimet jo ensimmäisellä viikolla.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-xl font-bold text-white mb-3">Strategiset painopisteet</h2>
+                  
+                  <h3 className="text-lg font-semibold text-blue-400 mb-2">Oikean teknologian valinta</h3>
+                  <p className="mb-3">
+                    Kun tekoälyhankkeisiin pusketaan kiihtyvällä tahdilla rahaa, on vaikea erottaa, mikä teknologia tuo todellista arvoa ja mikä vain näyttää siltä. Tässä tarvitaan jatkuvaa seurantaa.
+                  </p>
+                  <p className="mb-3">
+                    Laajamittaisessa käytössä painotetaan avoimen lähdekoodin malleja kustannustehokkuuden ja muokattavuuden vuoksi. Tuoreiden tutkimusten mukaan yli kolmannes yrityksistä käyttää jo merkittävästi avoimia malleja, ja avoimen ekosysteemin osuus kasvaa edelleen.
+                  </p>
+
+                  <h3 className="text-lg font-semibold text-blue-400 mb-2">Jatkuva kehityksen seuraaminen</h3>
+                  <p className="mb-3">
+                    Uusien teknologioiden vaikuttavuuden arviointi ei ole pelkkä hyöty, vaan elinehto, mikäli tavoitteena on kilpailuedun saavuttaminen.
+                  </p>
+
+                  <h3 className="text-lg font-semibold text-blue-400 mb-2">Henkilöstön ja brändin asennemuutos</h3>
+                  <p className="mb-3">
+                    Tulevasta teknologiasta on viestittävä oikein, jotta organisaatiorakenne ei horju. Teknologiajohtaja on myös muutosjohtaja.
+                  </p>
+
+                  <h3 className="text-lg font-semibold text-blue-400 mb-2">Vision merkitys</h3>
+                  <p className="mb-3">
+                    Tällä hetkellä visio tulevasta on tärkeämpi kuin se, mitä on tehty aiemmin. Nokia vs. Apple -vertaus on osuva, kun puhutaan uuden teknologian käyttöönotosta.
+                  </p>
+                </section>
+
+                <section>
+                  <h2 className="text-xl font-bold text-white mb-3">Lyhyesti makrotaloudesta ja sen merkityksestä</h2>
+                  <p className="mb-3">
+                    Pitkä taustani maailman suurimpien yhtiöiden päivittäisessä seuraamisessa sekä makrotalouden analysoimisessa antaa minulle vankan pohjan tehdä oikeita päätöksiä oikeaan aikaan.
+                  </p>
+                  <p className="mb-3">
+                    Nyt näyttää siltä, että tekoäly on pitämässä lupaustaan eksponentiaalisena (agentic AI) kannattavuuden kasvun lisääjänä.
+                  </p>
+                  <p className="mb-3">
+                    Trumpin suora painostus Yhdysvalloissa Fedin suuntaan korkojen laskemiseksi lisää todennäköisyyttä, että tariffien vaikutukset jäävät pelättyä pienemmiksi. Tariffit iskisivät muuten eniten keskiluokkaan ja palkansaajiin. Yritykset nostavat hintoja tariffien vuoksi erityisesti kuluttajatuotteissa, mutta jos yritysten kustannukset laskevat merkittävästi automaation avulla, tämä voi kompensoida hintojen nousua runsaastikin.
+                  </p>
+                  <p className="mb-3 font-semibold text-blue-400">
+                    Hummin vahva tase on kilpailuvaltti.
+                  </p>
+                </section>
+
+                <section className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/30">
+                  <h2 className="text-xl font-bold text-white mb-3">Yhteenveto</h2>
+                  <p className="mb-0">
+                    Onnistumistekijöihin kuuluvat selkeä visio, datan laatu ja hallinta, tiivis johto- ja sidosryhmäyhteistyö sekä henkilöstön osaaminen ja muutosvalmius.
+                  </p>
+                </section>
+              </div>
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </Dialog>
   );
 }
