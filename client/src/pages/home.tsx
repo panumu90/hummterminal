@@ -4,6 +4,10 @@ import { Link } from "wouter";
 import { PageHeader } from "@/components/page-header";
 import { CaseCard } from "@/components/case-card";
 import { ChatInterface } from "@/components/chat-interface";
+import TechLeadDashboard from "@/components/tech-lead-dashboard";
+import StrategicRoadmap from "@/components/strategic-roadmap";
+import NewsFeed from "@/components/news-feed";
+import { HummAILogo } from "@/components/humm-ai-logo";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PulseButton } from "@/components/ui/pulse-button";
@@ -11,7 +15,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, Bot, Building, Rocket, Users, TrendingUp, BarChart, User, Send, Star, Target, Briefcase, Code } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertCircle, Bot, Building, Rocket, Users, TrendingUp, BarChart, User, Send, Star, Target, Briefcase, Code, Activity, DollarSign, Newspaper } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import ReactMarkdown from 'react-markdown';
@@ -30,10 +35,13 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
   const [hasGreeted, setHasGreeted] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [followUpSuggestions] = useState<string[]>([
-    "Mitä arvoa voisit tuoda Hummille?",
-    "Kerro taustastasi ja osaamisestasi",
-    "Mikä on ydinosaamistasi?",
-    "Miksi juuri sinut?"
+    "Kerro kokemuksestasi makro-talouden analyysistä ja AI-timing ikkunasta",
+    "Miten näet teknologian roolin Hummin €10M visiossa?",
+    "Mikä on sinun unique value proposition Technology Leadina?",
+    "Kerro Build vs Buy -strategiasta: Zendesk AI vs. N8N custom",
+    "Kuinka käyttökate tulisi olla THE KPI Technology Leadille?",
+    "Mitä tekisit ensimmäisen viikon aikana Hummilla?",
+    "Miten henkilökohtaiset haasteesi ovat muokanneet johtamistyyliäsi?"
   ]);
   const { toast } = useToast();
 
@@ -97,8 +105,8 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
   const sendGreeting = useCallback(() => {
     if (!techLeadChatMutation.isPending) {
       setHasGreeted(true);
-      techLeadChatMutation.mutate({ 
-        message: "Tervehdi käyttäjää AI-Panuna ja esittäydy lyhyesti Humm Group Oy:n Tech Lead -hakijana. Kerro että olet tutustunut heidän toimintaansa ja olet valmis vastaamaan kysymyksiin."
+      techLeadChatMutation.mutate({
+        message: "Tervehdi käyttäjää AI-Panuna ja esittäydy lyhyesti Humm Group Oy:n Tech Lead -hakijana. Mainitse että elämän haasteet ovat opettaneet sinulle sinnikkyyden ja määrätietoisuuden, jotka ovat kriittisiä ominaisuuksia teknologia-johtajuudessa. Kerro että olet tutustunut heidän toimintaansa perusteellisesti ja olet valmis vastaamaan kysymyksiin €10M visiosta ja teknologia-strategiasta."
       });
     }
   }, [techLeadChatMutation]);
@@ -122,6 +130,10 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
           </DialogTitle>
           <DialogDescription className="text-slate-300">
             CV-chat: Keskustele taustastani ja osaamisestani Humm Group Oy:n kontekstissa
+            <div className="text-xs text-slate-400 mt-1 italic">
+              "Elämän haasteet ovat opettaneet minulle sinnikkyyden ja määrätietoisuuden - juuri niitä ominaisuuksia,
+              joita tarvitaan johtamaan Hummin €10M transformaatiota."
+            </div>
           </DialogDescription>
         </DialogHeader>
         
@@ -139,7 +151,7 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                         <Bot className="h-4 w-4 text-white" />
                       )}
                     </div>
-                    <div className={`${message.isUser ? 'bg-blue-600 text-white' : 'bg-slate-700/50 text-slate-100'} rounded-lg p-3`}>
+                    <div className={`${message.isUser ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-100'} rounded-lg p-3`}>
                       {message.isUser ? (
                         <span className="text-sm">{message.content}</span>
                       ) : (
@@ -174,7 +186,7 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                     <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center flex-shrink-0">
                       <Bot className="h-4 w-4 text-white animate-pulse" />
                     </div>
-                    <div className="bg-slate-700/50 rounded-lg p-3">
+                    <div className="bg-slate-700 rounded-lg p-3">
                       <div className="flex items-center space-x-2">
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
@@ -223,7 +235,7 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               disabled={techLeadChatMutation.isPending}
-              className="flex-1 bg-slate-700/50 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
+              className="flex-1 bg-slate-700 border-slate-600 focus:border-blue-500 text-slate-100 placeholder:text-slate-400"
               data-testid="tech-lead-chat-input"
             />
             <PulseButton
@@ -248,6 +260,7 @@ export default function Home() {
     queryKey: ["/api/cases"],
   });
   const [techLeadModalOpen, setTechLeadModalOpen] = useState(false);
+  const [activeView, setActiveView] = useState<'cases' | 'dashboard' | 'roadmap' | 'news'>('cases');
 
   if (error) {
     return (
@@ -268,24 +281,16 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900 text-white font-sans min-h-screen flex flex-col">
+    <div className="bg-slate-900 text-white font-sans min-h-screen flex flex-col">
       {/* Netflix-style Header */}
-      <header className="bg-slate-900/90 border-b border-slate-700/50 sticky top-0 z-50 backdrop-blur-md flex-shrink-0 animate-in fade-in-0 duration-700">
+      <header className="bg-slate-800/95 border-b border-slate-700 sticky top-0 z-50 shadow-lg backdrop-blur-sm animate-in fade-in-0 duration-700">
         <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-18">
-            <div className="flex items-center space-x-3 lg:space-x-4">
-              <div className="flex items-center space-x-3 lg:space-x-4 animate-in slide-in-from-left-4 duration-500">
-                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
-                  <Bot className="text-white h-4 w-4 lg:h-5 lg:w-5" />
-                </div>
-                <div>
-                  <h1 className="text-xl lg:text-2xl font-bold text-white animate-in slide-in-from-left-2 duration-600 delay-100" data-testid="header-title">humm.fi</h1>
-                  <p className="text-xs lg:text-sm text-slate-300 animate-in slide-in-from-left-2 duration-600 delay-200">AI Asiakaspalvelu Showcase</p>
-                </div>
-              </div>
+            <div className="flex items-center space-x-3 lg:space-x-4 animate-in slide-in-from-left-4 duration-500">
+              <HummAILogo />
             </div>
-            <div className="flex items-center space-x-4 lg:space-x-6 animate-in slide-in-from-right-4 duration-500 delay-300">
-              <div className="text-xs lg:text-sm text-slate-300 flex items-center space-x-2">
+            <div className="flex items-center space-x-4 lg:space-x-6">
+              <div className="text-xs lg:text-sm text-slate-400 flex items-center space-x-2">
                 <Building className="h-3 w-3 lg:h-4 lg:w-4" />
                 <span className="hidden sm:inline">Sisäinen käyttö</span>
               </div>
@@ -297,45 +302,86 @@ export default function Home() {
       {/* Netflix-style Split Layout */}
       <div className="flex flex-col lg:flex-row min-h-0 flex-1">
         {/* Left Panel - AI Assistant (35%) */}
-        <div className="w-full lg:w-[35%] bg-slate-800/50 lg:border-r border-slate-700/50 flex flex-col min-h-0 backdrop-blur-sm animate-in slide-in-from-left-6 duration-700 delay-400">
-          <div className="px-4 sm:px-6 lg:px-6 py-4 lg:py-5 border-b border-slate-700/50">
-            <div className="flex items-center space-x-3 mb-2 animate-in fade-in-0 duration-600 delay-500">
-              <Bot className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400 animate-pulse" />
-              <h2 className="text-lg lg:text-xl font-bold text-white">AI Assistentti</h2>
+        <div className="w-full lg:w-[35%] bg-slate-800 lg:border-r border-slate-700 flex flex-col min-h-0">
+          <div className="px-4 sm:px-6 lg:px-6 py-4 lg:py-5 border-b border-slate-700">
+            <div className="flex items-center space-x-3 mb-2">
+              <Bot className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400" />
+              <h2 className="text-lg lg:text-xl font-semibold text-white">AI Assistentti</h2>
             </div>
-            <p className="text-slate-300 text-xs lg:text-sm animate-in fade-in-0 duration-600 delay-600">
-              🤖 Räätälöidyt vastaukset johdolle
+            <p className="text-slate-300 text-xs lg:text-sm">
+              Räätälöidyt vastaukset johdolle
             </p>
           </div>
-          <div className="flex-1 min-h-0 overflow-hidden animate-in fade-in-0 duration-800 delay-700">
+          <div className="flex-1 min-h-0 overflow-hidden">
             <ChatInterface />
           </div>
         </div>
 
-        {/* Right Panel - Case Explorer (65%) */}
-        <div className="w-full lg:w-[65%] bg-slate-900/30 flex flex-col min-h-0 border-t lg:border-t-0 border-slate-700/50 animate-in slide-in-from-right-6 duration-700 delay-500">
-          <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-6 bg-slate-800/40 border-b border-slate-700/50 backdrop-blur-sm">
+        {/* Right Panel - Smart Content Switcher (65%) */}
+        <div className="w-full lg:w-[65%] bg-slate-900 flex flex-col min-h-0 border-t lg:border-t-0 border-slate-700">
+          <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-6 bg-slate-800 border-b border-slate-700">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
-              <div className="animate-in fade-in-0 duration-600 delay-600">
-                <h2 className="text-lg lg:text-xl font-bold text-white">🎯 Onnistuneet AI-caset</h2>
-                <p className="text-slate-300 text-xs lg:text-sm mt-1">Asiakaspalvelussa parannettu kokemus ja tehokkuus</p>
+              <div>
+                <Tabs value={activeView} onValueChange={(v) => setActiveView(v as any)} className="w-full">
+                  <TabsList className="grid w-full grid-cols-4 bg-slate-700 border border-slate-600 mb-4 animate-in slide-in-from-top-4 duration-500 delay-200">
+                    <TabsTrigger value="cases" className="data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm text-slate-300 data-[state=active]:text-white">
+                      <Target className="h-4 w-4 mr-2" />
+                      AI Cases
+                    </TabsTrigger>
+                    <TabsTrigger value="dashboard" className="data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm text-slate-300 data-[state=active]:text-white">
+                      <Activity className="h-4 w-4 mr-2" />
+                      Performance
+                    </TabsTrigger>
+                    <TabsTrigger value="roadmap" className="data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm text-slate-300 data-[state=active]:text-white">
+                      <Rocket className="h-4 w-4 mr-2" />
+                      Roadmap
+                    </TabsTrigger>
+                    <TabsTrigger value="news" className="data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm text-slate-300 data-[state=active]:text-white">
+                      <Newspaper className="h-4 w-4 mr-2" />
+                      AI News
+                    </TabsTrigger>
+                  </TabsList>
+
+                  {/* Dynamic Header Content */}
+                  {activeView === 'cases' ? (
+                    <div>
+                      <h2 className="text-lg lg:text-xl font-semibold text-white">Case-esimerkkejä onnistuneista AI-implementaatioista</h2>
+                      <p className="text-slate-300 text-xs lg:text-sm mt-1">Todennetut tulokset asiakaspalvelun tehostamisesta</p>
+                    </div>
+                  ) : activeView === 'dashboard' ? (
+                    <div>
+                      <h2 className="text-lg lg:text-xl font-semibold text-white">Tech Lead Performance Dashboard</h2>
+                      <p className="text-slate-300 text-xs lg:text-sm mt-1">Reaaliaikainen seuranta ja liiketoimintavaikutusten mittarit</p>
+                    </div>
+                  ) : activeView === 'news' ? (
+                    <div>
+                      <h2 className="text-lg lg:text-xl font-semibold text-white">AI News & Insights</h2>
+                      <p className="text-slate-300 text-xs lg:text-sm mt-1">Ajankohtaiset uutiset ja trendit AI-kehityksestä</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <h2 className="text-lg lg:text-xl font-semibold text-white">Roadmap → 10M€</h2>
+                      <p className="text-slate-300 text-xs lg:text-sm mt-1">Pitkän aikavälin tavoite: liikevaihto 10 miljoonaa euroa</p>
+                    </div>
+                  )}
+                </Tabs>
               </div>
-              <div className="flex items-center space-x-2 lg:space-x-4 animate-in slide-in-from-right-4 duration-600 delay-700">
-                <Button 
+              <div className="flex items-center space-x-2 lg:space-x-4">
+                <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs lg:text-sm border-slate-600 hover:border-slate-500 hover:bg-slate-700/50 text-slate-200 hover:text-white px-2 lg:px-3 transition-all duration-200 hover:scale-105"
+                  className="text-xs lg:text-sm border-slate-600 hover:border-blue-400 hover:bg-blue-500/10 text-slate-300 hover:text-blue-400 px-2 lg:px-3"
                   onClick={() => setTechLeadModalOpen(true)}
                   data-testid="tech-lead-cta"
                 >
                   <Users className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-                  Tech Lead
+                  Tech Lead CV
                 </Button>
                 <Link href="/impact-analysis">
-                  <Button 
+                  <Button
                     variant="outline"
                     size="sm"
-                    className="text-xs lg:text-sm border-slate-600 hover:border-slate-500 hover:bg-slate-700/50 text-slate-200 hover:text-white px-2 lg:px-3 transition-all duration-200 hover:scale-105"
+                    className="text-xs lg:text-sm border-slate-600 hover:border-blue-400 hover:bg-blue-500/10 text-slate-300 hover:text-blue-400 px-2 lg:px-3"
                     data-testid="impact-analysis-cta-top"
                   >
                     <BarChart className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
@@ -346,75 +392,97 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Case Content Area - Netflix style */}
-          <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-4 lg:space-y-6 bg-gradient-to-b from-slate-900/40 to-slate-900/60">
-          {/* Case Cards Grid - Netflix Style */}
-          {isLoading ? (
-            <div className="space-y-6">
-              {[...Array(6)].map((_, i) => (
-                <Card key={i} className="bg-slate-800/30 border border-slate-600/50 hover:border-slate-500/50 hover:bg-slate-800/50 transition-all duration-300 backdrop-blur-sm" data-testid={`skeleton-card-${i}`}>
-                  <CardContent className="p-6 animate-in fade-in-0 duration-300" style={{ animationDelay: `${i * 150}ms` }}>
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <Skeleton className="w-12 h-12 rounded-lg bg-slate-700/50" />
-                        <div>
-                          <Skeleton className="h-6 w-32 mb-2 bg-slate-700/50" />
-                          <Skeleton className="h-4 w-24 bg-slate-700/50" />
-                        </div>
-                      </div>
-                      <Skeleton className="h-6 w-20 rounded-full bg-slate-700/50" />
-                    </div>
-                    <div className="mb-4">
-                      <Skeleton className="h-4 w-40 mb-2 bg-slate-700/50" />
-                      <div className="space-y-2">
-                        <Skeleton className="h-4 w-full bg-slate-700/50" />
-                        <Skeleton className="h-4 w-3/4 bg-slate-700/50" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-4 mb-4">
-                      {[...Array(3)].map((_, j) => (
-                        <div key={j} className="text-center p-3">
-                          <Skeleton className="h-6 w-12 mx-auto mb-1 rounded bg-slate-700/50" />
-                          <Skeleton className="h-3 w-16 mx-auto rounded bg-slate-700/50" />
+          {/* Dynamic Content Area */}
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <Tabs value={activeView} onValueChange={(v) => setActiveView(v as any)} className="h-full">
+              {/* AI Case Studies View */}
+              <TabsContent value="cases" className="h-full overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-4 lg:space-y-6 bg-slate-900 mt-0 animate-in fade-in-0 duration-600 delay-300">
+                {/* Case Cards Grid - Netflix Style */}
+                {isLoading ? (
+                  <div className="space-y-6">
+                    {[...Array(6)].map((_, i) => (
+                      <Card key={i} className="bg-slate-800 border border-slate-700 hover:border-slate-600 hover:shadow-lg transition-all duration-200 animate-in fade-in-0 duration-300" style={{ animationDelay: `${i * 150}ms` }} data-testid={`skeleton-card-${i}`}>
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <Skeleton className="w-12 h-12 rounded-lg bg-slate-700" />
+                              <div>
+                                <Skeleton className="h-6 w-32 mb-2 bg-slate-700" />
+                                <Skeleton className="h-4 w-24 bg-slate-700" />
+                              </div>
+                            </div>
+                            <Skeleton className="h-6 w-20 rounded-full bg-slate-700" />
+                          </div>
+                          <div className="mb-4">
+                            <Skeleton className="h-4 w-40 mb-2 bg-slate-700" />
+                            <div className="space-y-2">
+                              <Skeleton className="h-4 w-full bg-slate-700" />
+                              <Skeleton className="h-4 w-3/4 bg-slate-700" />
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-3 gap-4 mb-4">
+                            {[...Array(3)].map((_, j) => (
+                              <div key={j} className="text-center p-3">
+                                <Skeleton className="h-6 w-12 mx-auto mb-1 rounded bg-slate-700" />
+                                <Skeleton className="h-3 w-16 mx-auto rounded bg-slate-700" />
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mb-4">
+                            <Skeleton className="h-4 w-32 mb-2 bg-slate-700" />
+                            <div className="space-y-1">
+                              {[...Array(3)].map((_, k) => (
+                                <Skeleton key={k} className="h-3 w-full bg-slate-700" />
+                              ))}
+                            </div>
+                          </div>
+                          <Skeleton className="h-10 w-full rounded bg-slate-700" />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : cases?.length ? (
+                  <div className="space-y-6" data-testid="cases-grid">
+                      {cases.map((case_, index) => (
+                        <div key={case_.id} className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500" style={{ animationDelay: `${index * 100}ms` }}>
+                          <CaseCard case_={case_} />
                         </div>
                       ))}
-                    </div>
-                    <div className="mb-4">
-                      <Skeleton className="h-4 w-32 mb-2 bg-slate-700/50" />
-                      <div className="space-y-1">
-                        {[...Array(3)].map((_, k) => (
-                          <Skeleton key={k} className="h-3 w-full bg-slate-700/50" />
-                        ))}
-                      </div>
-                    </div>
-                    <Skeleton className="h-10 w-full rounded bg-slate-700/50" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : cases?.length ? (
-            <div className="space-y-6" data-testid="cases-grid">
-              {cases.map((case_, index) => (
-                <div
-                  key={case_.id}
-                  className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 hover:scale-[1.02] transition-transform"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <CaseCard case_={case_} />
+                  </div>
+                ) : (
+                  <Card data-testid="no-cases" className="bg-slate-800 border border-slate-700">
+                    <CardContent className="pt-6 text-center">
+                      <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-white mb-2">Ei caseja saatavilla</h3>
+                      <p className="text-slate-300">
+                        Caseja ei löytynyt tai ne ovat väliaikaisesti poissa käytöstä.
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              {/* Tech Lead Dashboard View */}
+              <TabsContent value="dashboard" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
+                <div className="h-full overflow-y-auto">
+                  <TechLeadDashboard />
                 </div>
-              ))}
-            </div>
-          ) : (
-            <Card data-testid="no-cases" className="bg-slate-800/30 border border-slate-600/50 backdrop-blur-sm">
-              <CardContent className="pt-6 text-center">
-                <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-white mb-2">Ei caseja saatavilla</h3>
-                <p className="text-slate-300">
-                  Caseja ei löytynyt tai ne ovat väliaikaisesti poissa käytöstä.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+              </TabsContent>
+
+              {/* Strategic Roadmap View */}
+              <TabsContent value="roadmap" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
+                <div className="h-full overflow-y-auto">
+                  <StrategicRoadmap />
+                </div>
+              </TabsContent>
+
+              {/* News Feed View */}
+              <TabsContent value="news" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
+                <div className="h-full overflow-y-auto">
+                  <NewsFeed />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
