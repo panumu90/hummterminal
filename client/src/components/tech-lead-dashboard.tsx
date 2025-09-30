@@ -215,9 +215,9 @@ const TechLeadDashboard = () => {
 
   const getImpactColor = (impact: string) => {
     switch (impact) {
-      case 'high': return 'text-red-400/70';
-      case 'medium': return 'text-yellow-400/70';
-      case 'low': return 'text-slate-300';
+      case 'high': return 'text-red-400';
+      case 'medium': return 'text-yellow-400';
+      case 'low': return 'text-slate-200';
       default: return 'text-gray-400';
     }
   };
@@ -244,7 +244,7 @@ const TechLeadDashboard = () => {
                   <div className="flex items-start gap-3">
                     <TrendingDown className="h-5 w-5 text-amber-400 mt-0.5" />
                     <div className="flex-1">
-                      <h3 className="font-semibold text-amber-500/80 text-sm mb-2">Fed Rate Trajectory</h3>
+                      <h3 className="font-semibold text-amber-300 text-sm mb-2">Fed Rate Trajectory</h3>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
                           <span className="text-xs text-slate-400">Current Rate</span>
@@ -273,7 +273,7 @@ const TechLeadDashboard = () => {
                     transition={{ duration: 0.2, ease: "easeOut" }}
                     className="absolute top-full left-0 right-0 mt-2 p-4 bg-slate-800 border border-amber-500/30 rounded-lg shadow-2xl z-50"
                   >
-                    <h4 className="text-sm font-semibold text-amber-500/80 mb-3">Fed Rate Forecast Timeline</h4>
+                    <h4 className="text-sm font-semibold text-amber-300 mb-3">Fed Rate Forecast Timeline</h4>
                     <div className="space-y-2">
                       {fedRates.map((item, idx) => (
                         <motion.div
@@ -310,7 +310,7 @@ const TechLeadDashboard = () => {
                   <div className="flex items-start gap-3">
                     <Brain className="h-5 w-5 text-purple-400 mt-0.5" />
                     <div className="flex-1">
-                      <h3 className="font-semibold text-purple-400/70 text-sm mb-2">AI Timing Window</h3>
+                      <h3 className="font-semibold text-purple-300 text-sm mb-2">AI Timing Window</h3>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
                           <span className="text-xs text-slate-400">Agentic AI Maturity</span>
@@ -321,7 +321,7 @@ const TechLeadDashboard = () => {
                           <span className="text-sm font-bold text-amber-400">2-5 vuotta</span>
                         </div>
                         <p className="text-xs text-slate-400 mt-2">
-                          ⏰ <strong className="text-purple-400/70">Nyt tai ei koskaan:</strong> 2v sitten liian aikaista, 2v kuluttua liian myöhäistä
+                          ⏰ <strong className="text-purple-300">Nyt tai ei koskaan:</strong> 2v sitten liian aikaista, 2v kuluttua liian myöhäistä
                         </p>
                       </div>
                     </div>
@@ -339,7 +339,7 @@ const TechLeadDashboard = () => {
                     transition={{ duration: 0.2, ease: "easeOut" }}
                     className="absolute top-full left-0 right-0 mt-2 p-4 bg-slate-800 border border-purple-500/30 rounded-lg shadow-2xl z-50"
                   >
-                    <h4 className="text-sm font-semibold text-purple-400/70 mb-3">AI Adoption Metrics</h4>
+                    <h4 className="text-sm font-semibold text-purple-300 mb-3">AI Adoption Metrics</h4>
                     <div className="space-y-2">
                       {aiMetrics.map((item, idx) => (
                         <motion.div
@@ -376,7 +376,7 @@ const TechLeadDashboard = () => {
                     <div className="flex items-start gap-3">
                       <BarChart3 className="h-5 w-5 text-blue-400 mt-0.5" />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-blue-400/70 text-sm mb-2">AI Tech Stocks (Live)</h3>
+                        <h3 className="font-semibold text-blue-300 text-sm mb-2">AI Tech Stocks (Live)</h3>
                         <p className="text-xs text-slate-400">
                           📈 AI-investointien markkinavalidaatio jatkuu - instituutiot uskovat kasvuun
                         </p>
@@ -401,7 +401,7 @@ const TechLeadDashboard = () => {
                     transition={{ duration: 0.2, ease: "easeOut" }}
                     className="absolute top-full left-0 right-0 mt-2 p-4 bg-slate-800 border border-blue-500/30 rounded-lg shadow-2xl z-50"
                   >
-                    <h4 className="text-sm font-semibold text-blue-400/70 mb-3">Top AI Tech Stocks (Today)</h4>
+                    <h4 className="text-sm font-semibold text-blue-300 mb-3">Top AI Tech Stocks (Today)</h4>
                     <div className="grid grid-cols-2 gap-2">
                       {Object.entries(stockData).map(([symbol, data], idx) => (
                         <motion.div
@@ -440,17 +440,17 @@ const TechLeadDashboard = () => {
                 <Lightbulb className="h-6 w-6 text-yellow-400 mt-0.5" />
                 <div>
                   <h3 className="font-semibold text-white mb-2">Miksi Hummin pitää toimia nyt</h3>
-                  <div className="grid md:grid-cols-3 gap-4 text-sm text-slate-400">
+                  <div className="grid md:grid-cols-3 gap-4 text-sm text-slate-300">
                     <div>
-                      <p className="font-semibold text-blue-400/70 mb-1">1. Makrotalous tukee</p>
+                      <p className="font-semibold text-blue-300 mb-1">1. Makrotalous tukee</p>
                       <p className="text-xs">Korot laskevat → ROI paranee → helpompi perustella AI-investoinnit johdolle</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-purple-400/70 mb-1">2. Teknologia kypsä</p>
+                      <p className="font-semibold text-purple-300 mb-1">2. Teknologia kypsä</p>
                       <p className="text-xs">Agentic AI + n8n + OSS = kustannustehokas toteutus ilman isoa tiimiä</p>
                     </div>
                     <div>
-                      <p className="font-semibold text-emerald-400/70 mb-1">3. Kilpailuetu katoaa</p>
+                      <p className="font-semibold text-emerald-300 mb-1">3. Kilpailuetu katoaa</p>
                       <p className="text-xs">First-mover advantage: 2 vuoden päästä kaikki tekevät samaa → differentiaatio vaikeaa</p>
                     </div>
                   </div>
@@ -481,18 +481,18 @@ const TechLeadDashboard = () => {
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-                      <h4 className="font-semibold text-sm text-red-400/80">Nykytila</h4>
-                      <p className="text-3xl font-bold text-red-400/70">€40k</p>
+                      <h4 className="font-semibold text-sm text-red-400">Nykytila</h4>
+                      <p className="text-3xl font-bold text-red-300">€40k</p>
                       <p className="text-xs text-slate-400">€2.1M / 52 hlöä</p>
                     </div>
                     <div className="space-y-2 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-                      <h4 className="font-semibold text-sm text-green-400/80">Tavoite 2028</h4>
-                      <p className="text-3xl font-bold text-green-400/70">€192k</p>
+                      <h4 className="font-semibold text-sm text-green-400">Tavoite 2028</h4>
+                      <p className="text-3xl font-bold text-green-300">€192k</p>
                       <p className="text-xs text-slate-400">€10M / 52 hlöä</p>
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <h4 className="font-semibold text-sm text-blue-400/80">Miksi tämä mittari?</h4>
+                    <h4 className="font-semibold text-sm text-blue-400">Miksi tämä mittari?</h4>
                     <ul className="space-y-2 text-sm text-slate-300">
                       <li className="flex items-start">
                         <CheckCircle className="h-4 w-4 mr-2 mt-0.5 text-green-400 flex-shrink-0" />
@@ -513,7 +513,7 @@ const TechLeadDashboard = () => {
                     </ul>
                   </div>
                   <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                    <h4 className="font-semibold text-sm text-amber-500/70 mb-2">Benchmark: Epassi (€150M revenue)</h4>
+                    <h4 className="font-semibold text-sm text-amber-400 mb-2">Benchmark: Epassi (€150M revenue)</h4>
                     <p className="text-sm text-slate-300">
                       Suomalainen success story: digitaalisten palveluiden avulla €150M liikevaihto <strong className="text-white">ilman massiivista henkilöstökasvua</strong>.
                       Hummin roadmap noudattaa samaa kaavaa: automaatio → skaalautuvuus → korkea revenue/employee.
@@ -529,19 +529,19 @@ const TechLeadDashboard = () => {
             <div className="flex justify-center items-center gap-8 text-sm">
               <div className="space-y-1">
                 <p className="text-xs text-slate-500">Nykytila</p>
-                <p className="text-2xl font-bold text-red-400/70">€40k</p>
+                <p className="text-2xl font-bold text-red-400">€40k</p>
               </div>
               <ArrowRight className="h-8 w-8 text-slate-600" />
               <div className="space-y-1">
                 <p className="text-xs text-slate-500">Q4 2025 tavoite</p>
-                <p className="text-2xl font-bold text-amber-500/70">€76k</p>
-                <p className="text-xs text-green-400/80">+90%</p>
+                <p className="text-2xl font-bold text-amber-400">€76k</p>
+                <p className="text-xs text-green-400">+90%</p>
               </div>
               <ArrowRight className="h-8 w-8 text-slate-600" />
               <div className="space-y-1">
                 <p className="text-xs text-slate-500">2028 tavoite</p>
-                <p className="text-2xl font-bold text-green-400/70">€192k</p>
-                <p className="text-xs text-green-400/80">+380%</p>
+                <p className="text-2xl font-bold text-green-400">€192k</p>
+                <p className="text-xs text-green-400">+380%</p>
               </div>
               <div className="flex items-center gap-4 ml-6">
                 <select
@@ -606,9 +606,9 @@ const TechLeadDashboard = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-white">{metric.value}</span>
                       <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg ${
-                        metric.changeType === 'increase' ? 'bg-emerald-500/10 text-emerald-400/80' :
-                        metric.changeType === 'decrease' && metric.title === 'Customer Effort Score' ? 'bg-emerald-500/10 text-emerald-400/80' :
-                        metric.changeType === 'decrease' ? 'bg-red-500/10 text-red-400/80' : 'text-slate-400'
+                        metric.changeType === 'increase' ? 'bg-emerald-500/10 text-emerald-400' :
+                        metric.changeType === 'decrease' && metric.title === 'Customer Effort Score' ? 'bg-emerald-500/10 text-emerald-400' :
+                        metric.changeType === 'decrease' ? 'bg-red-500/10 text-red-400' : 'text-slate-400'
                       }`}>
                         {(metric.changeType === 'increase' || (metric.changeType === 'decrease' && metric.title === 'Customer Effort Score')) ?
                           <TrendingUp className="h-4 w-4" /> :
@@ -647,9 +647,9 @@ const TechLeadDashboard = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-bold text-white">{metric.value}</span>
                     <div className={`flex items-center space-x-1 ${
-                      metric.changeType === 'increase' ? 'text-emerald-400/80' :
-                      metric.changeType === 'decrease' && metric.title === 'Customer Effort Score' ? 'text-emerald-400/80' :
-                      metric.changeType === 'decrease' ? 'text-red-400/80' : 'text-slate-400'
+                      metric.changeType === 'increase' ? 'text-emerald-400' :
+                      metric.changeType === 'decrease' && metric.title === 'Customer Effort Score' ? 'text-emerald-400' :
+                      metric.changeType === 'decrease' ? 'text-red-400' : 'text-slate-400'
                     }`}>
                       {(metric.changeType === 'increase' || (metric.changeType === 'decrease' && metric.title === 'Customer Effort Score')) ?
                         <TrendingUp className="h-4 w-4" /> :
@@ -675,17 +675,17 @@ const TechLeadDashboard = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-emerald-400/70 mb-1">2.3</div>
+                  <div className="text-3xl font-bold text-emerald-400 mb-1">2.3</div>
                   <div className="text-sm text-slate-300">Customer Effort Score</div>
                   <div className="text-xs text-slate-400">↓18% parempi</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-400/70 mb-1">€1.85M</div>
+                  <div className="text-3xl font-bold text-blue-400 mb-1">€1.85M</div>
                   <div className="text-sm text-slate-300">Annual Recurring Revenue</div>
                   <div className="text-xs text-slate-400">+23.5%</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-cyan-400/70 mb-1">€118k</div>
+                  <div className="text-3xl font-bold text-cyan-400 mb-1">€118k</div>
                   <div className="text-sm text-slate-300">Revenue per Employee</div>
                   <div className="text-xs text-slate-400">+14.2% tehokkuus</div>
                 </div>
