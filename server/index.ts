@@ -3,9 +3,14 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeCache } from "./cache";
 
+// Validate required environment variables at startup
+if (!process.env.ANTHROPIC_API_KEY) {
+  console.warn('⚠️  WARNING: ANTHROPIC_API_KEY not set - AI chat functionality will be disabled');
+}
+
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();

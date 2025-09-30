@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Home from "@/pages/home";
 import ImpactAnalysis from "@/pages/impact-analysis";
-import Roadmap from "@/pages/roadmap";
+import StrategicRoadmap from "@/components/strategic-roadmap";
 import TechLeadCV from "@/pages/tech-lead-cv";
 import NotFound from "@/pages/not-found";
 
@@ -14,7 +14,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/impact-analysis" component={ImpactAnalysis} />
-      <Route path="/roadmap" component={Roadmap} />
+      <Route path="/roadmap" component={StrategicRoadmap} />
       <Route path="/tech-lead-cv" component={TechLeadCV} />
       <Route component={NotFound} />
     </Switch>

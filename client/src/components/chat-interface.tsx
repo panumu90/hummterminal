@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle, FileText, ExternalLink, BarChart3 } from "lucide-react";
+import { motion } from "framer-motion";
+import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle, FileText, ExternalLink, BarChart3, Rocket } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation } from "@tanstack/react-query";
@@ -37,6 +38,239 @@ interface TopicArea {
   color: string;
   questions: QuestionButton[];
 }
+
+// Pre-written responses for quick questions (no API call)
+const preWrittenResponses: Record<string, string> = {
+  "roi-measurement": `**AI-investoinnin ROI asiakaspalvelussa - Konkreettinen mittaaminen**
+
+Humm Group voi mitata AI-investoinnin arvoa näillä keskeisillä mittareilla:
+
+### 📊 **Suorat kustannussäästöt**
+- **Henkilöstökustannukset**: 20-30% vähennys manuaalisen työn automatisoinnin myötä
+- **Skaalautuvuus**: 3x liikevaihdon kasvu ilman lineaarista henkilöstölisäystä
+- **Nykytila**: €2.1M / 52 hlöä = €40k/hlö → **Tavoite**: €10M / 52 hlöä = €192k/hlö
+
+### ⚡ **Tehokkuushyödyt**
+- **Vastausaika**: Keskimäärin 4-6h → alle 30 sekuntia (AI-hoidetut)
+- **First Response Time (FRT)**: -85% parannus
+- **Tikettien käsittelyaika**: -40-60% kun AI esikäsittelee ja luokittelee
+- **Säästetty aika**: 20-25h/viikko per tiimi
+
+### 😊 **Asiakaskokemuksen parannus**
+- **CSAT-pistemäärä**: Nykytila 7.2/10 → Tavoite 8.5-9.0/10
+- **Customer Effort Score (CES)**: -30% (helpompi asioida)
+- **Churn-rate**: -15-20% proaktiivisella asiakaspalvelulla
+- **Upsell-mahdollisuudet**: +25% AI-avusteisen personoinnin kautta
+
+### 🎯 **Mitattava ROI-laskenta (Hummille)**
+**Investointi vuosi 1:**
+- Open source -pohjaiset ratkaisut (n8n, Mistral, Langchain): €0 lisenssit
+- Kehitys + toteutus: €50-75k (oma työ tai konsultointi)
+- Infrastruktuuri (pilvi): €10-15k/v
+
+**Säästöt vuosi 1:**
+- Henkilöstökustannukset: €80-120k (automaatio korvaa 1.5-2 FTE:tä)
+- Prosessitehokkuus: €30-50k (nopeutunut käsittely)
+- Churn-väheneminen: €40-60k (asiakkaiden pysyvyys)
+
+**➡️ ROI vuosi 1: 150-280% (payback 4-8 kuukautta)**
+**➡️ ROI 3 vuotta: 400-600%**
+
+### 📈 **Seurantakojelauta johdolle**
+1. **Revenue per Employee**: THE KPI teknologiajohdolle
+2. **AI Automation Rate**: Kuinka suuri % tiketeistä hoidetaan täysin automaattisesti
+3. **Cost per Ticket**: Yhden tiketin käsittelyn todellinen kustannus
+4. **Customer Lifetime Value (CLV)**: AI:n vaikutus asiakkaiden elinkaariarvoon`,
+
+  "cx-trends-2025": `**2025 suurimmat CX-trendit ja AI:n rooli**
+
+### 🎯 **1. Hyperpersonointi (Hyper-personalization)**
+- **Mitä**: Jokaiselle asiakkaalle räätälöity kokemus reaaliajassa
+- **AI:n rooli**: Analysoi asiakkaan historian, käyttäytymisen ja kontekstin → personoidut suositukset
+- **Humm-esimerkki**: AI tunnistaa, että asiakas X avaa aina tiketit maanantaiaamuisin klo 8-9 → proaktiivinen viesti sunnuntai-iltana: "Hei! Huomasimme, että tavallisesti tarvitset apua maanantaiaamuisin. Tässä pikaohjeet..."
+
+### ⚡ **2. Proaktiivinen asiakaspalvelu**
+- **Mitä**: Asiakaspalvelu ottaa yhteyttä ennen kuin asiakas huomaa ongelman
+- **AI:n rooli**: Ennakoiva analytiikka (predictive analytics) + automaattiset hälytykset
+- **Humm-esimerkki**: AI havaitsee, että asiakkaan järjestelmässä on epänormaali virhelokin kasvu → lähettää proaktiivisen viestin ja korjausohjeet ennen kuin asiakas ilmoittaa ongelmasta
+
+### 🤖 **3. Agentic AI (Itsenäiset AI-agentit)**
+- **Mitä**: AI-agentit, jotka osaavat ratkaista monimutkaisempia ongelmia itsenäisesti
+- **Ero chatbottiin**: Chatbot vastaa kysymyksiin | AI-agentti tekee toimenpiteitä (luo tikettejä, päivittää CRM:ää, aloittaa prosesseja)
+- **Humm-esimerkki**: Asiakkaan laskutusongelma → AI-agentti tarkistaa CRM:n, havaitsee virheellisen laskun, korjaa sen automaattisesti ja ilmoittaa asiakkaalle
+
+### 🔮 **4. Ennustava asiakaskokemus (Predictive CX)**
+- **Mitä**: AI ennustaa asiakkaiden tarpeita ennen kuin he itse tietävät
+- **AI:n rooli**: Koneoppimismallit analysoivat historiaa ja käyttäytymistä
+- **Humm-esimerkki**: AI havaitsee kuvion: "Asiakkaat, jotka käyttävät ominaisuutta Y, tarvitsevat 80% todennäköisyydellä apua ominaisuudessa Z 3 päivän sisällä" → proaktiivinen ohjeistus
+
+### 🎤 **5. Multimodaalinen asiakaspalvelu**
+- **Mitä**: Asiakkaat voivat vaihtaa kanavaa kesken keskustelun (chat → puhelin → email) ilman toistamista
+- **AI:n rooli**: Yhtenäinen kontekstin hallinta + puheentunnistus (ASR) + sentimenttianalyysi
+- **Humm-esimerkki**: Asiakas aloittaa chatissa, AI havaitsee turhautumisen sentimenttianalyysilla → tarjoaa puhelinsoiton + siirtää kaikki tiedot agentille automaattisesti
+
+### 🛡️ **6. Privacy-First AI (Tietosuojakeskeinen AI)**
+- **Mitä**: Asiakkaat vaativat läpinäkyvyyttä siitä, mitä AI tekee heidän datalleen
+- **AI:n rooli**: Selittävä AI (Explainable AI) + MCP-protokolla turvallisiin integraatioihin
+- **Humm-esimerkki**: AI:n jokaisen vastauksen yhteydessä näkyy: "Hain tietoa CRM:stä (asiakastiedot), ERP:stä (tilausstatus), ja tukikannasta (ratkaisuhistoria)"
+
+### 📊 **Hummin toimenpiteet 2025**
+✅ **Q1 2025**: Hyperpersonointi käyttöön (segmenttikohtaiset AI-mallit)
+✅ **Q2 2025**: Proaktiivinen asiakaspalvelu (ennakoivat hälytykset)
+✅ **Q3 2025**: Agentic AI (itsenäiset AI-agentit tikettien käsittelyyn)
+✅ **Q4 2025**: Multimodaalinen CX (chat + puhelin + email yhtenäisesti)`,
+
+  "cx-trends-2025-featured": `**2025 suurimmat CX-trendit ja AI:n rooli**
+
+### 🎯 **1. Hyperpersonointi (Hyper-personalization)**
+- **Mitä**: Jokaiselle asiakkaalle räätälöity kokemus reaaliajassa
+- **AI:n rooli**: Analysoi asiakkaan historian, käyttäytymisen ja kontekstin → personoidut suositukset
+- **Humm-esimerkki**: AI tunnistaa, että asiakas X avaa aina tiketit maanantaiaamuisin klo 8-9 → proaktiivinen viesti sunnuntai-iltana: "Hei! Huomasimme, että tavallisesti tarvitset apua maanantaiaamuisin. Tässä pikaohjeet..."
+
+### ⚡ **2. Proaktiivinen asiakaspalvelu**
+- **Mitä**: Asiakaspalvelu ottaa yhteyttä ennen kuin asiakas huomaa ongelman
+- **AI:n rooli**: Ennakoiva analytiikka (predictive analytics) + automaattiset hälytykset
+- **Humm-esimerkki**: AI havaitsee, että asiakkaan järjestelmässä on epänormaali virhelokin kasvu → lähettää proaktiivisen viestin ja korjausohjeet ennen kuin asiakas ilmoittaa ongelmasta
+
+### 🤖 **3. Agentic AI (Itsenäiset AI-agentit)**
+- **Mitä**: AI-agentit, jotka osaavat ratkaista monimutkaisempia ongelmia itsenäisesti
+- **Ero chatbottiin**: Chatbot vastaa kysymyksiin | AI-agentti tekee toimenpiteitä (luo tikettejä, päivittää CRM:ää, aloittaa prosesseja)
+- **Humm-esimerkki**: Asiakkaan laskutusongelma → AI-agentti tarkistaa CRM:n, havaitsee virheellisen laskun, korjaa sen automaattisesti ja ilmoittaa asiakkaalle
+
+### 🔮 **4. Ennustava asiakaskokemus (Predictive CX)**
+- **Mitä**: AI ennustaa asiakkaiden tarpeita ennen kuin he itse tietävät
+- **AI:n rooli**: Koneoppimismallit analysoivat historiaa ja käyttäytymistä
+- **Humm-esimerkki**: AI havaitsee kuvion: "Asiakkaat, jotka käyttävät ominaisuutta Y, tarvitsevat 80% todennäköisyydellä apua ominaisuudessa Z 3 päivän sisällä" → proaktiivinen ohjeistus
+
+### 🎤 **5. Multimodaalinen asiakaspalvelu**
+- **Mitä**: Asiakkaat voivat vaihtaa kanavaa kesken keskustelun (chat → puhelin → email) ilman toistamista
+- **AI:n rooli**: Yhtenäinen kontekstin hallinta + puheentunnistus (ASR) + sentimenttianalyysi
+- **Humm-esimerkki**: Asiakas aloittaa chatissa, AI havaitsee turhautumisen sentimenttianalyysilla → tarjoaa puhelinsoiton + siirtää kaikki tiedot agentille automaattisesti
+
+### 🛡️ **6. Privacy-First AI (Tietosuojakeskeinen AI)**
+- **Mitä**: Asiakkaat vaativat läpinäkyvyyttä siitä, mitä AI tekee heidän datalleen
+- **AI:n rooli**: Selittävä AI (Explainable AI) + MCP-protokolla turvallisiin integraatioihin
+- **Humm-esimerkki**: AI:n jokaisen vastauksen yhteydessä näkyy: "Hain tietoa CRM:stä (asiakastiedot), ERP:stä (tilausstatus), ja tukikannasta (ratkaisuhistoria)"
+
+### 📊 **Hummin toimenpiteet 2025**
+✅ **Q1 2025**: Hyperpersonointi käyttöön (segmenttikohtaiset AI-mallit)
+✅ **Q2 2025**: Proaktiivinen asiakaspalvelu (ennakoivat hälytykset)
+✅ **Q3 2025**: Agentic AI (itsenäiset AI-agentit tikettien käsittelyyn)
+✅ **Q4 2025**: Multimodaalinen CX (chat + puhelin + email yhtenäisesti)`,
+
+  "reduce-manual-work": `**Automaation vaikutus manuaalisen työn vähentämiseen**
+
+### 🎯 **Hummin nykytilanne**
+- **60-70% kustannuksista = henkilöstökulut**
+- **52 työntekijää, €2.1M liikevaihto** → €40k/hlö (alhainen tehokkuus)
+- **Manuaaliset työvaiheet**: Tikettien luku, luokittelu, reititys, vastausten kirjoittaminen, seuranta
+
+### ⚡ **AI-automaation vaikutus**
+
+#### **1. Tikettien esikäsittely (15-20h/viikko säästöä)**
+- **Ennen**: Agentti lukee tiketin, ymmärtää kontekstin, etsii relevantin tiedon
+- **AI:n jälkeen**: AI lukee, luokittelee, ja reititys automaattisesti + esitäyttää vastausluonnoksen
+- **Säästö**: 5-10 min/tiketti × 200 tiketti/viikko = **16-33 tuntia/viikko**
+
+#### **2. One-click-send vastaukset (10-15h/viikko säästöä)**
+- **Ennen**: Agentti kirjoittaa vastauksen tyhjästä, tarkistaa oikeinkirjoituksen, formatoi
+- **AI:n jälkeen**: AI luo valmiin vastausluonnoksen → agentti tarkistaa ja klikkaa "Lähetä"
+- **Säästö**: 10-15 min/tiketti × 100 tiketti/viikko = **16-25 tuntia/viikko**
+
+#### **3. Itsenäinen AI-agentti (20-30h/viikko säästöä)**
+- **Ennen**: Kaikki tiketit vaativat ihmisen
+- **AI:n jälkeen**: 40-60% tiketeistä hoidetaan täysin automaattisesti (esim. "Salasanan nollaus", "Tilausstatus", "Laskun kopio")
+- **Säästö**: 200 tiketti/viikko × 50% automaatio × 15 min = **25 tuntia/viikko**
+
+#### **4. Proaktiivinen viestintä (5-10h/viikko säästöä)**
+- **Ennen**: Asiakkaat lähettävät tikettejä ongelmista
+- **AI:n jälkeen**: AI havaitsee ongelmat etukäteen ja lähettää ratkaisut ennen tikettejä
+- **Säästö**: -20% tikettien määrä = **10-15 tuntia/viikko**
+
+### 📊 **Yhteensä: 50-80 tuntia/viikko säästöä**
+= **2-3 FTE:n verran työtä** ilman henkilöstölisäystä
+
+### 💰 **Taloudelliset hyödyt Hummille**
+- **Henkilöstökustannussäästö**: €80-120k/vuosi (2-3 FTE × €40k)
+- **Skaalautuvuus**: Voidaan kasvattaa liikevaihtoa €2.1M → €10M ilman vastaavaa henkilöstölisäystä
+- **Revenue per Employee**: €40k → €192k (4.8x parannus)
+
+### ✅ **Toteutus Hummille (Open Source -pohjainen)**
+1. **n8n**: Low-code automaatioalusta (€0 lisenssit)
+2. **Mistral 7B / Llama 3**: Open source LLM:t (€0 lisenssit)
+3. **Langchain**: AI-integraatiokehys (€0 lisenssit)
+4. **Toteutusaika**: 4-8 viikkoa ensimmäisiin tuloksiin
+5. **Kustannus**: €50-75k kehitys + €10-15k/v infrastruktuuri
+
+**➡️ ROI vuosi 1: 150-280%**`,
+
+  "data-quality": `**Asiakastiedon laatu ja suojaaminen AI-projekteissa**
+
+### 🛡️ **Tietosuojan 3 pilaria**
+
+#### **1. Model Context Protocol (MCP) - TÄRKEÄ!**
+- **Mitä**: Avoin standardi, joka määrittelee miten AI pääsee käsiksi yritysjärjestelmiin
+- **Hyöty**: AI saa vain tarvitsemansa tiedot, ei kaikkea
+- **Humm-esimerkki**: AI-agentti voi hakea *yhden asiakkaan* tiedot CRM:stä, ei kaikkien asiakkaiden tietoja
+
+#### **2. Roolipohjainen pääsy (RBAC)**
+- **Mitä**: Jokainen AI-agentti saa vain ne oikeudet, jotka sen tehtävän hoitamiseen tarvitaan
+- **Periaate**: *Vähimmän oikeuden periaate* (Principle of Least Privilege)
+- **Humm-esimerkki**: Tikettien luokitteluagentti voi *lukea* tikettejä, mutta ei *poistaa* tai *muokata* asiakastietoja
+
+#### **3. Audit-jäljet ja läpinäkyvyys**
+- **Mitä**: Kaikki AI:n toiminnot kirjataan lokiin
+- **Hyöty**: GDPR-vaatimustenmukaisuus + jälkikäteen tarkastettavissa
+- **Humm-esimerkki**: "AI-agentti X haki asiakkaan Y osoitetiedot CRM:stä 21.9.2025 klo 14:05 käyttäjän Z pyynnöstä"
+
+### 📊 **Asiakastiedon laadun varmistaminen**
+
+#### **A. Datan validointi**
+- **Automaattinen tarkistus**: AI tarkistaa, että asiakkaan sähköposti on oikeassa muodossa, puhelinnumero on validi, jne.
+- **Duplikaattien esto**: AI havaitsee, jos sama asiakas yrittää luoda useita tilejä
+
+#### **B. Datan rikastaminen (Data Enrichment)**
+- **AI täydentää puuttuvat tiedot**: Esim. yrityksen koko, toimiala, sijainti → haetaan julkisista lähteistä
+- **Segmentointi**: AI luokittelee asiakkaat automaattisesti (esim. "Enterprise", "SME", "Startup")
+
+#### **C. Datan siistiminen (Data Cleaning)**
+- **AI poistaa virheelliset tiedot**: Esim. testikäyttäjät, botit, duplikaatit
+- **Yhdenmukaistaminen**: "Oy", "OY", "Oyj" → "Oy" (yhtenäinen formaatti)
+
+### 🔐 **GDPR-vaatimustenmukaisuus**
+
+#### **1. Tietojen minimointi**
+- **Periaate**: AI käsittelee vain *välttämättömät* tiedot
+- **Humm-esimerkki**: Jos AI tarvitsee asiakkaan nimen ja sähköpostin, se ei hae myös puhelinnumeroa ja osoitetta
+
+#### **2. Tietojen säilytysaika**
+- **Periaate**: AI:n käsittelemä data poistetaan, kun sitä ei enää tarvita
+- **Humm-esimerkki**: Chat-keskustelun historia säilytetään 30 päivää, sen jälkeen pseudonymisoidaan tai poistetaan
+
+#### **3. Oikeus tietojen poistamiseen**
+- **Periaate**: Asiakas voi pyytää tietojensa poistamista → AI:n pitää "unohtaa" nämä tiedot
+- **Tekninen toteutus**: AI-mallit eivät tallenna henkilötietoja pysyvästi (vain viittaukset tietokantaan)
+
+### ✅ **Hummin toteutus**
+
+**Open source -ratkaisut tietoturvaan:**
+1. **Cerbos**: MCP-pohjainen pääsynhallinta (€0 lisenssit)
+2. **Keycloak**: Autentikointi ja roolipohjainen pääsy (€0 lisenssit)
+3. **InfluxDB**: Audit-lokien tallentamiseen (€0 lisenssit)
+4. **Vault**: Salasanojen ja API-avainten turvallinen säilytys (€0 lisenssit)
+
+**Aikataulu:**
+- **Viikko 1-2**: MCP-arkkitehtuurin suunnittelu
+- **Viikko 3-4**: RBAC ja audit-lokien toteutus
+- **Viikko 5-6**: GDPR-vaatimusten tarkistus + dokumentointi
+
+**Kustannus:** €15-25k (kertaluonteinen) + €5-10k/v ylläpito
+
+### 🎯 **Lopputulos**
+✅ **66% asiakkaista huolissaan AI-tietosuojasta** → Humm erottuu kilpailijoista läpinäkyvyydellä
+✅ **GDPR-valmiudet kunnossa** → ei sakkoja tai mainehaittaa
+✅ **Asiakasluottamus säilyy** → churn-rate alas, CLV ylös`
+};
 
 // MCP (Model Context Protocol) - TÄRKEÄ!
 const mcpQuestions: QuestionButton[] = [
@@ -377,12 +611,12 @@ const contextConfig = {
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      content: "Moro Hummilaiset. Tähän chattiin on integroitu Googlen uusin Gemini 2.5 pro tekoäly ja sitä on koulutettu vastaamaan teidän mieltä askarruttaviin kysymyksiin tekoälyn implementoinnista liiketoimintaan. Feel free to ask anything",
+      content: "**Tervetuloa Hummin Johdon Co-Pilotiin!** 🚀\n\nOlen proaktiivinen AI-assistentti, joka on suunniteltu tukemaan Humm Groupin johtoa strategisessa päätöksenteossa, taloudellisessa analyysissa ja AI-implementaatiossa.\n\n**Mitä voin tehdä sinulle:**\n- 📊 Analysoida taloudellisia lukuja ja KPI:ta (liikevaihto, käyttökate, kannattavuus)\n- 🎯 Tarjota strategisia suosituksia perustuen dataan ja benchmarkeihin\n- 🤖 Auttaa AI-implementaation suunnittelussa ja priorisoinnissa\n- 🔒 Neuvoa MCP-protokollassa ja tietoturva-asioissa\n- 💡 Tunnistaa mahdollisuuksia ja riskejä proaktiivisesti",
       isUser: false,
       timestamp: Date.now()
     },
     {
-      content: "Alla on tekoälyyn liittyviä keskeisiä teemoja, käsitteitä ja niihin liittyviä teemoja. Klikkaa esimerkiksi MCP-aiheista kysymystä, niin sinulle avautuu keskustelumuotoinen infopläjäys, jossa voit chattailla mun datan kanssa",
+      content: "Alla olevista teemoista löydät valmiita kysymyksiä eri aihepiireistä. Voit myös kirjoittaa oman kysymyksesi suoraan - olen koulutettu ymmärtämään Hummin liiketoimintaa, taloudellista tilannetta ja kehitystarpeita syvällisesti.",
       isUser: false,
       timestamp: Date.now() + 1
     }
@@ -481,14 +715,14 @@ export function ChatInterface() {
       ...topicAreas.flatMap(topic => topic.questions)
     ];
     const question = allQuestions.find(q => q.id === questionId);
-    
+
     if (question) {
       // Determine context based on question category
       const isMcpQuestion = question.id.includes('mcp-') || question.question.toLowerCase().includes('mcp');
-      const contextType = isMcpQuestion ? 'mcp' : 
+      const contextType = isMcpQuestion ? 'mcp' :
                          question.category.includes('roi') || question.category.includes('strategy') ? 'strategic' :
                          question.category.includes('automation') || question.category.includes('practical') ? 'practical' : 'general';
-      
+
       // Set up modal with initial user message
       setCurrentQuestion(question.question);
       setCurrentQuestionContext(contextType);
@@ -500,11 +734,60 @@ export function ChatInterface() {
       setModalInputValue("");
       setModalFollowUpSuggestions([]);
       setAiModalOpen(true);
-      
+
       console.log("Question clicked:", question.question, "ID:", question.id, "Context:", contextType);
-      // Use modal mutation to get initial response
-      modalChatMutation.mutate({ message: question.question, context_type: contextType });
+
+      // Check if we have a pre-written response
+      if (preWrittenResponses[questionId]) {
+        // Use pre-written response with streaming effect
+        simulateStreamingResponse(preWrittenResponses[questionId]);
+      } else {
+        // Fall back to API call for questions without pre-written responses
+        modalChatMutation.mutate({ message: question.question, context_type: contextType });
+      }
     }
+  };
+
+  // Simulate streaming text effect for pre-written responses
+  const simulateStreamingResponse = (fullResponse: string) => {
+    // Add empty AI message that will be filled character by character
+    setModalMessages(prev => [...prev, {
+      content: "",
+      isUser: false,
+      timestamp: Date.now()
+    }]);
+
+    let currentIndex = 0;
+    const charsPerTick = 15; // Characters to add per interval (faster than real streaming)
+
+    const interval = setInterval(() => {
+      currentIndex += charsPerTick;
+
+      if (currentIndex >= fullResponse.length) {
+        // Streaming complete
+        clearInterval(interval);
+        setModalMessages(prev => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1] = {
+            content: fullResponse,
+            isUser: false,
+            timestamp: Date.now()
+          };
+          return newMessages;
+        });
+      } else {
+        // Update with partial content
+        setModalMessages(prev => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1] = {
+            content: fullResponse.substring(0, currentIndex),
+            isUser: false,
+            timestamp: Date.now()
+          };
+          return newMessages;
+        });
+      }
+    }, 30); // 30ms interval for smooth streaming effect
   };
 
   const toggleExpanded = () => {
@@ -683,8 +966,8 @@ export function ChatInterface() {
               <Bot className="h-4 w-4" />
             </div>
             <div>
-              <h3 className="text-base font-semibold" data-testid="chat-title">AI Chat</h3>
-              <p className="text-xs opacity-90">Johdon kysymykset</p>
+              <h3 className="text-base font-semibold" data-testid="chat-title">Hummin Johdon Co-Pilot</h3>
+              <p className="text-xs opacity-90">Proaktiivinen AI-assistentti strategiseen päätöksentekoon</p>
             </div>
           </div>
           <Button
@@ -1432,6 +1715,123 @@ export function ChatInterface() {
               <span className="text-sm text-muted-foreground">Saatavuus</span>
               <span className="font-semibold text-foreground" data-testid="stat-availability">24/7</span>
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Contact CTA - Sophisticated Recruitment Actions */}
+      <Card className="mt-6 bg-gradient-to-br from-blue-900/30 via-purple-900/20 to-slate-900/40 border-blue-500/30" data-testid="contact-cta">
+        <CardContent className="p-6">
+          <div className="text-center mb-4">
+            <h4 className="text-lg font-bold text-white mb-2">Kiinnostuitko?</h4>
+            <p className="text-sm text-slate-300">
+              Haluatko keskustella Tech Lead -roolista tai AI-strategiasta tarkemmin?
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Email Contact Button */}
+            <motion.a
+              href="mailto:your.email@example.com?subject=Tech Lead -rooli Humm Groupissa&body=Hei,%0D%0A%0D%0ATämä portfolio-demo vaikutti mielenkiintoiselta. Haluaisin keskustella lisää Tech Lead -roolista ja AI-strategiasta.%0D%0A%0D%0ATerveisin,"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="block"
+            >
+              <Card className="h-full bg-gradient-to-br from-blue-600 to-blue-700 border-blue-400/50 hover:border-blue-300 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-blue-500/50">
+                <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-3">
+                    <MessageCircle className="h-6 w-6 text-white" />
+                  </div>
+                  <h5 className="font-semibold text-white mb-1">Lähetä viesti</h5>
+                  <p className="text-xs text-blue-100">
+                    Avaa sähköposti ja kerro lisää tarpeistanne
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.a>
+
+            {/* Job Offer Button with Confetti */}
+            <motion.button
+              onClick={() => {
+                // Trigger confetti animation
+                const duration = 3 * 1000;
+                const animationEnd = Date.now() + duration;
+                const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                function randomInRange(min: number, max: number) {
+                  return Math.random() * (max - min) + min;
+                }
+
+                const interval: any = setInterval(function() {
+                  const timeLeft = animationEnd - Date.now();
+
+                  if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                  }
+
+                  const particleCount = 50 * (timeLeft / duration);
+
+                  // Create confetti effect using emoji particles
+                  const confettiElement = document.createElement('div');
+                  confettiElement.innerHTML = '🎉';
+                  confettiElement.style.position = 'fixed';
+                  confettiElement.style.fontSize = '24px';
+                  confettiElement.style.left = `${randomInRange(0, 100)}%`;
+                  confettiElement.style.top = `${randomInRange(0, 50)}%`;
+                  confettiElement.style.opacity = '0';
+                  confettiElement.style.transition = 'all 1s ease-out';
+                  confettiElement.style.pointerEvents = 'none';
+                  confettiElement.style.zIndex = '9999';
+                  document.body.appendChild(confettiElement);
+
+                  setTimeout(() => {
+                    confettiElement.style.opacity = '1';
+                    confettiElement.style.transform = `translate(${randomInRange(-200, 200)}px, ${randomInRange(100, 400)}px) rotate(${randomInRange(0, 360)}deg)`;
+                  }, 10);
+
+                  setTimeout(() => {
+                    confettiElement.remove();
+                  }, 1000);
+                }, 250);
+
+                // Show success toast
+                toast({
+                  title: "🎊 Erinomainen valinta!",
+                  description: "Otan yhteyttä sinuun pian. Kiitos mielenkiinnosta!",
+                  duration: 5000,
+                });
+              }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full"
+            >
+              <Card className="h-full bg-gradient-to-br from-emerald-600 to-emerald-700 border-emerald-400/50 hover:border-emerald-300 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-emerald-500/50">
+                <CardContent className="p-4 flex flex-col items-center justify-center text-center h-full">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-3 relative">
+                    <Rocket className="h-6 w-6 text-white" />
+                    <motion.div
+                      className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full"
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    />
+                  </div>
+                  <h5 className="font-semibold text-white mb-1">Tee työtarjous</h5>
+                  <p className="text-xs text-emerald-100">
+                    Aloitetaan yhteistyö heti! 🚀
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.button>
+          </div>
+
+          {/* Additional Info */}
+          <div className="mt-4 pt-4 border-t border-slate-700/50 text-center">
+            <p className="text-xs text-slate-400">
+              <span className="font-medium text-slate-300">Odotan innolla</span> mahdollisuutta viedä Hummin AI-strategiaa eteenpäin
+            </p>
+            <p className="text-xs text-slate-500 mt-1">
+              📍 Helsinki | 💼 Tech Lead | 🤖 AI-strategia | 🔐 MCP-ekspertti
+            </p>
           </div>
         </CardContent>
       </Card>

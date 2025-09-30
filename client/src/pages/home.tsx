@@ -282,18 +282,14 @@ export default function Home() {
 
   return (
     <div className="bg-slate-900 text-white font-sans min-h-screen flex flex-col">
-      {/* Netflix-style Header */}
-      <header className="bg-slate-800/95 border-b border-slate-700 sticky top-0 z-50 shadow-lg backdrop-blur-sm animate-in fade-in-0 duration-700">
+      {/* Minimalistic Header */}
+      <header className="bg-slate-900/95 border-b border-slate-700/50 sticky top-0 z-50 shadow-sm backdrop-blur-sm">
         <div className="max-w-none mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-18">
-            <div className="flex items-center space-x-3 lg:space-x-4 animate-in slide-in-from-left-4 duration-500">
-              <HummAILogo />
-            </div>
-            <div className="flex items-center space-x-4 lg:space-x-6">
-              <div className="text-xs lg:text-sm text-slate-400 flex items-center space-x-2">
-                <Building className="h-3 w-3 lg:h-4 lg:w-4" />
-                <span className="hidden sm:inline">Sisäinen käyttö</span>
-              </div>
+          <div className="flex items-center justify-center h-14">
+            <div className="text-center">
+              <h1 className="text-base font-semibold text-slate-200 tracking-wide">
+                HUMM Group Oy - Johdon terminaali
+              </h1>
             </div>
           </div>
         </div>
@@ -305,11 +301,11 @@ export default function Home() {
         <div className="w-full lg:w-[35%] bg-slate-800 lg:border-r border-slate-700 flex flex-col min-h-0">
           <div className="px-4 sm:px-6 lg:px-6 py-4 lg:py-5 border-b border-slate-700">
             <div className="flex items-center space-x-3 mb-2">
-              <Bot className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400" />
-              <h2 className="text-lg lg:text-xl font-semibold text-white">AI Assistentti</h2>
+              <Rocket className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400" />
+              <h2 className="text-lg lg:text-xl font-semibold text-white">Johdon Co-Pilot</h2>
             </div>
             <p className="text-slate-300 text-xs lg:text-sm">
-              Räätälöidyt vastaukset johdolle
+              Proaktiivinen strateginen assistentti Hummin johdolle
             </p>
           </div>
           <div className="flex-1 min-h-0 overflow-hidden">
@@ -330,7 +326,7 @@ export default function Home() {
                     </TabsTrigger>
                     <TabsTrigger value="dashboard" className="data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm text-slate-300 data-[state=active]:text-white">
                       <Activity className="h-4 w-4 mr-2" />
-                      Performance
+                      Tech Lead
                     </TabsTrigger>
                     <TabsTrigger value="roadmap" className="data-[state=active]:bg-slate-600 data-[state=active]:shadow-sm text-slate-300 data-[state=active]:text-white">
                       <Rocket className="h-4 w-4 mr-2" />
@@ -350,7 +346,7 @@ export default function Home() {
                     </div>
                   ) : activeView === 'dashboard' ? (
                     <div>
-                      <h2 className="text-lg lg:text-xl font-semibold text-white">Tech Lead Performance Dashboard</h2>
+                      <h2 className="text-lg lg:text-xl font-semibold text-white">Tech Lead Dashboard</h2>
                       <p className="text-slate-300 text-xs lg:text-sm mt-1">Reaaliaikainen seuranta ja liiketoimintavaikutusten mittarit</p>
                     </div>
                   ) : activeView === 'news' ? (
