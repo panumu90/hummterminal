@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import {
   DndContext,
@@ -670,7 +671,7 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
             <Target className="w-4 h-4 text-blue-400" />
             <span className="text-sm text-slate-300">Strategic Roadmap</span>
           </div>
-          <div className="flex-1 flex justify-end gap-2">
+          <div className="flex-1 flex flex-col items-end gap-2">
             <Button
               onClick={() => setIsEditMode(!isEditMode)}
               size="sm"
@@ -679,24 +680,18 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
             >
               {isEditMode ? "💾 Tallenna" : "✏️ Muokkaa"}
             </Button>
-          </div>
-        </div>
-        
-        {/* Secret Ace Button */}
-        <div className="flex justify-center mb-4">
-          <Button
-            onClick={() => setSecretModalOpen(true)}
-            size="lg"
-            className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 hover:from-purple-700 hover:via-pink-700 hover:to-red-700 text-white font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 animate-shimmer"
-            data-testid="secret-ace-button"
-          >
-            <span className="relative z-10 flex items-center gap-3">
-              <Star className="w-5 h-5 animate-pulse" />
+            
+            <Button
+              onClick={() => setSecretModalOpen(true)}
+              size="sm"
+              variant="outline"
+              className="group relative overflow-hidden border-purple-500/40 hover:border-purple-400/60 bg-purple-900/10 hover:bg-purple-900/20 text-purple-300 hover:text-purple-200 transition-all duration-200"
+              data-testid="secret-ace-button"
+            >
+              <Star className="w-3 h-3 mr-1.5" />
               Vielä yksi ässä hihassa
-              <Star className="w-5 h-5 animate-pulse" />
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-          </Button>
+            </Button>
+          </div>
         </div>
         
         <h1 className="text-3xl font-bold text-slate-100">
