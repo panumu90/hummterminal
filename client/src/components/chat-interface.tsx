@@ -204,6 +204,319 @@ Humm Group voi mitata AI-investoinnin arvoa näillä keskeisillä mittareilla:
 
 **➡️ ROI vuosi 1: 150-280%**`,
 
+  "mcp-what-is": `**Model Context Protocol (MCP) - AI:n turvallinen integraatiostandardi**
+
+### 🎯 **Mikä on MCP?**
+
+**Model Context Protocol (MCP)** on Anthropicin kehittämä **avoin standardi**, joka määrittelee turvallisen tavan yhdistää AI-mallit (kuten Claude, GPT-4) yrityksen sisäisiin järjestelmiin (CRM, ERP, tietokannat).
+
+### 🔐 **Miksi MCP on tärkeä?**
+
+#### **Ongelma ilman MCP:tä:**
+- AI-mallit tarvitsevat pääsyn yrityksen dataan ollakseen hyödyllisiä
+- Perinteisesti: API-avaimet jaetaan suoraan AI-mallille → **turvallisuusriski**
+- AI voi vahingossa päästä käsiksi kaikkiin tietoihin, ei vain tarvittaviin
+
+#### **Ratkaisu MCP:llä:**
+- **Rajattu pääsy**: AI saa vain ne tiedot, jotka se tarvitsee kyseiseen tehtävään
+- **Audit-jäljet**: Kaikki AI:n pyynnöt kirjataan lokiin
+- **Roolipohjainen käyttöoikeus**: AI-agentilla on määritelty rooli (esim. "ticket_reader", "crm_writer")
+
+### 📊 **Käytännön esimerkki (Humm Group)**
+
+#### **Ilman MCP:tä (vanha tapa):**
+- Asiakas kysyy: "Mikä on tilauksen #12345 status?"
+- AI saa pääsyn koko CRM-tietokantaan
+- AI voi vahingossa lukea kaikkien asiakkaiden tiedot
+- Turvallisuusriski + GDPR-ongelma
+
+#### **MCP:llä (turvallinen tapa):**
+- Asiakas kysyy: "Mikä on tilauksen #12345 status?"
+- AI pyytää MCP:n kautta: "Hae tilaus #12345"
+- MCP tarkistaa: Onko AI:lla oikeus?
+- MCP palauttaa vain tilauksen #12345 tiedot
+- Loki: "AI-agentti haki tilauksen #12345 klo 14:05"
+
+### 🛡️ **MCP:n turvallisuusominaisuudet**
+
+1. **Least Privilege Principle**: AI saa minimioikeudet
+2. **Explicit Permissions**: Jokainen pääsy vaatii luvan
+3. **Audit Logging**: Kaikki kirjataan
+4. **Data Isolation**: AI ei näe kaikkea dataa kerralla
+5. **GDPR-compliant**: Täyttää EU:n tietosuoja-asetuksen
+
+### 🚀 **MCP:n hyödyt Hummille**
+
+✅ **Asiakkaat luottavat enemmän**: "AI ei pääse kaikkiin tietoihin"
+✅ **GDPR-vaatimusten täyttäminen**: Audit-jäljet + rajattu pääsy
+✅ **Skaalautuvuus**: Helppo lisätä uusia AI-agentteja ilman turvallisuusriskiä
+✅ **Integraatioiden hallinta**: Keskitetty tapa yhdistää AI järjestelmiin
+
+### 📈 **MCP käytössä (2025)**
+
+- **Anthropic Claude**: Natiivituki MCP:lle
+- **CyberArk**: MCP-pohjainen AI-turvallisuusalusta
+- **Cerbos**: Fine-grained access control MCP-agentteille
+- **Humm Group**: Käyttöönotto Q1 2025 ✅
+
+### 🎓 **Yhteenveto**
+
+MCP on **välttämätön** standardille, joka:
+- Tekee AI-integraatioista turvallisia
+- Täyttää GDPR-vaatimukset
+- Antaa asiakkaille luottamusta
+- Mahdollistaa Hummin skaalautuvuuden ilman turvallisuuskompromisseja`,
+
+  "mcp-security": `**Miten MCP parantaa AI-integraatioiden turvallisuutta?**
+
+### 🔐 **Turvallisuuden tasot MCP:ssä**
+
+#### **1. Kontekstuaalinen pääsyoikeus**
+AI ei saa "yleisavaimia" järjestelmiin, vaan rajatun pääsyn per pyyntö:
+- ❌ **Ilman MCP**: AI saa pääsyn koko CRM-tietokantaan
+- ✅ **MCP:llä**: AI saa haettua vain tietyn asiakkaan tiedot tiettyyn tehtävään
+
+#### **2. Audit-lokitus (Audit Trails)**
+Kaikki AI:n toiminnot kirjataan:
+- AI-Agent-001: READ Customer 12345 - Success
+- AI-Agent-001: UPDATE Ticket 67890 - Success
+- AI-Agent-002: READ Customer 99999 - DENIED (no permission)
+
+**Hyöty**: GDPR-auditointi, vianmääritys, turvallisuusseuranta
+
+#### **3. Roolipohjainen pääsy (RBAC)**
+Jokainen AI-agentti toimii määritetyllä roolilla:
+- **Ticket Classifier**: Voi lukea tikettejä, ei muokata asiakastietoja
+- **CRM Assistant**: Voi lukea asiakastietoja, ei poistaa niitä
+- **Billing Agent**: Voi lukea laskutustietoja, ei muokata hintoja
+
+#### **4. Eksplisiittiset luvat (Explicit Permissions)**
+AI ei oleta mitään - jokainen toiminto vaatii selkeän luvan:
+
+**Esimerkki:**
+1. AI pyytää: "Haluan päivittää asiakkaan #12345 sähköpostiosoitteen"
+2. MCP tarkistaa:
+   - ✓ Onko AI:lla oikeus päivittää asiakastietoja?
+   - ✓ Onko kyseessä oikea asiakas?
+   - ✓ Onko pyyntö looginen (ei epäilyttävä)?
+3. Vasta sitten: Lupa myönnetty
+
+### 🛡️ **MCP vs Perinteinen API-integraatio**
+
+| Ominaisuus | Perinteinen API | MCP |
+|------------|----------------|-----|
+| **Pääsy** | Kaikki tai ei mitään | Rajattu per pyyntö |
+| **Lokitus** | Vaihtelee | Pakollinen |
+| **Rollback** | Manuaalinen | Automaattinen |
+| **GDPR-compliance** | Haastavaa | Sisäänrakennettu |
+
+### 🚀 **Turvallisuushyödyt Hummille**
+
+✅ **Asiakasluottamus**: "Teillä on MCP-standardi käytössä" → asiakkaat tuntevat olonsa turvallisemmaksi
+✅ **Compliance**: GDPR, ISO 27001, SOC 2 helpompaa täyttää
+✅ **Riskinhallinta**: Vahingossa tapahtuva datavuoto vaikea
+✅ **Skaalautuvuus**: Voit lisätä AI-agentteja ilman turvallisuushuolia`,
+
+  "mcp-automation": `**Mitä hyötyä MCP:stä on asiakaspalvelun automaatiossa?**
+
+### ⚡ **MCP mahdollistaa turvallisen automaation**
+
+#### **1. Tikettiagentit voivat toimia itsenäisesti**
+- Ilman MCP:tä: AI voi vain ehdottaa toimenpiteitä
+- MCP:llä: AI voi suorittaa toimenpiteitä turvallisesti
+
+**Esimerkki: Salasanan nollaus**
+1. Asiakas: "Olen unohtanut salasanani"
+2. AI-agentti (MCP:llä):
+   - Tarkistaa asiakkaan henkilöllisyyden
+   - Lähettää nollauslinkin sähköpostiin
+   - Kirjaa toimenpiteen lokiin
+   - Ilmoittaa asiakkaalle: "Linkki lähetetty!"
+3. Ei ihmisen väliintuloa tarvita
+
+#### **2. Integraatiot CRM:ään, ERP:hen, tukikantoihin**
+MCP:n avulla AI voi:
+- **Lukea** asiakkaan historiaa CRM:stä
+- **Päivittää** tiketin statusta
+- **Luoda** uusia tapahtumia (esim. seurantatehtävä)
+- **Hakea** relevantteja tietokanta-artikkeleita
+
+**Ilman MCP:tä**: Kaikki manuaalista kopioimista järjestelmästä toiseen
+
+#### **3. Monimutkaiset työnkulut (Workflows)**
+MCP mahdollistaa monivaiheisen automaation:
+
+**Esimerkki: Laskutusongelma**
+1. Asiakas raportoi laskutusvirheen
+2. AI hakee laskun ERP:stä (MCP)
+3. AI tarkistaa sopimuksen CRM:stä (MCP)
+4. AI havaitsee virheen ja korjaa sen ERP:ssä (MCP)
+5. AI luo hyvityslaskun (MCP)
+6. AI lähettää vahvistuksen asiakkaalle (MCP)
+7. **Kaikki automaattisesti 30 sekunnissa**
+
+### 📊 **Tehokkuushyödyt Hummille**
+
+✅ **40-60% tiketeistä** hoidettavissa täysin automaattisesti
+✅ **Säästö: 20-30h/viikko** per tiimi
+✅ **Nopeus**: Vastausaika 4-6h → 30 sekuntia
+✅ **Skaalautuvuus**: 3x liikevaihto ilman henkilöstölisäystä
+
+### 🎯 **Yhteenveto**
+
+MCP tekee automaatiosta:
+- **Turvallista** (rajattu pääsy)
+- **Luotettavaa** (audit-lokitus)
+- **Skaalautuvaa** (lisää agentteja helposti)
+- **GDPR-yhteensopivaa** (tietosuoja rakennettu sisään)`,
+
+  "mcp-access-control": `**Kuinka MCP:n avulla hallitaan AI:n pääsyoikeuksia?**
+
+### 🔐 **Pääsyoikeuksien hallinta MCP:ssä**
+
+#### **1. Vähimmäisoikeuksien periaate (Principle of Least Privilege)**
+Jokainen AI-agentti saa vain minimioikeudet tehtävän suorittamiseen:
+
+**Esimerkki:**
+- **Tikettien luokitteluagentti**: Voi LUKEA tikettejä, ei MUOKATA
+- **Asiakastietoagentti**: Voi LUKEA asiakastietoja, ei POISTAA
+- **Laskutusagentti**: Voi LUKEA laskutustietoja, LUODA hyvityslaskuja, ei MUOKATA hintoja
+
+#### **2. Resurssitason rajaus (Resource-Level Permissions)**
+AI ei saa pääsyä kaikkiin resursseihin, vain relevantteihin:
+
+**Esimerkki:**
+1. AI pyytää: "Hae asiakkaan #12345 tilaushistoria"
+2. MCP tarkistaa:
+   - ✓ Onko AI:lla oikeus lukea tilaushistoriaa?
+   - ✓ Onko asiakkaan #12345 tiedot sallittuja tälle AI-agentille?
+   - ✓ Onko pyyntö kontekstissa looginen?
+3. Palauttaa vain asiakkaan #12345 tiedot, ei muita
+
+#### **3. Ajallinen rajaus (Time-Based Access)**
+AI:n oikeudet voivat olla rajoitettu aikaan:
+- **Työaikana (8-17)**: Täydet oikeudet
+- **Yöaikana (17-8)**: Vain lukuoikeus, ei muutoksia
+
+#### **4. Kontekstuaalinen rajaus (Contextual Access)**
+AI:n oikeudet riippuvat tilanteesta:
+- **Rutiinitiketit**: AI voi käsitellä itsenäisesti
+- **Herkät aiheet** (esim. riitatilanteet): Vain lukuoikeus → eskalointi ihmiselle
+
+### 🛠️ **Käytännön toteutus Hummilla**
+
+#### **Roolit ja oikeudet:**
+
+**Rooli: Ticket Classifier**
+- Role: ticket_classifier
+- Oikeudet:
+  - Tickets: read, update_tags, update_priority
+  - Customers: read
+  - CRM: read
+  - Audit: write
+
+**Rooli: Billing Agent**
+- Role: billing_agent
+- Oikeudet:
+  - Invoices: read, create_credit_note
+  - Customers: read
+  - Payments: read
+  - Audit: write
+
+### 🚀 **Hyödyt**
+
+✅ **Minimoitu riski**: Vahinkokaan AI-virhe ei voi aiheuttaa suurta vahinkoa
+✅ **GDPR-compliance**: AI näkee vain tarvittavat tiedot
+✅ **Auditointi**: Kaikki kirjataan lokiin
+✅ **Skaalautuvuus**: Helppo lisätä uusia rooleja ja agentteja`,
+
+  "mcp-deep-analysis": `**📊 MCP - Syväanalyysi: Tekninen toteutus ja vaikutus Hummille**
+
+### 🎯 **MCP-arkkitehtuuri (korkean tason)**
+
+\`\`\`
+┌─────────────┐
+│ AI-Agentti  │ (esim. Claude, GPT-4)
+└──────┬──────┘
+       │ Pyyntö: "Hae asiakkaan #12345 tiedot"
+       ↓
+┌─────────────────────────────────────┐
+│ MCP Layer (Model Context Protocol) │
+│  - Authentication                    │
+│  - Authorization                     │
+│  - Rate Limiting                     │
+│  - Audit Logging                     │
+└──────┬──────────────────────────────┘
+       │ Validoitu pyyntö
+       ↓
+┌─────────────────────────────────────┐
+│ Backend Systems                     │
+│  - CRM (Salesforce, HubSpot)        │
+│  - ERP (Netvisor, Procountor)       │
+│  - Support (Intercom, Zendesk)      │
+└─────────────────────────────────────┘
+\`\`\`
+
+### 🔐 **Tekninen toiminta (step-by-step)**
+
+#### **Vaihe 1: AI-pyyntö**
+- Action: get_customer
+- Resource: customers/12345
+- Requester: ai-agent-ticket-001
+- Context: ticket_id TICKET-67890, reason: customer_inquiry
+
+#### **Vaihe 2: MCP-validointi**
+1. Autentikointi: Onko AI-agentti validi?
+2. Autorisointi: Onko AI:lla oikeus?
+   - Tarkista rooli: "ticket_classifier"
+   - Tarkista resurssi: customers/12345
+   - Tarkista toiminto: "read"
+3. Rate Limiting: Onko AI tehnyt liian monta pyyntöä?
+4. Loki: Kirjaa tapahtuma audit-lokiin
+
+#### **Vaihe 3: Vastaus**
+- Status: success
+- Data: Customer 12345 (Acme Oy, support@acme.fi, active)
+- Audit ID: AUDIT-2025-09-30-140512
+
+### 📊 **MCP:n vaikutus Hummin liiketoimintaan**
+
+#### **1. Kustannussäästöt**
+- **Vähennetty manuaalityö**: 20-30h/viikko säästöä
+- **Automaatioaste**: 40-60% tiketeistä AI-hoidetut
+- **ROI**: 150-280% ensimmäisenä vuonna
+
+#### **2. Turvallisuus ja compliance**
+- **GDPR-compliance**: Täytetään EU:n tietosuoja-asetus
+- **Audit-jäljet**: Kaikki AI-toiminnot lokitettuja
+- **Minimoitu riski**: Rajattu pääsy estää datavuodot
+
+#### **3. Skaalautuvuus**
+- **3x liikevaihto**: €2.1M → €7.2M ilman lineaarista henkilöstölisäystä
+- **Revenue per employee**: €40k → €192k
+- **Asiakastyytyväisyys**: 7.2 → 8.5+
+
+### 🛠️ **Teknologiastack Hummille (MCP-pohjainen)**
+
+**MCP Implementation:**
+- **Anthropic MCP SDK**: Natiivituki Claude-mallille
+- **Cerbos**: Fine-grained access control
+- **OAuth 2.0**: Autentikointi
+- **JWT Tokens**: Session management
+
+**Integraatiot:**
+- **CRM**: Salesforce/HubSpot (MCP-rajapinta)
+- **ERP**: Netvisor/Procountor (MCP-rajapinta)
+- **Support**: Intercom/Zendesk (MCP-rajapinta)
+
+### 🎓 **Yhteenveto**
+
+MCP on **kriittinen teknologia** Hummin AI-transformaatiolle:
+- ✅ Mahdollistaa turvallisen automaation
+- ✅ Täyttää GDPR-vaatimukset
+- ✅ Skaalautuu €10M+ liikevaihtoon
+- ✅ Antaa asiakkaille luottamusta ("Meillä on MCP-standardi")`,
+
   "data-quality": `**Asiakastiedon laatu ja suojaaminen AI-projekteissa**
 
 ### 🛡️ **Tietosuojan 3 pilaria**
@@ -249,27 +562,79 @@ Humm Group voi mitata AI-investoinnin arvoa näillä keskeisillä mittareilla:
 
 #### **3. Oikeus tietojen poistamiseen**
 - **Periaate**: Asiakas voi pyytää tietojensa poistamista → AI:n pitää "unohtaa" nämä tiedot
-- **Tekninen toteutus**: AI-mallit eivät tallenna henkilötietoja pysyvästi (vain viittaukset tietokantaan)
+- **Tekninen toteutus**: AI-mallit eivät tallenna henkilötietoja pysyvästi (vain viittaukset tietokantaan)`,
 
-### ✅ **Hummin toteutus**
+  "gdpr-compliance": `**Kuinka vältetään datasiilot ja GDPR-riskit AI-projekteissa?**
 
-**Open source -ratkaisut tietoturvaan:**
-1. **Cerbos**: MCP-pohjainen pääsynhallinta (€0 lisenssit)
-2. **Keycloak**: Autentikointi ja roolipohjainen pääsy (€0 lisenssit)
-3. **InfluxDB**: Audit-lokien tallentamiseen (€0 lisenssit)
-4. **Vault**: Salasanojen ja API-avainten turvallinen säilytys (€0 lisenssit)
+### 🛡️ **Datasiilot - AI:n suurin vihollinen**
 
-**Aikataulu:**
-- **Viikko 1-2**: MCP-arkkitehtuurin suunnittelu
-- **Viikko 3-4**: RBAC ja audit-lokien toteutus
-- **Viikko 5-6**: GDPR-vaatimusten tarkistus + dokumentointi
+#### **Mikä on datasiile?**
+Tilanne, jossa yrityksen data on hajautettu eri järjestelmiin ilman yhteyttä:
+- CRM: Asiakastiedot
+- ERP: Laskutustiedot
+- Support: Tikettitiedot
+- Email: Viestintähistoria
 
-**Kustannus:** €15-25k (kertaluonteinen) + €5-10k/v ylläpito
+**Ongelma AI:lle**: AI ei saa kokonaiskuvaa → huonot päätökset
 
-### 🎯 **Lopputulos**
-✅ **66% asiakkaista huolissaan AI-tietosuojasta** → Humm erottuu kilpailijoista läpinäkyvyydellä
-✅ **GDPR-valmiudet kunnossa** → ei sakkoja tai mainehaittaa
-✅ **Asiakasluottamus säilyy** → churn-rate alas, CLV ylös`
+### ⚡ **Ratkaisut datasiilojen murtamiseen**
+
+#### **1. Keskitetty datavarasto (Data Lake/Warehouse)**
+- **Mitä**: Kaikki data yhteen paikkaan strukturoidussa muodossa
+- **Teknologia**: Snowflake, BigQuery, Azure Synapse
+- **Humm-toteutus**: PostgreSQL + dbt (open source, halvempi)
+
+#### **2. API-integraatiot MCP:llä**
+- **Mitä**: AI hakee dataa reaaliajassa eri järjestelmistä turvallisesti
+- **Hyöty**: Ei duplikaattidata, aina ajantasainen tieto
+- **MCP takaa**: GDPR-yhteensopiva pääsy
+
+#### **3. Customer Data Platform (CDP)**
+- **Mitä**: Yhtenäinen asiakasprofiili kaikesta datasta
+- **Esimerkki**: Segment, RudderStack (open source)
+- **Humm-hyöty**: 360°-näkymä asiakkaasta
+
+### 🔐 **GDPR-riskien minimointi**
+
+#### **1. Tietosuoja-vaikutusten arviointi (DPIA)**
+Ennen AI-projektia:
+- ✓ Mitä henkilötietoja AI käsittelee?
+- ✓ Miksi niitä tarvitaan?
+- ✓ Kuinka kauan niitä säilytetään?
+- ✓ Kuka pääsee niihin käsiksi?
+- ✓ Miten ne suojataan?
+
+#### **2. Privacy by Design**
+- **Periaate**: Tietosuoja suunniteltu alusta alkaen, ei jälkikäteen
+- **Humm-esimerkki**:
+  - AI-malli ei tallenna henkilötietoja sisäisesti
+  - Kaikki tiedot haetaan reaaliajassa MCP:n kautta
+  - Audit-lokitus automaattinen
+
+#### **3. Tietojen pseudonymisointi**
+- **Mitä**: Henkilötiedot korvataan tunnuksilla
+- **Esimerkki**: "Mikko Virtanen" → "USER_12345"
+- **Hyöty**: AI voi analysoida dataa ilman henkilötietoja
+
+#### **4. Säilytysaikojen hallinta**
+- Chat-historia: 30 päivää, sitten pseudonymisointi
+- Audit-lokit: 12 kuukautta, sitten arkistointi
+- Asiakastiedot: Aktiivisuuden ajan, sitten poisto/anonymisointi
+
+### ✅ **GDPR-tarkistuslista Hummille**
+
+✅ **Tietosuojaseloste**: Kerrotaan asiakkaille miten AI käyttää dataa
+✅ **Suostumus**: Asiakas antaa luvan AI-käsittelyyn
+✅ **Oikeus tietojen poistamiseen**: Asiakas voi pyytää "AI:n unohtamaan" tiedot
+✅ **Oikeus tietojen siirrettävyyteen**: Data voidaan viedä ulos
+✅ **Audit-jäljet**: Kaikki AI-toiminnot lokitettu
+✅ **MCP-standardi**: Rajattu pääsy tietoihin
+
+### 🚀 **Tulokset**
+
+✅ **GDPR-compliance**: Vältetään €20M sakot
+✅ **Asiakasluottamus**: "Meillä on tietosuoja kunnossa"
+✅ **Tehokkuus**: Ei datasiiloja → paremmat AI-tulokset`
 };
 
 // MCP (Model Context Protocol) - TÄRKEÄ!
@@ -758,7 +1123,7 @@ export function ChatInterface() {
     }]);
 
     let currentIndex = 0;
-    const charsPerTick = 15; // Characters to add per interval (faster than real streaming)
+    const charsPerTick = 20; // Characters to add per interval
 
     const interval = setInterval(() => {
       currentIndex += charsPerTick;
@@ -768,26 +1133,33 @@ export function ChatInterface() {
         clearInterval(interval);
         setModalMessages(prev => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1] = {
-            content: fullResponse,
-            isUser: false,
-            timestamp: Date.now()
-          };
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1] = {
+              content: fullResponse,
+              isUser: false,
+              timestamp: Date.now()
+            };
+          }
           return newMessages;
         });
       } else {
         // Update with partial content
         setModalMessages(prev => {
           const newMessages = [...prev];
-          newMessages[newMessages.length - 1] = {
-            content: fullResponse.substring(0, currentIndex),
-            isUser: false,
-            timestamp: Date.now()
-          };
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1] = {
+              content: fullResponse.substring(0, currentIndex),
+              isUser: false,
+              timestamp: Date.now()
+            };
+          }
           return newMessages;
         });
       }
-    }, 30); // 30ms interval for smooth streaming effect
+    }, 25); // 25ms interval for smooth streaming effect
+
+    // Cleanup function
+    return () => clearInterval(interval);
   };
 
   const toggleExpanded = () => {
@@ -1838,3 +2210,4 @@ export function ChatInterface() {
     </div>
   );
 }
+ 
