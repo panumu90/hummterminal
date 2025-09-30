@@ -146,7 +146,12 @@ const StrategicRoadmap = () => {
   );
 
   // Secret content to stream
-  const secretContent = `Ja mielestäni järkevintä olisi käyttää vapautuvat henkilöstöresurssit tekoäly-palvelukokonaisuuksien myyntiin ja panostaa siihen, että myös hummin omat asiakkaat hyötyisivät tästä mahdollisuudesta.
+  const secretContent = `Tein laskelmat open source - ratkaisu chatwoot + n8n + llm vs SaaS.
+Määritin tarkasti kaikki muuttujat ja tein oletuksen, että, jos saavutetaan täysi autonomia ja jäljelle jää human oversight.
+
+Säästöt ovat valtavia. Vaikka toteuttaisiin one-click järjestelmä aluksi, mikä onkin fiksuin tapa -- Agentic AI helpottaa sovelluskehitystä niin, että ainoa järkevä ratkaisu on siirtyä open sourceen.
+
+Ja mielestäni järkevintä olisi käyttää vapautuvat henkilöstöresurssit tekoäly-palvelukokonaisuuksien myyntiin ja panostaa siihen, että myös hummin omat asiakkaat hyötyisivät tästä mahdollisuudesta.
 
 Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikevaihto jo kahdessa vuodessa. Se vaatii vain tulevalta teknologiajohtajalta ymmärrystä siitä miten suuresta potentiaalista tässä on kyse -- vaikka internetistäkin muodostui aikoinaan kupla, oli se silti 'the most disruptive thing in our modern history' tähän teknologiaan perehtyneenä, ammattilaisia kuulleena... Noh, hype sikseen -- Haluan vielä verrata tätä internettiin, koska silloinkin  syntyi paljon www.dotcom - yrityksiä, joilla ei ollut mitään oikeaa arvoa, mutta ne näyttivät oikeilta. Tästä syystä painotan jatkuvaa seurantaa, muuten on säilyä voittajana.`;
 
