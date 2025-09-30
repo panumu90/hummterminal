@@ -134,6 +134,8 @@ const StrategicRoadmap = () => {
   const [expandedPhase, setExpandedPhase] = useState<string | null>("phase1");
   const [isEditMode, setIsEditMode] = useState(false);
   const [phases, setPhases] = useState<RoadmapPhase[]>([]);
+  const [secretModalOpen, setSecretModalOpen] = useState(false);
+  const [streamedText, setStreamedText] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -141,6 +143,33 @@ const StrategicRoadmap = () => {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  // Secret content to stream
+  const secretContent = `Ja mielestäni järkevintä olisi käyttää vapautuvat henkilöstöresurssit tekoäly-palvelukokonaisuuksien myyntiin ja panostaa siihen, että myös hummin omat asiakkaat hyötyisivät tästä mahdollisuudesta.
+
+Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikevaihto jo kahdessa vuodessa. Se vaatii vain tulevalta teknologiajohtajalta ymmärrystä siitä miten suuresta potentiaalista tässä on kyse -- vaikka internetistäkin muodostui aikoinaan kupla, oli se silti 'the most disruptive thing in our modern history' tähän teknologiaan perehtyneenä, ammattilaisia kuulleena... Noh, hype sikseen -- Haluan vielä verrata tätä internettiin, koska silloinkin  syntyi paljon www.dotcom - yrityksiä, joilla ei ollut mitään oikeaa arvoa, mutta ne näyttivät oikeilta. Tästä syystä painotan jatkuvaa seurantaa, muuten on säilyä voittajana.`;
+
+  // Typewriter effect
+  useEffect(() => {
+    if (!secretModalOpen) {
+      setStreamedText("");
+      return;
+    }
+
+    let currentIndex = 0;
+    const intervalSpeed = 20; // milliseconds per character
+    
+    const interval = setInterval(() => {
+      if (currentIndex < secretContent.length) {
+        setStreamedText(secretContent.substring(0, currentIndex + 1));
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+      }
+    }, intervalSpeed);
+
+    return () => clearInterval(interval);
+  }, [secretModalOpen]);
 
   // Initialize phases data
   const phasesData: RoadmapPhase[] = [
@@ -641,7 +670,7 @@ const StrategicRoadmap = () => {
             <Target className="w-4 h-4 text-blue-400" />
             <span className="text-sm text-slate-300">Strategic Roadmap</span>
           </div>
-          <div className="flex-1 flex justify-end">
+          <div className="flex-1 flex justify-end gap-2">
             <Button
               onClick={() => setIsEditMode(!isEditMode)}
               size="sm"
@@ -652,6 +681,24 @@ const StrategicRoadmap = () => {
             </Button>
           </div>
         </div>
+        
+        {/* Secret Ace Button */}
+        <div className="flex justify-center mb-4">
+          <Button
+            onClick={() => setSecretModalOpen(true)}
+            size="lg"
+            className="group relative overflow-hidden bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 hover:from-purple-700 hover:via-pink-700 hover:to-red-700 text-white font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 animate-shimmer"
+            data-testid="secret-ace-button"
+          >
+            <span className="relative z-10 flex items-center gap-3">
+              <Star className="w-5 h-5 animate-pulse" />
+              Vielä yksi ässä hihassa
+              <Star className="w-5 h-5 animate-pulse" />
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+          </Button>
+        </div>
+        
         <h1 className="text-3xl font-bold text-slate-100">
           Humm Group: AI Transformation
         </h1>
@@ -1141,6 +1188,34 @@ const StrategicRoadmap = () => {
           </div>
         </div>
       </div>
+
+      {/* Secret Ace Modal */}
+      <Dialog open={secretModalOpen} onOpenChange={setSecretModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[85vh] bg-gradient-to-br from-slate-800/98 to-slate-900/98 backdrop-blur-xl border-purple-500/30">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                <Star className="h-6 w-6 text-white" />
+              </div>
+              Vielä yksi ässä hihassa
+            </DialogTitle>
+            <DialogDescription className="text-slate-300 text-base">
+              Konkreettinen ROI-analyysi ja strateginen visio 10M€ liikevaihtoon
+            </DialogDescription>
+          </DialogHeader>
+          
+          <ScrollArea className="h-[65vh] pr-4">
+            <div className="prose prose-invert prose-lg max-w-none">
+              <div className="text-slate-200 space-y-4 leading-relaxed whitespace-pre-wrap font-sans">
+                {streamedText}
+                {streamedText.length < secretContent.length && (
+                  <span className="inline-block w-2 h-5 bg-purple-500 animate-pulse ml-1" />
+                )}
+              </div>
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
