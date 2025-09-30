@@ -705,6 +705,9 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
         <p className="text-slate-400 text-sm">
           €2.1M → €10M+ | -0.2% → 32% margin | 2025-2028+
         </p>
+        <p className="text-slate-500 text-xs italic mt-2">
+          Huom: Tämä roadmap ei välttämättä edusta tämänhetkistä ajatustani. Tarkennan ajatusmaailmaani perjantaina, sitten re-publish.
+        </p>
       </div>
 
       {/* Roadmap Timeline - Map-like */}
