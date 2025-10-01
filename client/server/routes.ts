@@ -134,7 +134,6 @@ VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja
       
       // Finnish AI Trends Categories
       if (category === "autonomous-agents") {
-        const agentTrends = trends.filter(t => t.category === "autonomous_agents");
         summary = "🤖 **Autonomiset AI-agentit tehostavat asiakaspalvelua**\n\n" +
           "• AI-agentit tulevat tavanomaisiksi osaksi asiakaspalvelua\n" +
           "• Integroituvat asiakasviestintaalustoihin hoitamaan yksinkertaisia kyselyitä\n" +
