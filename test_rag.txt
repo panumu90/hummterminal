@@ -1,0 +1,44 @@
+HUMM GROUP OY - YRITYSKATSAUS 2024
+
+Humm Group Oy on suomalainen asiakaspalveluratkaisu-yhtiö, joka on perustettu vuonna 2018.
+
+TALOUDELLINEN TILANNE
+
+Yrityksen liikevaihto vuonna 2024 oli 2.1 miljoonaa euroa. Käyttökate oli 15% ja nettotulos oli positiivinen ensimmäistä kertaa yrityksen historiassa. Tämä oli merkittävä saavutus, sillä kasvuyhtiöt usein tekevät tappiota alkuvuosina investoidessaan tulevaisuuteen.
+
+Henkilöstön määrä kasvoi 18 henkilöstä 25 henkilöön vuoden aikana. Keskimääräinen liikevaihto per työntekijä oli 84 000 euroa.
+
+ASIAKASTYYTYVÄISYYS
+
+Asiakastyytyväisyys nousi vuoden aikana merkittävästi. CSAT-luku parani 7.2:sta 8.5:een, mikä on 18% parannus. NPS-luku nousi 45:stä 62:een.
+
+Tärkeimmät kehityskohteet asiakaspalautteen perusteella:
+- Vasteaikojen lyhentäminen (keskimäärin 4.5h → tavoite 2h)
+- Proaktiivisuuden parantaminen asiakaspalvelussa
+- Itsepalvelutyökalujen kehittäminen
+
+TEKNOLOGIA-STRATEGIA
+
+Vuoden 2024 tärkeimmät teknologiapanostukset:
+- AI-chatbot integraatio asiakaspalveluun (Q3 2024 käyttöönotto)
+- CRM-järjestelmän päivitys (Pipedrive → HubSpot migraatio)
+- API-alustan kehitys kumppaniyhteistyötä varten
+
+AI-TRANSFORMAATIO
+
+AI-transformaation tavoitteena on automatisoida 40% rutiinitehtävistä vuoden 2025 loppuun mennessä. Tavoitteena on myös:
+- Parantaa asiakaskokemusta 25%
+- Vähentää tukipyyntöjen määrää 30%
+- Nopeuttaa onboarding-prosessia 50%
+
+Ensimmäiset pilotit aloitettiin lokakuussa 2024 kolmen key account -asiakkaan kanssa. Tulokset ovat olleet lupaavia: automaatioaste nousi 22%:iin ja asiakastyytyväisyys pilottiasiakkailla 8.9:ään.
+
+HENKILÖSTÖ JA REKRYTOINTI
+
+Yritys työllistää tällä hetkellä 25 henkilöä jakautuen:
+- Asiakaspalvelu: 12 henkilöä
+- Teknologia: 8 henkilöä
+- Myynti ja markkinointi: 3 henkilöä
+- Hallinto: 2 henkilöä
+
+Suunnitteilla on kasvattaa henkilöstöä 40 henkilöön vuoden 2025 loppuun mennessä. Avainrekrytoinnit keskittyvät tekniseen osaamiseen ja AI-spesialisteihin.

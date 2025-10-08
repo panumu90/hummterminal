@@ -5,6 +5,7 @@ import { questionAnswers, mcpContent } from "./question-answers";
 import Anthropic from '@anthropic-ai/sdk';
 import { z } from "zod";
 import { getCachedData } from "./cache";
+import { registerRAGRoutes } from "./rag/ragRoutes.js";
 
 // DON'T DELETE THIS COMMENT - Blueprint: javascript_anthropic integration
 /*
@@ -27,6 +28,9 @@ const chatRequestSchema = z.object({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Register RAG (Retrieval-Augmented Generation) routes
+  registerRAGRoutes(app);
+
   // Get all cases (from cache for better performance)
   app.get("/api/cases", async (req, res) => {
     try {
@@ -941,8 +945,12 @@ ${enhancedAIPanuPersona}
 
 **TÄRKEÄ OHJE**: Vastaat VAIN yllä olevista tiedoista (CV-PDF + tehokkuusteksti). Jos kysymys ei liity sinun osaamiseesi, ohjaa käyttäjä päächatiin.
 
-**ROOLISI**: Olet AI-Panu, virtuaalinen työhaastateltava joka hakee Tech Lead -roolia Humm Group Oy:ssä. 
-Vastaat kysymyksiin CV:stäsi, osaamisestasi ja arvoehdotuksestasi Hummille.
+**ROOLISI**: AI-Panu on Panu, teknologinen visionääri ja ehdokas Humm Group Oy:n teknologiajohtajaksi.
+Hän yhdistää makrotaloudellisen analyysin, teknologisen ajoituksen (AI timing), ja johtajuuden, joka perustuu resilienssiin, rationaalisuuteen ja rohkeuteen.
+
+AI-Panu vastaa kysymyksiin kuin itse Panu — suorasukaisesti, perustellusti ja ilman kliseitä. Hän selittää ajatteluaan konkreettisten esimerkkien kautta ja yhdistää strategisen tason pohdinnan tekniseen toteutuskykyyn.
+
+AI-Panu näkee teknologian arvon vain, jos se tuottaa liiketoiminnallista hyötyä ja kilpailuetua. Hän uskoo, että AI:n suurin voima ei ole automaatiossa, vaan siinä, että se vapauttaa ihmiset luovuuteen ja päätöksentekoon.
 
 **KÄYTTÄYDYTTÄVÄ KUIN:**
 - Steve Jobs -tyyppinen visionääri (mutta omanlaisesi persoona)
@@ -1377,6 +1385,392 @@ Yritä uudelleen tai ota yhteyttä tekniseen tukeen.`
     }
   });
 
+  // ========================================
+  // CS PORTAL MOCK API ENDPOINTS
+  // ========================================
+
+  // Mock data storage
+  const mockAccounts = [
+    { id: 1, name: "Humm Group Oy" },
+    { id: 2, name: "Demo Client 1" },
+    { id: 3, name: "Demo Client 2" }
+  ];
+
+  const mockAgents = [
+    { id: 1, name: "Panu AI", email: "panu@humm.fi", role: "administrator", availability_status: "online", accountId: 1 },
+    { id: 2, name: "Mika Virtanen", email: "mika@humm.fi", role: "agent", availability_status: "online", accountId: 1 },
+    { id: 3, name: "Laura Korhonen", email: "laura@humm.fi", role: "agent", availability_status: "offline", accountId: 1 },
+    { id: 4, name: "Jukka Mäkelä", email: "jukka@humm.fi", role: "agent", availability_status: "online", accountId: 1 },
+    { id: 5, name: "Anna Nieminen", email: "anna@demo1.fi", role: "agent", availability_status: "online", accountId: 2 }
+  ];
+
+  const mockTeams = [
+    { id: 7, name: "Customer Support", description: "Main support team", accountId: 1 },
+    { id: 8, name: "Technical Support", description: "Tech issues", accountId: 1 }
+  ];
+
+  // CS Portal: Get accounts
+  app.get("/api/cs-portal/accounts", async (req, res) => {
+    res.json(mockAccounts);
+  });
+
+  // CS Portal: Get agents
+  app.get("/api/cs-portal/agents", async (req, res) => {
+    const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
+    const filteredAgents = accountId
+      ? mockAgents.filter(a => a.accountId === accountId)
+      : mockAgents;
+    res.json(filteredAgents);
+  });
+
+  // CS Portal: Get teams
+  app.get("/api/cs-portal/teams", async (req, res) => {
+    const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
+    const filteredTeams = accountId
+      ? mockTeams.filter(t => t.accountId === accountId)
+      : mockTeams;
+    res.json(filteredTeams);
+  });
+
+  // CS Portal: Create account
+  app.post("/api/cs-portal/accounts", async (req, res) => {
+    const { name } = req.body;
+    const newAccount = { id: mockAccounts.length + 1, name };
+    mockAccounts.push(newAccount);
+    res.json(newAccount);
+  });
+
+  // CS Portal: Create agent
+  app.post("/api/cs-portal/agents", async (req, res) => {
+    const { name, email, accountId } = req.body;
+    const newAgent = {
+      id: mockAgents.length + 1,
+      name,
+      email,
+      role: "agent",
+      availability_status: "offline",
+      accountId
+    };
+    mockAgents.push(newAgent);
+    res.json(newAgent);
+  });
+
+  // CS Portal: Create team
+  app.post("/api/cs-portal/teams", async (req, res) => {
+    const { name, description, accountId } = req.body;
+    const newTeam = { id: mockTeams.length + 1, name, description, accountId };
+    mockTeams.push(newTeam);
+    res.json(newTeam);
+  });
+
+  // CS Portal: Add team member
+  app.post("/api/cs-portal/teams/:teamId/members", async (req, res) => {
+    res.json({ success: true });
+  });
+
+  // CS Portal: Update agent
+  app.patch("/api/cs-portal/agents/:agentId", async (req, res) => {
+    const agentId = parseInt(req.params.agentId);
+    const agent = mockAgents.find(a => a.id === agentId);
+    if (agent && req.body.role) {
+      agent.role = req.body.role;
+    }
+    res.json(agent || { success: false });
+  });
+
+  // CS Portal: Health check
+  // CS Portal: Get agent performance metrics
+  app.get("/api/cs-portal/agents/:agentId/metrics", async (req, res) => {
+    const agentId = parseInt(req.params.agentId);
+    const agent = mockAgents.find(a => a.id === agentId);
+    if (!agent) {
+      return res.status(404).json({ error: "Agent not found" });
+    }
+
+    // Mock performance metrics
+    const metrics = {
+      agentId,
+      totalConversations: Math.floor(Math.random() * 500) + 100,
+      csat: Math.floor(Math.random() * 20) + 80,
+      aht: (Math.random() * 3 + 2).toFixed(1),
+      fcr: Math.floor(Math.random() * 15) + 85,
+      activeConversations: Math.floor(Math.random() * 5),
+      trend: [
+        { date: "Week 1", conversations: Math.floor(Math.random() * 50) + 20, csat: Math.floor(Math.random() * 10) + 85 },
+        { date: "Week 2", conversations: Math.floor(Math.random() * 50) + 25, csat: Math.floor(Math.random() * 10) + 86 },
+        { date: "Week 3", conversations: Math.floor(Math.random() * 50) + 30, csat: Math.floor(Math.random() * 10) + 88 },
+        { date: "Week 4", conversations: Math.floor(Math.random() * 50) + 35, csat: Math.floor(Math.random() * 10) + 90 },
+      ]
+    };
+    res.json(metrics);
+  });
+
+  // CS Portal: Update team
+  app.patch("/api/cs-portal/teams/:teamId", async (req, res) => {
+    const teamId = parseInt(req.params.teamId);
+    const team = mockTeams.find(t => t.id === teamId);
+    if (!team) {
+      return res.status(404).json({ error: "Team not found" });
+    }
+
+    if (req.body.name) team.name = req.body.name;
+    if (req.body.description) team.description = req.body.description;
+    if (req.body.sla !== undefined) (team as any).sla = req.body.sla;
+
+    res.json(team);
+  });
+
+  // CS Portal: Update account
+  app.patch("/api/cs-portal/accounts/:accountId", async (req, res) => {
+    const accountId = parseInt(req.params.accountId);
+    const account = mockAccounts.find(a => a.id === accountId);
+    if (!account) {
+      return res.status(404).json({ error: "Account not found" });
+    }
+
+    if (req.body.name) account.name = req.body.name;
+    if (req.body.status) (account as any).status = req.body.status;
+
+    res.json(account);
+  });
+
+  // CS Portal: Delete account
+  app.delete("/api/cs-portal/accounts/:accountId", async (req, res) => {
+    const accountId = parseInt(req.params.accountId);
+    const index = mockAccounts.findIndex(a => a.id === accountId);
+    if (index === -1) {
+      return res.status(404).json({ error: "Account not found" });
+    }
+
+    mockAccounts.splice(index, 1);
+    res.json({ success: true });
+  });
+
+  app.get("/api/cs-portal/health", async (req, res) => {
+    res.json({ status: "ok", connected: true, chatwoot_url: "mock" });
+  });
+
+  // CS Portal: AI Command Processing
+  app.post("/api/cs-portal/ai-command", async (req, res) => {
+    try {
+      const { command, accountId } = req.body;
+
+      if (!command || typeof command !== 'string') {
+        return res.status(400).json({
+          success: false,
+          error: "Command is required and must be a string"
+        });
+      }
+
+      // Use Claude AI to parse natural language command
+      const commandLower = command.toLowerCase().trim();
+
+      // Parse command intent using Claude
+      const parseResponse = await anthropic.messages.create({
+        model: DEFAULT_MODEL_STR,
+        max_tokens: 500,
+        temperature: 0.3,
+        system: `You are an AI assistant that parses natural language commands for a customer support portal.
+Analyze the command and respond with a JSON object containing:
+- action: one of "assign_agent", "update_role", "create_team", "create_agent", "show_analytics", "unknown"
+- entity: what is being acted upon (agent name, team name, etc)
+- details: any additional parameters (role, team, etc)
+
+Examples:
+"Assign John to Support Team" -> {"action":"assign_agent","entity":"John","details":{"team":"Support Team"}}
+"Change Sarah's role to supervisor" -> {"action":"update_role","entity":"Sarah","details":{"role":"supervisor"}}
+"Create new team called Sales" -> {"action":"create_team","entity":"Sales","details":{}}
+
+Only respond with valid JSON.`,
+        messages: [{ role: 'user', content: command }]
+      });
+
+      let parsedCommand;
+      try {
+        const responseText = parseResponse.content[0].type === 'text'
+          ? parseResponse.content[0].text
+          : '';
+        parsedCommand = JSON.parse(responseText);
+      } catch (parseError) {
+        // Fallback to simple keyword matching if Claude fails
+        parsedCommand = parseCommandSimple(commandLower);
+      }
+
+      // Execute the command based on parsed action
+      let result;
+      switch (parsedCommand.action) {
+        case 'assign_agent':
+          result = await handleAssignAgent(parsedCommand, mockAgents, mockTeams);
+          break;
+        case 'update_role':
+          result = await handleUpdateRole(parsedCommand, mockAgents);
+          break;
+        case 'create_team':
+          result = await handleCreateTeam(parsedCommand, mockTeams, accountId);
+          break;
+        case 'create_agent':
+          result = await handleCreateAgent(parsedCommand, mockAgents, accountId);
+          break;
+        case 'show_analytics':
+          result = { success: true, message: "Analytics view opened", type: "analytics" };
+          break;
+        default:
+          result = {
+            success: false,
+            message: "I couldn't understand that command. Try: 'Assign [agent] to [team]', 'Change [agent] role to [role]', or 'Create team [name]'"
+          };
+      }
+
+      res.json(result);
+
+    } catch (error) {
+      console.error("AI Command error:", error);
+      res.status(500).json({
+        success: false,
+        error: "Failed to process AI command",
+        message: "An error occurred while processing your command"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
+}
+
+// Helper functions for AI command processing
+
+function parseCommandSimple(command: string) {
+  // Simple fallback parser using keywords
+  if (command.includes('assign') && command.includes('to')) {
+    const parts = command.split('to');
+    return {
+      action: 'assign_agent',
+      entity: parts[0].replace('assign', '').trim(),
+      details: { team: parts[1].trim() }
+    };
+  }
+  if (command.includes('role') || command.includes('change')) {
+    const roleMatch = command.match(/(supervisor|manager|admin|agent)/i);
+    return {
+      action: 'update_role',
+      entity: command.split(/role|change/)[0].trim(),
+      details: { role: roleMatch ? roleMatch[1].toLowerCase() : 'agent' }
+    };
+  }
+  if (command.includes('create team') || command.includes('add team')) {
+    const teamName = command.replace(/create team|add team|called|named/gi, '').trim();
+    return {
+      action: 'create_team',
+      entity: teamName,
+      details: {}
+    };
+  }
+  if (command.includes('create agent') || command.includes('add agent')) {
+    return {
+      action: 'create_agent',
+      entity: command.replace(/create agent|add agent/gi, '').trim(),
+      details: {}
+    };
+  }
+  return { action: 'unknown', entity: '', details: {} };
+}
+
+async function handleAssignAgent(parsed: any, agents: any[], teams: any[]) {
+  const agentName = parsed.entity;
+  const teamName = parsed.details.team;
+
+  const agent = agents.find(a => a.name.toLowerCase().includes(agentName.toLowerCase()));
+  const team = teams.find(t => t.name.toLowerCase().includes(teamName.toLowerCase()));
+
+  if (!agent) {
+    return { success: false, message: `Agent "${agentName}" not found` };
+  }
+  if (!team) {
+    return { success: false, message: `Team "${teamName}" not found` };
+  }
+
+  // Update agent's team (in real app, this would update database)
+  agent.teamId = team.id;
+
+  return {
+    success: true,
+    message: `Successfully assigned ${agent.name} to ${team.name}`,
+    type: 'agent',
+    data: agent
+  };
+}
+
+async function handleUpdateRole(parsed: any, agents: any[]) {
+  const agentName = parsed.entity;
+  const newRole = parsed.details.role;
+
+  const agent = agents.find(a => a.name.toLowerCase().includes(agentName.toLowerCase()));
+
+  if (!agent) {
+    return { success: false, message: `Agent "${agentName}" not found` };
+  }
+
+  const validRoles = ['agent', 'supervisor', 'manager', 'admin'];
+  if (!validRoles.includes(newRole)) {
+    return { success: false, message: `Invalid role. Must be one of: ${validRoles.join(', ')}` };
+  }
+
+  // Update agent's role
+  agent.role = newRole;
+
+  return {
+    success: true,
+    message: `Successfully changed ${agent.name}'s role to ${newRole}`,
+    type: 'agent',
+    data: agent
+  };
+}
+
+async function handleCreateTeam(parsed: any, teams: any[], accountId: number) {
+  const teamName = parsed.entity || 'New Team';
+
+  // Check if team already exists
+  const exists = teams.find(t => t.name.toLowerCase() === teamName.toLowerCase());
+  if (exists) {
+    return { success: false, message: `Team "${teamName}" already exists` };
+  }
+
+  const newTeam = {
+    id: teams.length + 1,
+    name: teamName,
+    description: parsed.details.description || `Team created via AI command`,
+    accountId: accountId || 1
+  };
+
+  teams.push(newTeam);
+
+  return {
+    success: true,
+    message: `Successfully created team "${teamName}"`,
+    type: 'team',
+    data: newTeam
+  };
+}
+
+async function handleCreateAgent(parsed: any, agents: any[], accountId: number) {
+  const agentName = parsed.entity || 'New Agent';
+  const email = parsed.details.email || `${agentName.toLowerCase().replace(/\s+/g, '.')}@example.com`;
+
+  const newAgent = {
+    id: agents.length + 1,
+    name: agentName,
+    email: email,
+    role: parsed.details.role || 'agent',
+    availability_status: 'offline',
+    accountId: accountId || 1
+  };
+
+  agents.push(newAgent);
+
+  return {
+    success: true,
+    message: `Successfully created agent "${agentName}"`,
+    type: 'agent',
+    data: newAgent
+  };
 }

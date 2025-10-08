@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { autoImportAttachedAssets } from './rag/autoImport.js';
 
 interface CacheData {
   cases: any[];
@@ -39,7 +40,13 @@ export async function initializeCache(): Promise<void> {
     const loadTime = Date.now() - startTime;
     console.log(`✅ Cache initialized successfully in ${loadTime}ms`);
     console.log(`📁 Cached ${cases.length} cases, ${trends.length} trends, ${attachedAssets.length} chars of assets`);
-    
+
+    // Auto-import attached_assets to RAG vector store
+    // This runs asynchronously in the background (don't await)
+    autoImportAttachedAssets().catch(err => {
+      console.error("❌ Auto-import to RAG failed:", err);
+    });
+
   } catch (error) {
     console.error("❌ Failed to initialize cache:", error);
     // Set empty cache to prevent crashes
@@ -81,18 +88,17 @@ export async function refreshCache(): Promise<void> {
  */
 async function readAttachedAssets(): Promise<string> {
   try {
+    // Dynamically import pdf-parse to avoid loading test files at startup
     let pdfParse: any = null;
     try {
-      const mod = await import('pdf-parse');
-      pdfParse = (mod as any).default || (mod as any);
-      if (typeof pdfParse !== 'function') {
-        pdfParse = null;
-        console.log("📋 PDF-parse not a valid function, skipping PDF files");
-      }
+      const pdfModule = await import('pdf-parse');
+      // pdf-parse exports as default in CommonJS
+      pdfParse = pdfModule.default || pdfModule;
+      console.log("📋 PDF-parse loaded successfully");
     } catch (err) {
       console.log("📋 PDF-parse not available, skipping PDF files");
     }
-    
+
     const assetsDir = path.join(process.cwd(), 'attached_assets');
     
     try {
@@ -107,7 +113,7 @@ async function readAttachedAssets(): Promise<string> {
         console.log(`📁 Caching attached_assets: ${supportedFiles.length} files found (${supportedFiles.join(', ')})`);
         
         const contents = await Promise.all(
-          supportedFiles.slice(0, 8).map(async f => {
+          supportedFiles.slice(0, 25).map(async f => {
             const filePath = path.join(assetsDir, f);
             let content = "";
             
@@ -119,8 +125,8 @@ async function readAttachedAssets(): Promise<string> {
                 content = pdfData.text || "";
                 console.log(`📋 PDF cached: ${f} (${content.length} characters)`);
               } else if (f.endsWith('.pdf') && !pdfParse) {
-                content = `[PDF-tiedosto ${f} - tarvitsee pdf-parse kirjastoa]`;
-                console.log(`⚠️ Skipping PDF ${f} - pdf-parse not available`);
+                content = `[PDF file ${f} - requires pdf-parse library]`;
+                console.log(`⚠️ Skipping PDF ${f} - pdf-parse not loaded`);
               } else {
                 // Read text file
                 content = await fs.readFile(filePath, 'utf-8');

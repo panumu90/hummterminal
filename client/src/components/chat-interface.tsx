@@ -19,6 +19,7 @@ interface ChatMessage {
   content: string;
   isUser: boolean;
   timestamp: number;
+  isWelcome?: boolean;
 }
 
 type ContextType = "strategic" | "practical" | "finnish" | "planning" | "technical" | "mcp" | "general";
@@ -41,6 +42,134 @@ interface TopicArea {
 
 // Pre-written responses for quick questions (no API call)
 const preWrittenResponses: Record<string, string> = {
+  "faq-10m-goal": `**Miten saavutamme 10M€ liikevaihdon?**
+
+Kolme skenaariota 10M€ tavoitteeseen:
+
+**Vaihtoehto A: Orgaaninen kasvu + AI**
+• Kasvata henkilöstö 52 → 150 hlöä
+• AI tehostaa tuottavuutta 66% → €67k/hlö
+• Tulos: 150 hlöä × €67k = €10M
+
+**Vaihtoehto B: Hybridimalli (suositeltu)**
+• 100 ihmistä @ €80k/hlö = €8M
+• AI-palvelut (autonomiset agentit) = €2M
+• Tulos: €10M, matalammat henkilöstökustannukset
+
+**Vaihtoehto C: AI-first**
+• 60 ihmistä @ €100k/hlö = €6M
+• AI-pohjaiset palvelut = €4M
+• Tulos: €10M, korkein kannattavuus
+
+**Aikataulu**: 24-36 kuukautta onnistuneella AI-implementaatiolla.`,
+
+  "faq-ai-cost-roi": `**Paljonko AI-transformaatio maksaa ja mikä on ROI?**
+
+**Investoinnit:**
+• Vuosi 1: €200-500k (teknologia, henkilöstö, koulutus)
+• Vuosi 2: €100-200k (skaalaus, optimointi)
+
+**ROI-odotus:**
+• Takaisinmaksuaika: 18-24 kuukautta
+• Kustannussäästöt: 20-30% vuonna 2
+• Tuottavuuden kasvu: 50-66%
+
+**Konkreettiset hyödyt:**
+• Operatiiviset kustannukset: -30%
+• Asiakaskontaktit/tunti: +13.8%
+• Puhelinkäsittely: +45% nopeampi
+• Henkilöstön tuottavuus: €41k → €67k/hlö
+
+**Bottom line**: €500k investointi voi tuottaa €1.5-2M lisäarvoa vuodessa.`,
+
+  "faq-ai-start": `**Mistä aloitamme AI-implementaation?**
+
+**Vaihe 1: Lyhyt aikaväli (0-6 kk)**
+1. **Pilottiprojekti**: Valitse 1-2 use casea
+   • FAQ-chat (nopea voitto)
+   • Statustiedustelut (helppo automatisoida)
+
+2. **Teknologiavalinta**: Arvioi alustat
+   • OpenAI GPT-4
+   • Anthropic Claude
+   • Azure OpenAI
+
+3. **Mittaristo**: Määrittele KPI:t
+   • Asiakastyytyväisyys
+   • Vastausajat
+   • Kustannussäästöt
+   • Tarkkuus/virheprosentti
+
+4. **Tiimi**: Rekrytoi/kouluta
+   • 1-2 AI-kehittäjää
+   • Kouluta nykyinen henkilöstö
+
+**Kriittiset menestystekijät:**
+• Aloita pienestä, skaalaa nopeasti
+• Mittaa kaikkea
+• Ota henkilöstö mukaan alusta lähtien
+• Asiakaskokemus etusijalle`,
+
+  "faq-ai-use-cases": `**Mitkä ovat AI:n tärkeimmät käyttökohteet Hummille?**
+
+**1. Autonomiset asiakaspalvelu-agentit**
+• 24/7 saatavuus ilman henkilöstökustannuksia
+• FAQ, statustiedustelut, peruskyselyt
+• Potentiaali: 40-60% yhteydenotoista automatisoitavissa
+
+**2. Älykkäät työkalut henkilöstölle**
+• AI-assistentit monimutkaisiin tapauksiin
+• Automaattinen tiivistelmät ja raportit
+• Ehdotukset ratkaisuihin historiadata pohjalta
+
+**3. Ennakoiva asiakaspalvelu**
+• AI tunnistaa ongelmia ennen yhteydenottoa
+• Proaktiiviset ratkaisut
+• Vähentää palvelupyyntöjä 15-25%
+
+**4. Back office -automaatio**
+• Laskutus, raportointi, dokumentaatio
+• Workflow-automaatio
+• Kustannussäästö: 30-40%
+
+**5. Analytics & insights**
+• Reaaliaikainen asiakasdata-analyysi
+• Trendit ja ennusteet
+• Päätöksenteon tuki johdolle
+
+**Prioriteetti**: Aloita kohdista 1 ja 3 (nopeat voitot), sitten 2 ja 4.`,
+
+  "faq-risks": `**Mitkä ovat suurimmat riskit ja miten ne hallitaan?**
+
+**Teknologiariskit:**
+❌ Riski: AI-mallien tarkkuus ja luotettavuus
+✅ Hallinta: Perusteellinen testaus, ihminen loopissa, jatkuva monitorointi
+
+❌ Riski: Integraatiokompleksisuus
+✅ Hallinta: MCP-protokolla, standardoidut rajapinnat, pilotit ensin
+
+❌ Riski: Tietoturva ja GDPR
+✅ Hallinta: Roolipohjainen pääsynhallinta, audit trail, compliance-tarkistukset
+
+**Liiketoimintariskit:**
+❌ Riski: Asiakasvastarinta AI-palveluille
+✅ Hallinta: Hybridimalli (AI + ihminen), selkeä viestintä, valinnanvapaus
+
+❌ Riski: Kilpailijoiden nopea kehitys
+✅ Hallinta: Aloita nyt, iteroi nopeasti, jatkuva innovaatio
+
+❌ Riski: Rekrytointihaasteet
+✅ Hallinta: Kouluta nykyistä henkilöstöä, partneroinnit, ulkoiset konsultit
+
+**Taloudelliset riskit:**
+❌ Riski: ROI-tavoitteiden saavuttaminen
+✅ Hallinta: Selkeät mittarit, vaiheistettu investointi, pilotit ennen skaalaa
+
+❌ Riski: Kassavirran hallinta
+✅ Hallinta: €200-500k alkuinvestointi, pienet inkrementit, nopeat voitot
+
+**Riskienhallintastrategia**: Fail fast, learn fast, scale fast.`,
+
   "roi-measurement": `**AI-investoinnin ROI asiakaspalvelussa - Konkreettinen mittaaminen**
 
 Humm Group voi mitata AI-investoinnin arvoa näillä keskeisillä mittareilla:
@@ -83,44 +212,6 @@ Humm Group voi mitata AI-investoinnin arvoa näillä keskeisillä mittareilla:
 4. **Customer Lifetime Value (CLV)**: AI:n vaikutus asiakkaiden elinkaariarvoon`,
 
   "cx-trends-2025": `**2025 suurimmat CX-trendit ja AI:n rooli**
-
-### 🎯 **1. Hyperpersonointi (Hyper-personalization)**
-- **Mitä**: Jokaiselle asiakkaalle räätälöity kokemus reaaliajassa
-- **AI:n rooli**: Analysoi asiakkaan historian, käyttäytymisen ja kontekstin → personoidut suositukset
-- **Humm-esimerkki**: AI tunnistaa, että asiakas X avaa aina tiketit maanantaiaamuisin klo 8-9 → proaktiivinen viesti sunnuntai-iltana: "Hei! Huomasimme, että tavallisesti tarvitset apua maanantaiaamuisin. Tässä pikaohjeet..."
-
-### ⚡ **2. Proaktiivinen asiakaspalvelu**
-- **Mitä**: Asiakaspalvelu ottaa yhteyttä ennen kuin asiakas huomaa ongelman
-- **AI:n rooli**: Ennakoiva analytiikka (predictive analytics) + automaattiset hälytykset
-- **Humm-esimerkki**: AI havaitsee, että asiakkaan järjestelmässä on epänormaali virhelokin kasvu → lähettää proaktiivisen viestin ja korjausohjeet ennen kuin asiakas ilmoittaa ongelmasta
-
-### 🤖 **3. Agentic AI (Itsenäiset AI-agentit)**
-- **Mitä**: AI-agentit, jotka osaavat ratkaista monimutkaisempia ongelmia itsenäisesti
-- **Ero chatbottiin**: Chatbot vastaa kysymyksiin | AI-agentti tekee toimenpiteitä (luo tikettejä, päivittää CRM:ää, aloittaa prosesseja)
-- **Humm-esimerkki**: Asiakkaan laskutusongelma → AI-agentti tarkistaa CRM:n, havaitsee virheellisen laskun, korjaa sen automaattisesti ja ilmoittaa asiakkaalle
-
-### 🔮 **4. Ennustava asiakaskokemus (Predictive CX)**
-- **Mitä**: AI ennustaa asiakkaiden tarpeita ennen kuin he itse tietävät
-- **AI:n rooli**: Koneoppimismallit analysoivat historiaa ja käyttäytymistä
-- **Humm-esimerkki**: AI havaitsee kuvion: "Asiakkaat, jotka käyttävät ominaisuutta Y, tarvitsevat 80% todennäköisyydellä apua ominaisuudessa Z 3 päivän sisällä" → proaktiivinen ohjeistus
-
-### 🎤 **5. Multimodaalinen asiakaspalvelu**
-- **Mitä**: Asiakkaat voivat vaihtaa kanavaa kesken keskustelun (chat → puhelin → email) ilman toistamista
-- **AI:n rooli**: Yhtenäinen kontekstin hallinta + puheentunnistus (ASR) + sentimenttianalyysi
-- **Humm-esimerkki**: Asiakas aloittaa chatissa, AI havaitsee turhautumisen sentimenttianalyysilla → tarjoaa puhelinsoiton + siirtää kaikki tiedot agentille automaattisesti
-
-### 🛡️ **6. Privacy-First AI (Tietosuojakeskeinen AI)**
-- **Mitä**: Asiakkaat vaativat läpinäkyvyyttä siitä, mitä AI tekee heidän datalleen
-- **AI:n rooli**: Selittävä AI (Explainable AI) + MCP-protokolla turvallisiin integraatioihin
-- **Humm-esimerkki**: AI:n jokaisen vastauksen yhteydessä näkyy: "Hain tietoa CRM:stä (asiakastiedot), ERP:stä (tilausstatus), ja tukikannasta (ratkaisuhistoria)"
-
-### 📊 **Hummin toimenpiteet 2025**
-✅ **Q1 2025**: Hyperpersonointi käyttöön (segmenttikohtaiset AI-mallit)
-✅ **Q2 2025**: Proaktiivinen asiakaspalvelu (ennakoivat hälytykset)
-✅ **Q3 2025**: Agentic AI (itsenäiset AI-agentit tikettien käsittelyyn)
-✅ **Q4 2025**: Multimodaalinen CX (chat + puhelin + email yhtenäisesti)`,
-
-  "cx-trends-2025-featured": `**2025 suurimmat CX-trendit ja AI:n rooli**
 
 ### 🎯 **1. Hyperpersonointi (Hyper-personalization)**
 - **Mitä**: Jokaiselle asiakkaalle räätälöity kokemus reaaliajassa
@@ -634,7 +725,431 @@ Ennen AI-projektia:
 
 ✅ **GDPR-compliance**: Vältetään €20M sakot
 ✅ **Asiakasluottamus**: "Meillä on tietosuoja kunnossa"
-✅ **Tehokkuus**: Ei datasiiloja → paremmat AI-tulokset`
+✅ **Tehokkuus**: Ei datasiiloja → paremmat AI-tulokset`,
+
+  "hyperpersonalization-trend": `**🎯 Hyperpersonointi mullistaa asiakaskokemuksen - Hummin strateginen mahdollisuus**
+
+### **Mikä on hyperpersonointi?**
+
+Hyperpersonointi on perinteisen personoinnin seuraava evoluutio. Se yhdistää tekoälyn, reaaliaikaisen datan ja syvän kontekstin ymmärryksen luodakseen ainutlaatuisen, juuri sinulle räätälöidyn kokemuksen.
+
+Kyse ei ole enää vain siitä, että AI muistaa nimesi - vaan siitä, että se **ymmärtää sinua**:
+- 🤖 **Ennustava älykkyys** - AI tietää mitä tarvitset ennen kuin kysyt
+- 📊 **Reaaliaikainen tilannetaju** - Reagoi siihen mitä tapahtuu juuri nyt
+- 🎭 **Syväkontekstin hallinta** - Muistaa historian, tunnistaa tunnelman
+- ⚡ **Saumaton kokemus** - Ei enää "odottakaa hetki, tarkistan..."
+
+**Käytännön esimerkki Hummille:**
+
+Asiakas Mikko avaa chat-ikkunan. AI tunnistaa välittömästi:
+- Historia: Aikaisempi vuorovaikutus, kysymysten tyyppi
+- Konteksti: Juuri tehty tilaus, todennäköinen kysymys
+- Tunnetila: Nopea kirjoitustyyli → kiireinen, haluaa nopean vastauksen
+- Tarve: Todennäköisimmin kysyy toimitusajasta tai seurannasta
+
+AI aloittaa proaktiivisesti: *"Hei Mikko! Näen että tilasit juuri äsken. Toimitusaika on muutama arkipäivä, ja saat seurantakoodin sähköpostiin kun paketti lähtee. Oliko tämä mitä hait vai voinko auttaa jossain muussa?"*
+
+Mikko ei joudu selittämään tilannettaan - järjestelmä jo tietää.
+
+### **💰 Liiketoimintavaikutus Hummille**
+
+**Nykytilanne:**
+- Yleispalvelu: Sama kokemus kaikille
+- Asiakkaat toistavat tietojaan uudelleen ja uudelleen
+- Vastausajat hitaita, koska kontekstin selvittäminen vie aikaa
+- Asiakastyytyväisyys hyvä, mutta ei poikkeuksellinen
+
+**Hyperpersonoinnin jälkeen:**
+- **Liikevaihdon kasvu**: Merkittävä nousu kun asiakkaat pysyvät ja ostavat enemmän
+- **Asiakaspysyvyys**: Huomattava parannus - asiakkaat eivät vaihda kilpailijalle
+- **Tyytyväisyys**: Siirrytään "hyvästä" "erinomaiseen" - asiakkaat kertovat muille
+- **Upsell-mahdollisuudet**: AI tunnistaa oikeat hetket lisämyynnille luonnollisesti
+- **Suositteluindeksi**: Merkittävä nousu - asiakkaat suosittelevat aktiivisesti
+
+**Investoinnin tuotto:**
+Hyperpersonointi vaatii alkuinvestoinnin AI-alustaan, datan integrointiin ja järjestelmien yhteensopivuuteen. Tuotto näkyy jo ensimmäisenä vuonna merkittävänä kasvuna asiakastyytyväisyydessä, pysyvyydessä ja myynnissä.
+
+### **🛠️ Teknologiastack hyperpersonointiin**
+
+**1. Data-keruu**
+- CRM (asiakashistoria, demografiat)
+- Support-järjestelmä (tikettien historia)
+- Web analytics (käyttäytyminen sivulla)
+- Email/chat-historia
+
+**2. AI-moottorit**
+- **Ennustemalli**: Mitä asiakas todennäköisesti kysyy?
+- **Sentiment analysis**: Mikä on tunnelma?
+- **Recommendation engine**: Mitä ehdottaa?
+- **NLP**: Ymmärtää yksilölliset tavat ilmaista asiat
+
+**3. Personointi-logiikka**
+- Asiakassegmentit (VIP, uusi, riski-churn, happy)
+- Real-time scoring (miten tärkeä yhteydenotto?)
+- Konteksti (kellonai ka, laite, kanava)
+- A/B-testaus (mikä toimii kenellekin?)
+
+### **📈 Vaiheistettu toteutus Hummille**
+
+**Vaihe 1: Perus-personointi (Q2)**
+- Järjestelmä muistaa asiakkaan nimen ja historian
+- Agentit näkevät kontekstin välittömästi
+- Automaattinen tervehdys mukautettu tilanteen mukaan
+- **Alkuinvestointi** AI-työkaluihin ja integraatioihin
+- **Tulokset**: Asiakastyytyväisyys ja reagointinopeus paranevat selvästi
+
+**Vaihe 2: Ennakoiva personointi (Q3-Q4)**
+- AI alkaa ennustaa mitä asiakas kysyy
+- Suositellut vastaukset valmiina agentille
+- Proaktiiviset viestit: "Tilauksesi viivästyy, pahoittelut!"
+- **Kehitysinvestointi** ennakoiviin malleihin
+- **Tulokset**: Tyytyväisyys jatkaa nousuaan, asiakaspysyvyys paranee
+
+**Vaihe 3: Täysi hyperpersonointi (2026)**
+- Äänensävy ja viestintätyyli mukautettu jokaiselle
+- Kanavavalinnat optimoitu (chat / puhelin / email)
+- Upsell-tarjoukset yksilöllisiä ja luonnollisia
+- **Skaalausvaihe** - laajennetaan koko asiakaskuntaan
+- **Tulokset**: Huippuluokan asiakaskokemus, vahva kilpailuetu
+
+### **🎯 Kilpailuetu**
+
+**Miksi juuri nyt on oikea aika?**
+- 🕐 **Aikaikkunan hyödyntäminen**: Kilpailijat eivät vielä tee tätä Suomessa systemaattisesti
+- 💪 **Hummin vahvuus**: Tunnette asiakkaanne jo hyvin - rakennusainekset ovat olemassa
+- 🚀 **Teknologian kypsyminen**: AI-työkalut ovat nyt saavutettavia ja helppokäyttöisiä
+- 📊 **Selkeä mittaaminen**: Vaikutukset näkyvät suoraan tyytyväisyydessä ja liiketoiminnassa
+
+**Todellisia esimerkkejä maailmalta:**
+- **Amazon**: 35% myynnistä tulee personoiduista suosituksista
+- **Netflix**: 80% katsotusta sisällöstä personoitu
+- **Spotify**: Discover Weekly -personointi lisäsi käyttöaikaa 24%
+- **Sephora**: Hyperpersonointi nosti konversiota 11%
+
+### **⚠️ Riskit ja haasteet**
+
+**1. Yksityisyys**
+- ❌ Riski: "Liian tunkeileva", "Big Brother" -tunne
+- ✅ Ratkaisu: Täysi läpinäkyvyys, asiakkaalla aina kontrolli, GDPR-yhteensopivuus
+
+**2. Data-laatu**
+- ❌ Riski: Huono data tuottaa huonoja suosituksia
+- ✅ Ratkaisu: Data-siivous ensin, ihminen pysyy päätöksenteon ytimessä
+
+**3. Monimutkaisuus**
+- ❌ Riski: Liian monimutkainen hallita ja ylläpitää
+- ✅ Ratkaisu: Aloitetaan yksinkertaisesta, kasvatetaan orgaanisesti
+
+### **💡 Yhteenveto**
+
+**Hyperpersonointi EI ole tulevaisuutta - se on NYT.**
+
+Hummilla on kaikki edellytykset menestyä:
+✅ Vahva asiakasdata jo olemassa
+✅ Sitoutuneet asiakkaat jotka luottavat teihin
+✅ Motivoitunut tiimi halukas oppimaan
+✅ Selkeä kasvutavoite ja visio
+
+**Seuraavat konkreettiset askeleet:**
+1. Kartoita olemassa oleva data (CRM, tukijärjestelmä, chat-historiat)
+2. Valitse pilottiryhmä uskollisista asiakkaista
+3. Rakenna ja testaa prototyyppi nopeasti
+4. Mittaa vaikutus systemaattisesti (CSAT, NPS, retention)
+5. Skaalaa onnistuneet mallit koko asiakaskuntaan
+
+**Tavoite**: Olla Suomen tunnetuin ja arvostetuin hyperpersonoidun asiakaspalvelun edelläkävijä.`,
+
+  "proactive-service-trend": `**⚡ Proaktiivinen asiakaspalvelu - Vuoden 2025 megatrendi**
+
+### **Mikä on proaktiivinen asiakaspalvelu?**
+
+Perinteinen malli: Asiakas ottaa yhteyttä → Yritys reagoi
+**Proaktiivinen malli: Yritys havaitsee ongelman → Ottaa yhteyttä ensin**
+
+**Esimerkki Hummille:**
+- AI havaitsee: Asiakkaan laskutus on viivästynyt 2 päivää
+- Järjestelmä lähettää automaattisesti: *"Hei Minna! Huomasimme että laskusi on myöhässä. Haluatko että jatketaan maksuaikaa? Klikkaa tästä."*
+- Asiakas: Ei tarvinnut soittaa, ongelma ratkaistu ennen kuin se ärsytti
+
+### **📊 Miksi juuri nyt on proaktiivisuuden aika?**
+
+**Kolme muutosvoimaa:**
+
+1. **AI on saavuttanut kypsyystason**
+   - Modernit mallit (GPT-4, Claude Sonnet) ymmärtävät kontekstin syvällisesti
+   - Ennustemallit ovat luotettavia ja tarkkoja
+   - Reaaliaikainen data-analyysi on tehokasta ja saavutettavaa
+
+2. **Asiakkaiden odotukset ovat evoluoituneet**
+   - Tottunut Amazonin ja Netflixin ennakoivaan palveluun
+   - Turhautuu jos joutuu toistamaan tietojaan
+   - Arvostaa yrityksiä jotka "muistavat ja ymmärtävät"
+
+3. **Kilpailuetu on mitattavissa**
+   - Proaktiiviset yritykset saavat merkittävästi paremmat asiakastyytyväisyyspisteet
+   - Asiakkaiden pysyvyys paranee huomattavasti
+   - Lisämyyntimahdollisuudet kasvavat luonnollisesti
+
+### **💰 Liiketoimintavaikutus Hummille**
+
+**Visio: Proaktiivinen palvelu käyttöön tänä vuonna**
+
+**Kustannushyödyt:**
+- **Tikettien määrä vähenee**: Ongelmat ratkaistaan ennen kuin asiakas ehtii ottaa yhteyttä
+- **Skaalautuvuus**: Kasvu ei vaadi yhtä paljon henkilöstölisäystä
+- **Tehokkuus**: Merkittäviä säästöjä vuositasolla
+
+**Tuottohyödyt:**
+- **Asiakaspysyvyys paranee**: Asiakkaat pysyvät tyytyväisinä ja uskollisina
+- **Lisämyynti kasvaa**: Proaktiiviset tarjoukset oikeaan aikaan
+- **Brändi vahvistuu**: "Premium-palvelu" tuo hinnoitteluvoimaa
+- **Kokonaisvaikutus**: Merkittävä positiivinen vaikutus liikevaihtoon
+
+**Investoinnin tuotto:**
+Alkuinvestointi AI-alustaan, integraatioihin ja testaukseen tuottaa ensimmäisenä vuonna merkittävän tuoton sekä säästöinä että lisätuloina.
+
+### **🛠️ Tekninen toteutus**
+
+**1. Data-lähteet**
+- CRM: Asiakkaan historia, segmentit
+- Support: Tiketit, chat-historia
+- Product: Käyttödata, lokit, virheet
+- Finance: Laskutus, maksut, viivästykset
+
+**2. AI-moottorit**
+- **Anomaly detection**: Tunnistaa poikkeamat (esim. viivästynyt maksu)
+- **Predictive analytics**: Ennustaa churn-riski
+- **Sentiment analysis**: Tunnistaa turhautunut asiakas
+- **Recommendation engine**: Mitä tarjota proaktiivisesti?
+
+**3. Toimintalogiikka**
+
+Esimerkkejä proaktiivisista triggereistä:
+- Jos asiakkaan maksu myöhässä + aikaisemmin ollut ongelmia → Lähetä: "Hei, huomasimme ongelman. Voimme auttaa."
+- Jos asiakas ei ole kirjautunut 30 päivään + VIP-asiakas → Lähetä: "Hei, kaipaamme sinua! Tässä -20% koodi."
+- Jos asiakkaan käyttö laskenut 40% + turhautunut chat-historia → Soita: "Hei, haluamme varmistaa että kaikki on kunnossa."
+
+### **📈 Vaiheistettu toteutus**
+
+**Vaihe 1: Yksinkertaiset automaatiot (Q2)**
+- Automaattinen viesti jos lasku myöhässä
+- Proaktiivinen "Kiitos tilauksesta" -vahvistus
+- **Alkuinvestointi** perustriggereihin
+- **Tulokset**: Tikettimäärä laskee selvästi
+
+**Vaihe 2: AI-ennusteet (Q3-Q4)**
+- Churn-riski ennustaminen → Soitto ennen irtisanomista
+- Upsell-tilaisuudet → Personoitu tarjous oikeaan aikaan
+- **Kehitysinvestointi** ennustaviin malleihin
+- **Tulokset**: Tikettimäärä laskee edelleen, pysyvyys paranee
+
+**Vaihe 3: Täysi älyautomaatio (2026)**
+- AI päättää autonomisesti milloin ja miten ottaa yhteyttä
+- Kanavavalinnat optimoidaan asiakaskohtaisesti (chat / puhelin / email)
+- **Ylläpitovaihe** - jatkuva kehitys ja optimointi
+- **Tulokset**: Minimaalinen tikettimäärä, maksimaalinen asiakaspysyvyys
+
+### **🎯 Case-esimerkit**
+
+**1. Nordea (Suomi)**
+- Proaktiivinen ilmoitus: "Tilisi saldo on alhainen"
+- Tulos: 15% vähennys tukipuheluissa
+
+**2. Elisa (Suomi)**
+- Proaktiivinen viesti: "Datasi on käytössä 90%, haluatko lisää?"
+- Tulos: +18% data-lisäpakettien myynti
+
+**3. Alibaba (Kiina)**
+- AI ennustaa asiakkaan kysymyksen ennen chatin avaamista
+- Tulos: 95% tiketeistä automatisoitu
+
+**4. Amazon**
+- "Tilauksesi viivästyy" - viesti lähetetään ennen kuin asiakas huomaa
+- Tulos: 22% parempi CSAT kuin reaktiivinen palvelu
+
+### **⚠️ Sudenkuopat**
+
+**1. "Liian tunkeileva"**
+- ❌ Väärä: Lähetetään viestejä liikaa
+- ✅ Oikein: Anna asiakkaan valita tiheys (asetukset)
+
+**2. "Väärät ennusteet"**
+- ❌ Väärä: AI ehdottaa vääriä asioita → ärsyttää
+- ✅ Oikein: Ihminen loopissa, varmista tarkkuus 85%+
+
+**3. "Kallis ylläpito"**
+- ❌ Väärä: Monimutkainen järjestelmä → vaikea hallita
+- ✅ Oikein: Aloita yksinkertaisista triggereistä, kasvata asteittain
+
+### **💡 Yhteenveto: Miksi Hummin pitää toimia JUURI NYT**
+
+**Aikaikkunan hyödyntäminen:**
+- Kilpailijat eivät vielä tee tätä systemaattisesti Suomessa
+- Asiakkaat odottavat tätä (tottuneet Amazonin ja Netflixin tasoon)
+- Teknologia on saavuttanut kypsyystason ja on saavutettavissa
+
+**Visio vuodelle 2026:**
+- Merkittävä osa tiketeistä hoidetaan proaktiivisesti
+- Asiakaspysyvyys paranee dramaattisesti
+- Asiakastyytyväisyys nousee huippuluokkaan
+- Suositteluindeksi kasvaa voimakkaasti
+
+**Seuraavat konkreettiset askeleet:**
+1. Listatkaa 10 tärkeintä käyttötapausta (esim. laskun viivästyminen, tilausstatukset)
+2. Rakentakaa nopea prototyyppi yhdelle käyttötapaukselle
+3. Testatkaa pienellä pilottiryhmällä uskollisia asiakkaita
+4. Skaalatkaa onnistuneet mallit koko asiakaskuntaan vaiheittain`,
+
+  "cx-trends-2025-featured": `**📈 2025 suurimmat CX-trendit ja AI:n rooli - Strateginen näkemys**
+
+Olemme 2025 käännekohdassa: AI ei ole enää "kokeilu" vaan "pakollinen". Tässä trendit jotka määrittävät voittajat ja häviäjät:
+
+### **🔥 Top 5 CX-trendit 2025**
+
+#### **1. Hyperpersonointi (AI-pohjainen)**
+- **Mitä**: Jokainen asiakas saa ainutlaatuisen, juuri hänelle räätälöidyn kokemuksen
+- **AI:n rooli**: Analysoi dataa reaaliajassa, ennustaa tarpeet ennen kysymistä
+- **Vaikutus Hummille**: Asiakastyytyväisyys nousee merkittävästi, lisämyynti kasvaa luonnollisesti
+- **Esimerkit**: Netflix (personoidut ehdotukset), Spotify (Discover Weekly)
+
+#### **2. Proaktiivinen asiakaspalvelu**
+- **Mitä**: Yritys ratkaisee ongelman ennen kuin asiakas edes huomaa sen
+- **AI:n rooli**: Tunnistaa anomaliat automaattisesti, lähettää varoituksen ja ratkaisun
+- **Vaikutus**: Tukipyyntöjen määrä laskee huomattavasti, asiakaspysyvyys paranee
+- **Esimerkit**: Amazon ("Paketti viivästyy"), Nordea ("Tilisi saldo alhainen")
+
+#### **3. Ääni- ja video-AI (uusi kanava)**
+- **Mitä**: AI kommunikoi puheella, ei pelkästään tekstillä
+- **AI:n rooli**: Reaaliaikainen puheentunnistus, tunneanalyysi, luonnolliset vastaukset
+- **Vaikutus**: Puhelut automatisoituvat merkittävästi, odotusajat lyhenevät dramaattisesti
+- **Esimerkit**: Google Duplex, ElevenLabs (voice cloning)
+
+#### **4. Emotional AI (tunnepohjainen)**
+- **Mitä**: AI tunnistaa asiakkaan tunnetilan ja mukautuu sen mukaan
+- **AI:n rooli**: Tunneanalyysi, empatia-painotteiset vastaukset
+- **Vaikutus**: Tyytyväisyys kasvaa, eskalointien määrä laskee selvästi
+- **Esimerkit**: Hume AI (emotion recognition), Affectiva
+
+#### **5. Autonomiset AI-agentit**
+- **Mitä**: AI hoitaa kokonaisia prosesseja itsenäisesti alusta loppuun
+- **AI:n rooli**: Ei vain vastaa kysymyksiin, vaan "tekee asioita" (esim. käsittelee palautuksen)
+- **Vaikutus**: Valtaosa tiketeistä automatisoituu, skaalautuvuus kasvaa moninkertaiseksi
+- **Esimerkit**: Shopify Sidekick, Intercom Fin
+
+### **💡 Miksi nämä trendit ovat KRIITTISIÄ Hummille?**
+
+**Nykytilanne:**
+- Asiakastyytyväisyys hyvällä tasolla, mutta ei poikkeuksellinen
+- Manuaalinen työ hallitsee operatiivista toimintaa
+- Skaalautuminen vaatii merkittäviä henkilöstöresursseja
+
+**Jos Humm EI reagoi muutokseen:**
+- Kilpailijat ottavat AI:n käyttöön ja nostavat rimaa
+- Asiakkaiden odotukset kasvavat (Amazon, Netflix asettavat standardin)
+- Kustannusrakenne ei tue kasvutavoitteita
+- **Tulos: Jäädään jälkeen kilpailussa, kasvu hidastuu**
+
+**Jos Humm johtaa muutosta:**
+- Hyperpersonointi → Asiakastyytyväisyys nousee merkittävästi
+- Proaktiivisuus → Tikettimäärä laskee huomattavasti
+- Ääni-AI → Automaatio kasvaa voimakkaasti
+- Emotional AI → Asiakaspysyvyys paranee selvästi
+- Autonomiset agentit → Skaalautuvuus moninkertaistuu
+- **Tulos: Vahva kasvu sekä liikevaihdossa että kannattavuudessa**
+
+### **🛠️ Teknologiastack 2025**
+
+**Frontend (Asiakasrajapinta):**
+- **Chat**: OpenAI GPT-4 Turbo / Anthropic Claude
+- **Voice**: ElevenLabs (voice synthesis), Whisper (transkriptio)
+- **Sentiment**: Hume AI, Azure Cognitive Services
+
+**Backend (AI-moottori):**
+- **Orchestration**: LangChain, Semantic Kernel
+- **Vector DB**: Pinecone, Weaviate (asiakasdata)
+- **Analytics**: Mixpanel, Amplitude (CX-mittarit)
+
+**Integraatiot:**
+- **CRM**: Salesforce, HubSpot (asiakashistoria)
+- **Support**: Zendesk, Intercom (tiketti-historia)
+- **MCP-protokolla**: Turvallinen pääsy dataan
+
+### **📊 Benchmarkit: Mitä kilpailijat tekevät?**
+
+**Suomi:**
+- **Elisa**: AI-chat (GPT-4), 40% tiketeistä automatisoitu
+- **Nordea**: Proaktiiviset ilmoitukset, -15% tukipyynnöt
+- **OP**: Ääni-AI testissä, tavoite 60% automaatio 2026
+
+**Kansainväliset:**
+- **Zendesk**: Fin AI → 70-80% tiketeistä autonomisesti
+- **Intercom**: Fin AI + Copilot → +40% agent-tuottavuus
+- **Shopify**: Sidekick AI-agentti → 3x liikevaihdon kasvu ilman henkilöstölisäystä
+
+**Hummin tilanne:**
+- Olemme jäljessä Suomessa
+- Mutta: Pienempi organisaatio = ketterämpi
+- **Mahdollisuus: Ohittaa suuremmat kilpailijat 12-18 kuukaudessa**
+
+### **🎯 Strateginen roadmap Hummille**
+
+**Q2: Perusta**
+- Chat-AI käyttöön (GPT-4 / Claude)
+- Yksinkertainen personointi asiakashistorian perusteella
+- **Alkuinvestointi** AI-alustaan ja integraatioihin
+- **Tavoite**: Merkittävä osa tiketeistä automatisoituu
+
+**Q3-Q4: Skaalaus**
+- Hyperpersonointi täyteen käyttöön
+- Proaktiivinen palvelu aktivoituu
+- Ääni-AI pilotoidaan valituilla asiakkailla
+- **Kehitysinvestointi** edistyneempiin ominaisuuksiin
+- **Tavoite**: Automaatio kattaa yli puolet operaatioista
+
+**2026: Edelläkävijyys**
+- Emotional AI tunnistaa ja reagoi tunnetiloihin
+- Autonomiset agentit hoitavat kokonaisia prosesseja
+- Ympärivuorokautinen AI-pohjainen palvelu
+- **Ylläpito ja jatkokehitys**
+- **Tavoite**: Laaja automaatio, voimakas liikevaihdon kasvu**
+
+### **⚠️ Riskit**
+
+**1. Liian nopea skaalaus**
+- ❌ Väärä: Kaikki kerralla → chaos
+- ✅ Oikein: Vaiheittainen, pilotit ensin
+
+**2. Asiakasvastarinta**
+- ❌ Väärä: "AI hoitaa kaiken" → asiakkaat tyytymättömiä
+- ✅ Oikein: Hybridimalli (AI + ihminen valittavissa)
+
+**3. Henkilöstön vastarinta**
+- ❌ Väärä: "AI korvaa työntekijät" → pelko
+- ✅ Oikein: "AI avustaa" → työtyytyväisyys nousee
+
+### **💡 Yhteenveto: Miksi juuri nyt on ratkaiseva hetki**
+
+**Kolme kriittistä tekijää:**
+
+1. **Teknologia on saavuttanut kypsyystason**: GPT-4, Claude, ElevenLabs ja muut ratkaisut ovat tuotantovalmiita ja luotettavia
+2. **Asiakkaat odottavat enemmän**: Amazon ja Netflix ovat asettaneet uuden standardin - asiakkaat odottavat samaa kaikilta
+3. **Aikaikkunan hyödyntäminen**: Nyt on hetki erottua - ennen kuin kaikki kilpailijat tekevät samaa
+
+**Hummin strateginen valinta:**
+- **Polku A**: Odottaminen ja reaktiivinen toiminta → Jäädään jälkeen kilpailussa
+- **Polku B**: Proaktiivinen muutosjohtajuus nyt → Edelläkävijäasema markkinalla
+
+**Visio vuodelle 2026:**
+- Olla Suomen tunnistetuin modernin asiakaskokemuksen edelläkävijä
+- Vahva kasvu sekä liikevaihdossa että kannattavuudessa
+- Huippuluokan asiakastyytyväisyys ja -suosittelut
+
+**Seuraavat konkreettiset askeleet:**
+1. Valitse yksi pilottitrendi (suositus: Hyperpersonointi tai Proaktiivinen palvelu)
+2. Rakenna nopea prototyyppi todellisilla asiakkailla
+3. Testaa pienellä pilottiryhmällä uskollisia asiakkaita
+4. Mittaa systemaattisesti vaikutukset (tyytyväisyys, pysyvyys, liiketoiminta)
+5. Skaalaa onnistuneet mallit asteittain koko asiakaskuntaan`
 };
 
 // MCP (Model Context Protocol) - TÄRKEÄ!
@@ -677,6 +1192,49 @@ const mcpQuestions: QuestionButton[] = [
 ];
 
 const topicAreas: TopicArea[] = [
+  {
+    id: "leadership-faq",
+    title: "⭐ Suositut kysymykset johdolle",
+    icon: Star,
+    color: "bg-gradient-to-r from-blue-600 to-emerald-600",
+    questions: [
+      {
+        id: "faq-10m-goal",
+        question: "Miten saavutamme 10M€ liikevaihdon?",
+        category: "leadership",
+        icon: Target,
+        color: "bg-blue-600"
+      },
+      {
+        id: "faq-ai-cost-roi",
+        question: "Paljonko AI-transformaatio maksaa ja mikä on ROI?",
+        category: "leadership",
+        icon: DollarSign,
+        color: "bg-emerald-600"
+      },
+      {
+        id: "faq-ai-start",
+        question: "Mistä aloitamme AI-implementaation?",
+        category: "leadership",
+        icon: Rocket,
+        color: "bg-purple-600"
+      },
+      {
+        id: "faq-ai-use-cases",
+        question: "Mitkä ovat AI:n tärkeimmät käyttökohteet Hummille?",
+        category: "leadership",
+        icon: Zap,
+        color: "bg-orange-600"
+      },
+      {
+        id: "faq-risks",
+        question: "Mitkä ovat suurimmat riskit ja miten ne hallitaan?",
+        category: "leadership",
+        icon: Shield,
+        color: "bg-red-600"
+      }
+    ]
+  },
   {
     id: "trends-2025",
     title: "🚀 Trendit 2025",
@@ -1088,14 +1646,25 @@ export function ChatInterface() {
                          question.category.includes('roi') || question.category.includes('strategy') ? 'strategic' :
                          question.category.includes('automation') || question.category.includes('practical') ? 'practical' : 'general';
 
-      // Set up modal with initial user message
+      // Set up modal with proactive welcome message
       setCurrentQuestion(question.question);
       setCurrentQuestionContext(contextType);
-      setModalMessages([{
-        content: question.question,
-        isUser: true,
-        timestamp: Date.now()
-      }]);
+
+      // Add welcome message and user question
+      setModalMessages([
+        {
+          content: "👋 **Tervetuloa!**\n\nYmmärrän että kysyt: **" + question.question.toLowerCase() + "**\n\nAnna minun analysoida tämä Hummin näkökulmasta ja tarjota konkreettisia vastauksia...",
+          isUser: false,
+          isWelcome: true,
+          timestamp: Date.now()
+        },
+        {
+          content: question.question,
+          isUser: true,
+          timestamp: Date.now() + 100
+        }
+      ]);
+
       setModalInputValue("");
       setModalFollowUpSuggestions([]);
       setAiModalOpen(true);
@@ -1104,8 +1673,8 @@ export function ChatInterface() {
 
       // Check if we have a pre-written response
       if (preWrittenResponses[questionId]) {
-        // Use pre-written response with streaming effect
-        simulateStreamingResponse(preWrittenResponses[questionId]);
+        // Use pre-written response with streaming effect and follow-up suggestions
+        simulateStreamingResponseWithFollowUp(preWrittenResponses[questionId], questionId);
       } else {
         // Fall back to API call for questions without pre-written responses
         modalChatMutation.mutate({ message: question.question, context_type: contextType });
@@ -1160,6 +1729,107 @@ export function ChatInterface() {
 
     // Cleanup function
     return () => clearInterval(interval);
+  };
+
+  // Simulate streaming with follow-up suggestions
+  const simulateStreamingResponseWithFollowUp = (fullResponse: string, questionId: string) => {
+    // Add empty AI message that will be filled character by character
+    setModalMessages(prev => [...prev, {
+      content: "",
+      isUser: false,
+      timestamp: Date.now()
+    }]);
+
+    let currentIndex = 0;
+    const charsPerTick = 20;
+
+    const interval = setInterval(() => {
+      currentIndex += charsPerTick;
+
+      if (currentIndex >= fullResponse.length) {
+        clearInterval(interval);
+        setModalMessages(prev => {
+          const newMessages = [...prev];
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1] = {
+              content: fullResponse,
+              isUser: false,
+              timestamp: Date.now()
+            };
+          }
+          return newMessages;
+        });
+
+        // Add follow-up suggestions after streaming completes
+        const followUps = getFollowUpQuestions(questionId);
+        setTimeout(() => {
+          setModalFollowUpSuggestions(followUps);
+        }, 500);
+      } else {
+        setModalMessages(prev => {
+          const newMessages = [...prev];
+          if (newMessages.length > 0) {
+            newMessages[newMessages.length - 1] = {
+              content: fullResponse.substring(0, currentIndex),
+              isUser: false,
+              timestamp: Date.now()
+            };
+          }
+          return newMessages;
+        });
+      }
+    }, 25);
+
+    return () => clearInterval(interval);
+  };
+
+  // Get contextual follow-up questions based on the original question
+  const getFollowUpQuestions = (questionId: string): string[] => {
+    const followUpMap: Record<string, string[]> = {
+      "hyperpersonalization-trend": [
+        "Miten voimme käytännössä toteuttaa hyperpersonointia Hummilla?",
+        "Millaista dataa tarvitsemme hyperpersonointiin?",
+        "Mikä on hyperpersonoinnin ROI ensimmäisenä vuonna?",
+        "Mitkä ovat suurimmat riskit hyperpersonoinnissa?"
+      ],
+      "proactive-service-trend": [
+        "Miten tunnistamme asiakkaiden tarpeet ennen yhteydenottoa?",
+        "Mitä teknologioita tarvitaan proaktiiviseen palveluun?",
+        "Kuinka paljon proaktiivinen palvelu vähentää tukipyyntöjä?",
+        "Miten mittaamme proaktiivisen palvelun onnistumista?"
+      ],
+      "cx-trends-2025-featured": [
+        "Mitkä CX-trendeistä ovat kriittisimpiä Hummille?",
+        "Miten pysymme kilpailijoiden edellä CX:ssä?",
+        "Mitä CX-investointeja pitäisi priorisoida?",
+        "Kuinka AI muuttaa CX-strategiaamme?"
+      ],
+      "roi-measurement": [
+        "Mitä KPI:ta pitää seurata AI-investoinnissa?",
+        "Kuinka nopeasti näemme ROI:n AI-projektista?",
+        "Mitkä ovat hidden costit AI-implementaatiossa?",
+        "Miten vertaamme eri AI-ratkaisujen ROI:ta?"
+      ],
+      "reduce-manual-work": [
+        "Mitkä prosessit kannattaa automatisoida ensimmäisenä?",
+        "Kuinka paljon automaatio maksaa vs. säästää?",
+        "Miten henkilöstö reagoi automaatioon?",
+        "Mitä automaation jälkeen tapahtuu vapautuneelle ajalle?"
+      ],
+      "data-quality": [
+        "Miten parannamme data-laatua ennen AI-projektia?",
+        "Mitä GDPR vaatii AI-käytössä?",
+        "Miten varmistamme datan turvallisuuden?",
+        "Kuka vastaa datan laadusta organisaatiossa?"
+      ]
+    };
+
+    return followUpMap[questionId] || [
+      "Kerro lisää tästä aiheesta",
+      "Mitkä ovat seuraavat askeleet?",
+      "Mitä riskejä tähän liittyy?",
+      "Kuinka paljon tämä maksaa?"
+    ];
   };
 
   const toggleExpanded = () => {

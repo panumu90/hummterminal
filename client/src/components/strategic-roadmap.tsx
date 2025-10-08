@@ -44,7 +44,10 @@ import {
   Award,
   ChevronDown,
   Info,
-  GripVertical
+  GripVertical,
+  Sparkles,
+  Send,
+  Loader2
 } from "lucide-react";
 
 interface Category {
@@ -133,10 +136,12 @@ function SortableCategory({ category, onClick }: { category: Category; onClick: 
 
 const StrategicRoadmap = () => {
   const [expandedPhase, setExpandedPhase] = useState<string | null>("phase1");
-  const [isEditMode, setIsEditMode] = useState(false);
   const [phases, setPhases] = useState<RoadmapPhase[]>([]);
   const [secretModalOpen, setSecretModalOpen] = useState(false);
   const [streamedText, setStreamedText] = useState("");
+  const [aiInput, setAiInput] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [aiResponse, setAiResponse] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -146,14 +151,14 @@ const StrategicRoadmap = () => {
   );
 
   // Secret content to stream
-  const secretContent = `Tein laskelmat open source - ratkaisu chatwoot + n8n + llm vs SaaS.
-Määritin tarkasti kaikki muuttujat ja tein oletuksen, että, jos saavutetaan täysi autonomia ja jäljelle jää human oversight.
+  const secretContent = `Tein laskelmat hybridiratkaisu Chatwoot + n8n + Claude API vs SaaS.
+Määritin tarkasti kaikki muuttujat ja tein oletuksen, että jos saavutetaan täysi autonomia ja jäljelle jää human oversight.
 
-Säästöt ovat valtavia. Vaikka toteuttaisiin one-click järjestelmä aluksi, mikä onkin fiksuin tapa -- Agentic AI helpottaa sovelluskehitystä niin, että ainoa järkevä ratkaisu on siirtyä open sourceen.
+Säästöt ovat valtavia. Vaikka toteuttaisiin one-click järjestelmä aluksi, mikä onkin fiksuin tapa -- Agentic AI helpottaa sovelluskehitystä niin, että ainoa järkevä ratkaisu on käyttää avointa alustaa (Chatwoot/n8n) ja parasta LLM:ää (Claude API).
 
 Ja mielestäni järkevintä olisi käyttää vapautuvat henkilöstöresurssit tekoäly-palvelukokonaisuuksien myyntiin ja panostaa siihen, että myös hummin omat asiakkaat hyötyisivät tästä mahdollisuudesta.
 
-Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikevaihto jo kahdessa vuodessa. Se vaatii vain tulevalta teknologiajohtajalta ymmärrystä siitä miten suuresta potentiaalista tässä on kyse -- vaikka internetistäkin muodostui aikoinaan kupla, oli se silti 'the most disruptive thing in our modern history' tähän teknologiaan perehtyneenä, ammattilaisia kuulleena... Noh, hype sikseen -- Haluan vielä verrata tätä internettiin, koska silloinkin  syntyi paljon www.dotcom - yrityksiä, joilla ei ollut mitään oikeaa arvoa, mutta ne näyttivät oikeilta. Tästä syystä painotan jatkuvaa seurantaa, muuten on säilyä voittajana.`;
+Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikevaihto viidessä vuodessa (2026-2030). Se vaatii vain tulevalta teknologiajohtajalta ymmärrystä siitä miten suuresta potentiaalista tässä on kyse -- vaikka internetistäkin muodostui aikoinaan kupla, oli se silti 'the most disruptive thing in our modern history' tähän teknologiaan perehtyneenä, ammattilaisia kuulleena... Noh, hype sikseen -- Haluan vielä verrata tätä internettiin, koska silloinkin syntyi paljon www.dotcom - yrityksiä, joilla ei ollut mitään oikeaa arvoa, mutta ne näyttivät oikeilta. Tästä syystä painotan jatkuvaa seurantaa, muuten on säilyä voittajana.`;
 
   // Typewriter effect
   useEffect(() => {
@@ -181,7 +186,7 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
   const phasesData: RoadmapPhase[] = [
     {
       id: "phase1",
-      quarter: "2025 Q1-Q2",
+      quarter: "2026 Q1-Q2",
       title: "Perusta & Nopeat Voitot",
       revenue: "€2.1M → €2.5M",
       margin: "-0.2% → +8%",
@@ -293,7 +298,7 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
     },
     {
       id: "phase2",
-      quarter: "2025 Q3-Q4",
+      quarter: "2026 Q3-Q4",
       title: "Skaalautuvuus & Kasvu",
       revenue: "€2.5M → €3.2M",
       margin: "8% → 12%",
@@ -401,7 +406,7 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
     },
     {
       id: "phase3",
-      quarter: "2026-2027",
+      quarter: "2027-2028",
       title: "Markkinajohtajuus",
       revenue: "€3.2M → €7.2M",
       margin: "12% → 28%",
@@ -509,7 +514,7 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
     },
     {
       id: "phase4",
-      quarter: "2028+",
+      quarter: "2029-2030",
       title: "AI-Natiivi Yritys",
       revenue: "€7.2M → €10M+",
       margin: "28% → 32%+",
@@ -666,48 +671,163 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
     }
   };
 
+  // Handle AI input submission
+  const handleAiSubmit = async () => {
+    if (!aiInput.trim() || isProcessing) return;
+
+    setIsProcessing(true);
+    setAiResponse("");
+
+    try {
+      const response = await fetch('/api/ai/roadmap-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt: aiInput,
+          currentRoadmap: phases
+        }),
+      });
+
+      if (!response.ok) throw new Error('AI request failed');
+
+      const data = await response.json();
+
+      // Update phases with AI suggestions
+      if (data.updatedPhases) {
+        setPhases(data.updatedPhases);
+      }
+
+      setAiResponse(data.explanation || "Roadmap päivitetty onnistuneesti!");
+      setAiInput("");
+    } catch (error) {
+      console.error('AI update error:', error);
+      setAiResponse("Virhe AI-päivityksessä. Yritä uudelleen.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto p-6 space-y-6">
-      {/* Header - Minimalistic with Edit Button */}
+      {/* Header - Minimalistic */}
       <div className="text-center space-y-3 pb-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex-1" />
+        <div className="flex items-center justify-center mb-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 border border-slate-700/50">
             <Target className="w-4 h-4 text-blue-400" />
             <span className="text-sm text-slate-300">Strategic Roadmap</span>
           </div>
-          <div className="flex-1 flex flex-col items-end gap-2">
-            <Button
-              onClick={() => setIsEditMode(!isEditMode)}
-              size="sm"
-              variant={isEditMode ? "default" : "outline"}
-              className={isEditMode ? "bg-blue-600 hover:bg-blue-700" : ""}
-            >
-              {isEditMode ? "💾 Tallenna" : "✏️ Muokkaa"}
-            </Button>
-            
-            <Button
-              onClick={() => setSecretModalOpen(true)}
-              size="sm"
-              variant="outline"
-              className="group relative overflow-hidden border-purple-500/40 hover:border-purple-400/60 bg-purple-900/10 hover:bg-purple-900/20 text-purple-300 hover:text-purple-200 transition-all duration-200"
-              data-testid="secret-ace-button"
-            >
-              <Star className="w-3 h-3 mr-1.5" />
-              Vielä yksi ässä hihassa
-            </Button>
-          </div>
         </div>
-        
+
         <h1 className="text-3xl font-bold text-slate-100">
           Humm Group: AI Transformation
         </h1>
         <p className="text-slate-400 text-sm">
-          €2.1M → €10M+ | -0.2% → 32% margin | 2025-2028+
+          €2.1M → €10M+ | -0.2% → 32% margin | 2026-2030
         </p>
-        <p className="text-white text-sm italic mt-2">
-          Huom: Tämä roadmap ei välttämättä edusta tämänhetkistä ajatustani. Tarkennan ajatusmaailmaani perjantaina, sitten re-publish.
-        </p>
+      </div>
+
+      {/* AI Roadmap Editor */}
+      <div className="mb-6 p-6 rounded-xl bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-slate-900/40 border border-purple-500/30 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2.5 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500">
+            <Sparkles className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-white">AI Roadmap Editor</h3>
+            <p className="text-xs text-slate-400">Muokkaa roadmappia dynaamisesti AI:n avulla</p>
+          </div>
+          <Button
+            onClick={() => setSecretModalOpen(true)}
+            size="sm"
+            variant="outline"
+            className="ml-auto group relative overflow-hidden border-purple-500/40 hover:border-purple-400/60 bg-purple-900/10 hover:bg-purple-900/20 text-purple-300 hover:text-purple-200 transition-all duration-200"
+            data-testid="secret-ace-button"
+          >
+            <Star className="w-3 h-3 mr-1.5" />
+            Ässä hihassa
+          </Button>
+        </div>
+
+        <div className="space-y-3">
+          <div className="relative">
+            <textarea
+              value={aiInput}
+              onChange={(e) => setAiInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                  handleAiSubmit();
+                }
+              }}
+              placeholder="Esim: 'Lisää quantum computing phase 4:ään' tai 'Päivitä teknologiat vastaamaan 2026 tilannetta' tai 'Muuta aikajana aggressiivisemmaksi'"
+              className="w-full px-4 py-3 bg-slate-800/50 border border-slate-600/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 resize-none transition-all"
+              rows={3}
+              disabled={isProcessing}
+            />
+            <div className="absolute bottom-3 right-3 flex items-center gap-2">
+              <span className="text-xs text-slate-500">⌘/Ctrl + Enter</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              {aiResponse && (
+                <div className={`text-sm px-3 py-1.5 rounded-md ${
+                  aiResponse.includes('Virhe')
+                    ? 'bg-red-500/10 text-red-300 border border-red-500/30'
+                    : 'bg-green-500/10 text-green-300 border border-green-500/30'
+                }`}>
+                  {aiResponse}
+                </div>
+              )}
+            </div>
+            <Button
+              onClick={handleAiSubmit}
+              disabled={!aiInput.trim() || isProcessing}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Prosessoidaan...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Päivitä Roadmap
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-4 pt-4 border-t border-slate-700/50">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setAiInput("Lisää uusin GPT-5 teknologia kaikkiin vaiheisiin")}
+              className="text-xs px-3 py-1.5 rounded-md bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+            >
+              💡 Päivitä AI-teknologiat
+            </button>
+            <button
+              onClick={() => setAiInput("Tee aikajanasta aggressiivisempi, tavoite 2 vuotta aiemmin")}
+              className="text-xs px-3 py-1.5 rounded-md bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+            >
+              ⚡ Aggressiivisempi aikataulu
+            </button>
+            <button
+              onClick={() => setAiInput("Lisää kestävyys ja ESG-tavoitteet jokaiseen vaiheeseen")}
+              className="text-xs px-3 py-1.5 rounded-md bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+            >
+              🌱 ESG-fokus
+            </button>
+            <button
+              onClick={() => setAiInput("Analysoi riskit ja lisää mitigaatiostrategiat")}
+              className="text-xs px-3 py-1.5 rounded-md bg-slate-700/50 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+            >
+              🛡️ Riskianalyysi
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Roadmap Timeline - Map-like */}
@@ -787,62 +907,38 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
                       ))}
                     </div>
 
-                    {/* Categories - Drag and Drop Grid */}
+                    {/* Categories Grid */}
                     <div className="p-4 pt-0">
-                      {isEditMode && (
-                        <div className="mb-3 p-2 rounded bg-blue-500/10 border border-blue-500/30 text-xs text-blue-300 flex items-center gap-2">
-                          <GripVertical className="w-3 h-3" />
-                          Muokkaa järjestystä raahaamalla GripVertical-kuvakkeesta
-                        </div>
-                      )}
-                      <DndContext
-                        sensors={sensors}
-                        collisionDetection={closestCenter}
-                        onDragEnd={(event: DragEndEvent) => handleDragEnd(event, phase.id)}
-                      >
-                        <SortableContext
-                          items={phase.categories.map(c => c.id)}
-                          strategy={verticalListSortingStrategy}
-                        >
-                          <div className="grid md:grid-cols-2 gap-3">
-                            {phase.categories.map((category) => {
-                              const Icon = category.icon;
-                              return (
-                                <Dialog key={category.id}>
-                                  <DialogTrigger asChild>
-                                    {isEditMode ? (
-                                      <div>
-                                        <SortableCategory
-                                          category={category}
-                                          onClick={() => {}}
-                                        />
-                                      </div>
-                                    ) : (
-                                      <motion.button
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="group relative p-4 rounded-lg bg-slate-800/40 border border-slate-700/50 hover:border-slate-600 transition-all text-left overflow-hidden"
-                                      >
-                                        {/* Subtle gradient background */}
-                                        <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
+                      <div className="grid md:grid-cols-2 gap-3">
+                        {phase.categories.map((category) => {
+                          const Icon = category.icon;
+                          return (
+                            <Dialog key={category.id}>
+                              <DialogTrigger asChild>
+                                <motion.button
+                                  whileHover={{ scale: 1.02 }}
+                                  whileTap={{ scale: 0.98 }}
+                                  className="group relative p-4 rounded-lg bg-slate-800/40 border border-slate-700/50 hover:border-slate-600 transition-all text-left overflow-hidden"
+                                >
+                                  {/* Subtle gradient background */}
+                                  <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-10 transition-opacity`} />
 
-                                        <div className="relative flex items-start gap-3">
-                                          <div className={`p-2 rounded-lg bg-gradient-to-br ${category.color}`}>
-                                            <Icon className="w-4 h-4 text-white" />
-                                          </div>
-                                          <div className="flex-1 min-w-0">
-                                            <h3 className="font-medium text-slate-200 text-sm mb-1 line-clamp-1">
-                                              {category.name}
-                                            </h3>
-                                            <p className="text-xs text-slate-400 line-clamp-2">
-                                              {category.description}
-                                            </p>
-                                          </div>
-                                          <Info className="w-4 h-4 text-slate-500 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        </div>
-                                      </motion.button>
-                                    )}
-                                  </DialogTrigger>
+                                  <div className="relative flex items-start gap-3">
+                                    <div className={`p-2 rounded-lg bg-gradient-to-br ${category.color}`}>
+                                      <Icon className="w-4 h-4 text-white" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <h3 className="font-medium text-slate-200 text-sm mb-1 line-clamp-1">
+                                        {category.name}
+                                      </h3>
+                                      <p className="text-xs text-slate-400 line-clamp-2">
+                                        {category.description}
+                                      </p>
+                                    </div>
+                                    <Info className="w-4 h-4 text-slate-500 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  </div>
+                                </motion.button>
+                              </DialogTrigger>
 
                             {/* Category Modal - Same as before */}
                             <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-slate-900 border-slate-700">
@@ -957,16 +1053,14 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
                               </Tabs>
                             </DialogContent>
                           </Dialog>
-                                );
-                              })}
-                            </div>
-                          </SortableContext>
-                        </DndContext>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
             );
           })}
         </div>
@@ -1066,11 +1160,11 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
                 <div className="flex items-start gap-2">
                   <Zap className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-semibold text-slate-200">Langchain + Open LLM</p>
-                    <p className="text-xs text-slate-400 mt-1">Mistral 7B (ilmainen) + RAG lokaaliin dataan</p>
+                    <p className="text-sm font-semibold text-slate-200">Chatwoot + Claude API</p>
+                    <p className="text-xs text-slate-400 mt-1">Claude 3.5 Sonnet + Haiku API + RAG lokaaliin dataan</p>
                     <div className="flex gap-1 mt-2">
-                      <Badge className="text-xs bg-emerald-500/10 text-emerald-400 border-emerald-500/30">Open Source</Badge>
-                      <Badge className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/30">Self-hosted</Badge>
+                      <Badge className="text-xs bg-blue-500/10 text-blue-400 border-blue-500/30">Paras LLM-laatu</Badge>
+                      <Badge className="text-xs bg-emerald-500/10 text-emerald-400 border-emerald-500/30">Avoin alusta</Badge>
                     </div>
                   </div>
                 </div>
@@ -1079,7 +1173,7 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
                 <div className="flex items-start gap-2">
                   <Bot className="w-4 h-4 text-cyan-400 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-semibold text-slate-200">Chatbot MVP (n8n + Mistral)</p>
+                    <p className="text-sm font-semibold text-slate-200">Chatbot MVP (Chatwoot + Claude)</p>
                     <p className="text-xs text-slate-400 mt-1">Ensimmäinen AI-assistentti FAQ:lle - 50% kyselyistä hoidettu</p>
                     <p className="text-xs text-green-400 mt-1">💰 Säästö: 15h/viikko</p>
                   </div>
@@ -1161,7 +1255,7 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
             <div className="space-y-2">
               <p className="text-xs text-slate-500 uppercase tracking-wider">AI/LLM</p>
               <div className="flex flex-wrap gap-2">
-                <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/30">Mistral 7B</Badge>
+                <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/30">Claude API</Badge>
                 <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/30">Langchain</Badge>
               </div>
             </div>
@@ -1182,11 +1276,11 @@ Strategiset lähtökohdat Hummilla on mielestäni saavuttaa 10 miljoonan liikeva
           </div>
           <div className="mt-4 pt-4 border-t border-slate-700/50 flex items-center justify-between">
             <div className="text-sm text-slate-400">
-              💡 <span className="font-semibold text-slate-300">Kustannustehokas strategia:</span> Open source + low-code = nopea toteutus pienellä tiimillä
+              💡 <span className="font-semibold text-slate-300">Hybridistrategia:</span> Avoimet alustat (Chatwoot/n8n) + paras LLM (Claude API) = tehokas ja laadukas
             </div>
             <div className="text-right">
-              <p className="text-xl font-bold text-green-400">€0</p>
-              <p className="text-xs text-slate-500">Lisenssikulut</p>
+              <p className="text-xl font-bold text-blue-400">€30K-80K/v</p>
+              <p className="text-xs text-slate-500">Claude API-kustannukset</p>
             </div>
           </div>
         </div>
