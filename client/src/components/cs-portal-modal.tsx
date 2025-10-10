@@ -310,8 +310,8 @@ export function CSPortalModal({ isOpen, onClose }: CSPortalModalProps) {
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="h-[calc(98vh-80px)] overflow-hidden">
+  {/* Main Content */}
+  <div className="h-[calc(98vh-80px)] overflow-auto">
           {/* 3-Column Grid Layout: Teams | Analytics | Agents */}
           <div className="grid grid-cols-[20%_50%_30%] h-full">
             {/* LEFT: Teams Panel */}

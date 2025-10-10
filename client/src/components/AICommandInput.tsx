@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Sparkles, UserPlus, Building2, Users, Send, Loader2 } from "lucide-react";
+import { Sparkles, UserPlus, Building2, Users, Send, Loader2, ChevronUp, ChevronDown } from "lucide-react";
 import type { AICommandResponse } from "../../../shared/types";
 
 interface AICommandInputProps {
   accountId: number | null;
-  onAgentCreated: () => void;
-  onClientCreated: () => void;
-  onTeamCreated: () => void;
+  // Callbacks may receive the created object as payload from parent modals
+  onAgentCreated: (agent?: any) => void;
+  onClientCreated: (client?: any) => void;
+  onTeamCreated: (team?: any) => void;
   onShowAgentModal: () => void;
   onShowClientModal: () => void;
   onShowTeamModal: () => void;
@@ -27,6 +28,8 @@ export function AICommandInput({
   const [isProcessing, setIsProcessing] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  // Collapse state to minimize input panel when viewport is short
+  const [collapsed, setCollapsed] = useState(false);
 
   const exampleCommands = [
     "Assign John to Support Team",
@@ -58,6 +61,38 @@ export function AICommandInput({
 
     return () => clearInterval(typeInterval);
   }, [placeholderIndex]);
+
+  // Auto-collapse on small viewports and restore from localStorage if present
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ai-command-collapsed');
+      if (saved !== null) {
+        setCollapsed(saved === 'true');
+        return;
+      }
+    } catch (e) {
+      // ignore localStorage errors
+    }
+
+    if (typeof window !== 'undefined') {
+      const h = window.innerHeight || 0;
+      // heuristics: if the viewport is shorter than 720px, collapse by default
+      if (h > 0 && h < 720) {
+        setCollapsed(true);
+      }
+    }
+  }, []);
+
+  const toggleCollapsed = () => {
+    setCollapsed((c) => {
+      try {
+        localStorage.setItem('ai-command-collapsed', (!c).toString());
+      } catch (e) {
+        // ignore
+      }
+      return !c;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,7 +153,53 @@ export function AICommandInput({
   ];
 
   return (
-    <div className="p-4 border-t border-slate-700/50 bg-gradient-to-br from-slate-900/50 to-blue-950/30 backdrop-blur-sm">
+    // Make the input panel sticky at the bottom so it stays visible on smaller screens
+    <div className="sticky bottom-0 z-30">
+      {collapsed ? (
+        // Floating collapsed bar centered above the viewport bottom so it's not hidden by OS taskbars
+        <div className="fixed left-1/2 bottom-6 z-50 -translate-x-1/2">
+          <div className="w-[min(960px,calc(100vw-32px))] mx-auto px-3">
+            <div className="flex items-center justify-between p-3 rounded-lg border border-slate-700/40 bg-gradient-to-br from-slate-900/70 to-blue-950/40 backdrop-blur-md shadow-lg">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-5 w-5 text-purple-400" />
+                <div>
+                  <div className="text-sm font-medium text-white">AI Assistant</div>
+                  <div className="text-xs text-white/60">Tap to expand</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleCollapsed}
+                  title="Show AI input"
+                  className="px-3 py-1.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-500 text-white hover:opacity-95 transition"
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="p-4 border-t border-slate-700/50 bg-gradient-to-br from-slate-900/50 to-blue-950/30 backdrop-blur-sm">
+          {/* Header with minimize control */}
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-purple-400" />
+              <div>
+                <div className="text-sm font-medium text-white">AI Assistant</div>
+                <div className="text-xs text-white/60">Quick commands and actions</div>
+              </div>
+            </div>
+            <div>
+              <button
+                onClick={toggleCollapsed}
+                title="Minimize AI input"
+                className="px-2 py-1 rounded-md bg-slate-800/50 text-white hover:bg-slate-800/70 transition"
+              >
+                <ChevronDown className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
       {/* Quick Actions */}
       <div className="mb-4">
         <p className="text-xs text-white/60 mb-2 font-medium">Quick Actions</p>
@@ -144,14 +225,14 @@ export function AICommandInput({
         </div>
       </div>
 
-      {/* AI Command Input */}
-      <div className="relative">
+  {/* AI Command Input */}
+  <div className="relative">
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="h-4 w-4 text-purple-400" />
           <p className="text-xs text-white/60 font-medium">AI Assistant</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="relative">
+  <form onSubmit={handleSubmit} className="relative">
           <div className="relative">
             <textarea
               value={command}
@@ -196,7 +277,7 @@ export function AICommandInput({
               )}
             </button>
           </div>
-        </form>
+  </form>
 
         {/* Example Commands */}
         <div className="mt-3 space-y-2">
@@ -236,5 +317,7 @@ export function AICommandInput({
         </div>
       </div>
     </div>
+    )}
+  </div>
   );
 }

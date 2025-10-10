@@ -500,16 +500,12 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
   const [jobApplicationOpen, setJobApplicationOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [followUpSuggestions] = useState<string[]>([
-    "Miten tunnistat teknologisen inflektiopisteen ennen kuin se näkyy markkinoilla?",
-    "Miten AI-transformaatio muuttaa Humm Groupin liiketoimintaa seuraavan 18 kuukauden aikana?",
-    "Mikä on konkreettisin todiste siitä, että osaat yhdistää teknologian ja liiketoiminta-arvon?",
-    "Millainen on 90 päivän roadmap Hummilla AI-transformaation käynnistämiseksi?",
-    "Kuinka päätät Build vs. Buy -tilanteessa (esim. Zendesk AI vs. N8N custom)?",
-    "Miksi käyttökate (EBITDA) on kriittinen KPI teknologiatiimin johtamisessa?",
-    "Miten makrotaloudellinen ymmärryksesi ohjaa teknisiä päätöksiäsi?",
-    "Miten omat kokemuksesi resilienssistä ovat muokanneet johtamistasi?",
-    "Mitä tarkoittaa AI-native organisaatio – ja miksi useimmat epäonnistuvat siinä?",
-    "Miten ansaitset tiimin ja johdon luottamuksen ensimmäisten 30 päivän aikana?"
+    "Ei johtamiskokemusta - miksi uskot pärjääväsi?",
+    "Vanhemmat kehittäjät kyseenalaistavat päätöksesi - mitä teet?",
+    "Miten erottaudut sadoista muista hakijoista?",
+    "Ensimmäinen tekninen päätös epäonnistuu - reagointisi?",
+    "Tiimi vastustaa AI-muutosta - strategiasi?",
+    "Miksi Hummin pitäisi ottaa riski kokemattomasta johtajasta?"
   ]);
   const { toast } = useToast();
 
@@ -589,19 +585,7 @@ function TechLeadModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
 
   // Helper function to match question to response key
   const getResponseKey = (question: string): string | null => {
-    const lowerQuestion = question.toLowerCase();
-
-    if (lowerQuestion.includes("inflektiopiste") || lowerQuestion.includes("teknologisen inflektiopisteen")) return "inflektiopiste";
-    if (lowerQuestion.includes("18 kuukauden") || lowerQuestion.includes("ai-transformaatio muuttaa")) return "18-kuukautta";
-    if (lowerQuestion.includes("konkreettisin todiste") || lowerQuestion.includes("demo")) return "demo-todiste";
-    if (lowerQuestion.includes("90 päivän roadmap") || lowerQuestion.includes("90 päivää")) return "90-paivaa";
-    if (lowerQuestion.includes("build vs") || lowerQuestion.includes("zendesk")) return "build-vs-buy";
-    if (lowerQuestion.includes("käyttökate") || lowerQuestion.includes("ebitda") || lowerQuestion.includes("kpi")) return "kayttokate-kpi";
-    if (lowerQuestion.includes("makrotaloud")) return "makrotalous";
-    if (lowerQuestion.includes("resilienssi") || lowerQuestion.includes("kokemuksesi resilienssistä")) return "resilienssi";
-    if (lowerQuestion.includes("ai-native") || lowerQuestion.includes("ai native")) return "ai-native";
-    if (lowerQuestion.includes("luottamus") || lowerQuestion.includes("30 päivän aikana")) return "luottamus-30-paivaa";
-
+    // Disabled - always use API for consistent, up-to-date responses
     return null;
   };
 

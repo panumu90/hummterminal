@@ -93,8 +93,15 @@ export async function autoImportAttachedAssets(): Promise<void> {
     let errorCount = 0;
     let totalChunks = 0;
 
+    // Prosessoi tiedostot prioriteetin mukaan (humm-complete-strategy.md ensin)
+    const prioritizedFiles = supportedFiles.sort((a, b) => {
+      if (a === 'humm-complete-strategy.md') return -1;
+      if (b === 'humm-complete-strategy.md') return 1;
+      return 0;
+    });
+
     // Prosessoi jokainen tiedosto
-    for (const filename of supportedFiles) {
+    for (const filename of prioritizedFiles) {
       // Skip Tech Lead exclusive files
       if (TECH_LEAD_EXCLUSIVE_FILES.includes(filename)) {
         console.log(`   ⏭️ Skipping ${filename} (Tech Lead exclusive - not for Main Chat or RAG)`);

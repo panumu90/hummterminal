@@ -11,17 +11,12 @@
  * - Right panel: Team board with drag-and-drop assignment
  * - Bulk actions: Assign role, add/remove from team
  * - Command palette (Ctrl/Cmd+K)
- * - Chatwoot integration (auto NO-OP if env vars missing)
  * - Mock data with localStorage persistence
  *
  * Tech: React 18 + TypeScript, HTML5 Drag & Drop, Tailwind CSS
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import {
-  updateAgentTeamDebounced,
-  updateAgentRoleDebounced,
-} from '../lib/chatwoot';
 
 // ============================================================================
 // Types
@@ -205,7 +200,7 @@ export default function AgentsSplitView() {
   const updateAgentTeam = useCallback(
     (agentId: string, newTeam: string) => {
       updateAgent(agentId, { team: newTeam });
-      updateAgentTeamDebounced(agentId, newTeam);
+      // TODO: Integrate with Chatwoot API when backend is ready
       showToast(`Moved agent to ${newTeam}`);
     },
     [updateAgent]
@@ -214,7 +209,7 @@ export default function AgentsSplitView() {
   const updateAgentRole = useCallback(
     (agentId: string, newRole: AgentRole) => {
       updateAgent(agentId, { role: newRole });
-      updateAgentRoleDebounced(agentId, newRole);
+      // TODO: Integrate with Chatwoot API when backend is ready
       showToast(`Updated role to ${newRole}`);
     },
     [updateAgent]

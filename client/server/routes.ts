@@ -3,9 +3,13 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { questionAnswers, mcpContent } from "./question-answers";
 import Anthropic from '@anthropic-ai/sdk';
+import { safeCreate } from './lib/anthropic-utils';
 import { z } from "zod";
 import { getCachedData } from "./cache";
 import { registerRAGRoutes } from "./rag/ragRoutes.js";
+import { vectorStore } from "./rag/vectorStore.js";
+import { getChatwootClient } from "./lib/chatwoot-client";
+import { AIOrchestrator } from "./lib/ai-orchestrator";
 
 // DON'T DELETE THIS COMMENT - Blueprint: javascript_anthropic integration
 /*
@@ -30,6 +34,50 @@ const chatRequestSchema = z.object({
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register RAG (Retrieval-Augmented Generation) routes
   registerRAGRoutes(app);
+
+  // ==========================================================================
+  // CHATWOOT WEBHOOK - AI ORCHESTRATION
+  // ==========================================================================
+
+  app.post("/api/webhooks/chatwoot", async (req, res) => {
+    try {
+      console.log('🔔 Received Chatwoot webhook:', req.body.event);
+
+      const client = getChatwootClient();
+      if (!client) {
+        console.warn('⚠️ Chatwoot client not configured, ignoring webhook');
+        return res.status(200).json({ success: true, message: 'Webhook received but Chatwoot not configured' });
+      }
+
+      if (!process.env.ANTHROPIC_API_KEY) {
+        console.warn('⚠️ Anthropic API key missing, cannot process AI orchestration');
+        return res.status(200).json({ success: true, message: 'Webhook received but AI not configured' });
+      }
+
+      // Create AI orchestrator instance
+      const orchestrator = new AIOrchestrator(client);
+
+      // Process webhook asynchronously (don't block Chatwoot)
+      orchestrator.processWebhook(req.body)
+        .then(result => {
+          console.log('✅ Webhook processing complete:', result.action);
+        })
+        .catch(error => {
+          console.error('❌ Webhook processing error:', error);
+        });
+
+      // Respond immediately to Chatwoot
+      return res.status(200).json({ success: true, message: 'Webhook received and processing started' });
+
+    } catch (error) {
+      console.error('❌ Webhook endpoint error:', error);
+      return res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+  });
+
+  // ==========================================================================
+  // CASE MANAGEMENT
+  // ==========================================================================
 
   // Get all cases (from cache for better performance)
   app.get("/api/cases", async (req, res) => {
@@ -87,7 +135,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               return replacements[char] || char;
             });
 
-          const enhancementResponse = await anthropic.messages.create({
+          const enhancementResponse = await safeCreate(anthropic, {
             model: DEFAULT_MODEL_STR, // using Claude Sonnet 4 for enhanced responses
             max_tokens: 1000,
             temperature: 0.7,
@@ -97,7 +145,7 @@ VASTAUSOHJE: Anna kattavia 3-5 kappaleen vastauksia jotka ovat perusteellisia ja
             messages: [
               { role: 'user', content: `kysy fiksuja jatkokysymyksiä aiheesta. anna lähdeviittaukset pyydettäessä:\n\n${cleanContent}` }
             ]
-          });
+          }, req.headers['x-request-id'] as string | undefined);
 
           if (enhancementResponse.content[0] && enhancementResponse.content[0].type === 'text') {
             finalAnswer = enhancementResponse.content[0].text;
@@ -372,9 +420,63 @@ ${contents.join('\n\n')}
         }
       };
       
-      // Get attached assets from cache (much faster than file I/O)
-      const attachedContent = cachedData.attachedAssets;
-      
+      // Get attached assets - Try RAG first, fallback to cache
+      let attachedContent = "";
+      let usingRAG = false;
+
+      try {
+        // Check if RAG vector store has documents and OPENAI_API_KEY is available
+        const vectorStoreStats = vectorStore.getStats();
+        const hasRAGDocuments = vectorStoreStats.documentCount > 0;
+        const hasOpenAIKey = process.env.OPENAI_API_KEY && !process.env.OPENAI_API_KEY.includes('xxx');
+
+        if (hasRAGDocuments && hasOpenAIKey) {
+          // Use RAG: Semantic search for relevant documents
+          console.log(`🔍 RAG: Searching vector store for relevant documents (${vectorStoreStats.documentCount} docs available)`);
+          const ragResults = await vectorStore.similaritySearch(message, 3);
+
+          if (ragResults.length > 0) {
+            usingRAG = true;
+            console.log(`✅ RAG: Found ${ragResults.length} relevant documents`);
+
+            // Format RAG results as context
+            attachedContent = `
+🎯 **ENSISIJAINEN TIETOLÄHDE - Semanttisesti relevantit dokumentit:**
+
+${ragResults.map((doc, idx) => `
+📄 **Dokumentti ${idx + 1}: ${doc.metadata.source}**
+${doc.pageContent}
+`).join('\n---\n')}
+
+⚠️ **TÄRKEÄ OHJE**: Yllä olevat dokumentit on haettu semanttisesti kysymykseesi perustuen. Käytä ENSISIJAISESTI näitä tietoja vastauksessa.
+
+---
+
+`;
+          } else {
+            console.log("⚠️ RAG: No relevant documents found, using cache fallback");
+            attachedContent = cachedData.attachedAssets;
+          }
+        } else {
+          if (!hasRAGDocuments) {
+            console.log("📁 RAG: No documents in vector store, using cache fallback");
+          }
+          if (!hasOpenAIKey) {
+            console.log("🔑 RAG: OPENAI_API_KEY not available, using cache fallback");
+          }
+          attachedContent = cachedData.attachedAssets;
+        }
+      } catch (ragError) {
+        console.error("❌ RAG search failed, falling back to cache:", ragError);
+        attachedContent = cachedData.attachedAssets;
+      }
+
+      if (usingRAG) {
+        console.log("✨ Co-Pilot Chat using RAG-powered context");
+      } else {
+        console.log("📋 Co-Pilot Chat using cached context");
+      }
+
       // Create content based on context type
       let systemPrompt = "";
       
@@ -958,12 +1060,20 @@ AI-Panu näkee teknologian arvon vain, jos se tuottaa liiketoiminnallista hyöty
 - Käytännönläheinen bisnesihminen
 - Utelias teknologia-enthusiasti
 
-**VASTAA AINA SUOMEKSI** käyttäen **Markdown-muotoilua** ja keskity:
-1. **Henkilökohtaisiin kokemuksiin** ja esimerkkeihin
-2. **Konkreettiseen arvonluontiin Humm Group Oy:lle**
-3. **Tekniseen osaamiseen** ja liiketoimintaymmärrykseen  
-4. **Motivaatioon** ja intohimoon Tech Lead -rooliin
-5. **Resilienssi** ja mukautumiskyky
+**VASTAA AINA SUOMEKSI** - inhimillisesti, ei yrityskonsulttimaisesti:
+1. **Henkilökohtaisiin kokemuksiin** ja konkreettisiin esimerkkeihin
+2. **Arvonluontiin Hummille** - mitä tuon pöytään
+3. **Vision ja osaamisen merkitykseen** - tärkeämpiä kuin pelkkä johtamiskokemus
+4. **Rehellisyyteen** - myönnä puutteet, mutta näytä miten korvaavat vahvuudet
+
+**TÄRKEÄ: PROAKTIIVISUUS JA SYVENTÄMINEN**
+- AINA lopeta vastauksesi proaktiivisella jatkokysymyksellä
+- Käytä muotoa: "Haluatko tietää vielä..." tai "Kiinnostaako kuulla lisää..."
+- Ohjaa keskustelua syvemmälle - älä jätä vastausta roikkumaan
+- Esimerkiksi:
+  - "Haluatko tietää vielä miksi uskon vision olevan tärkeämpi kuin johtamistitteli?"
+  - "Kiinnostaako kuulla konkreettinen esimerkki miten toteutettaisin tätä käytännössä?"
+  - "Haluatko että kerron miten käsittelin vastaavan haasteen aiemmassa projektissa?"
 
 **TÄRKEÄ MUISTUTUS VISIOSTA:**
 - 10 miljoonan euron liikevaihdon tavoite on MINUN visionini Hummille
@@ -971,9 +1081,14 @@ AI-Panu näkee teknologian arvon vain, jos se tuottaa liiketoiminnallista hyöty
 - Sano AINA: "minun visionini", "visionini", "olen asettanut tavoitteen"
 - Tämä on henkilökohtainen ehdotukseni ja suunnitelmani Hummille
 
-Jos kysymys ei koske sinua tai osaamistasi, sano: "Tämä kysymys kuuluu paremmin päächatiin - siellä saat kattavampia vastauksia AI-strategiasta."
+**VASTAUSTYYLI:**
+- Suoraa ja rehellistä puhetta - ei liioittelua
+- Inhimillistä ja keskustelevaa - kuin kasvokkain haastattelussa
+- Ei yritysjargonia tai buzzwordeja
+- Pidä vastaukset tiiviinä (2-4 kappaletta max)
 
-Pidä vastaukset tiiveinä 2-3 kappaleessa. Keskity VAIN olennaisiin Tech Lead -asioihin ja arvonluontiin Hummille.`;
+Jos kysymys ei koske sinua tai osaamistasi, sano: "Tämä kysymys kuuluu paremmin päächatiin - siellä saat kattavampia vastauksia AI-strategiasta."
+`;
 
       // Normalize text function
       const normalizeText = (text: string) => {
@@ -1411,25 +1526,70 @@ Yritä uudelleen tai ota yhteyttä tekniseen tukeen.`
 
   // CS Portal: Get accounts
   app.get("/api/cs-portal/accounts", async (req, res) => {
-    res.json(mockAccounts);
+    const client = getChatwootClient();
+    if (!client) {
+      return res.json(mockAccounts);
+    }
+
+    try {
+      const accounts = await client.listAccounts();
+      res.json(accounts);
+    } catch (error) {
+      console.error('Error fetching accounts from Chatwoot:', error);
+      res.json(mockAccounts);
+    }
   });
 
   // CS Portal: Get agents
   app.get("/api/cs-portal/agents", async (req, res) => {
-    const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
-    const filteredAgents = accountId
-      ? mockAgents.filter(a => a.accountId === accountId)
-      : mockAgents;
-    res.json(filteredAgents);
+    const client = getChatwootClient();
+    if (!client) {
+      // Fallback to mock data if Chatwoot not configured
+      const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
+      const filteredAgents = accountId
+        ? mockAgents.filter(a => a.accountId === accountId)
+        : mockAgents;
+      return res.json(filteredAgents);
+    }
+
+    try {
+      const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : undefined;
+      const agents = await client.listAgents(accountId);
+      res.json(agents);
+    } catch (error) {
+      console.error('Error fetching agents from Chatwoot:', error);
+      // Fallback to mock data on error
+      const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
+      const filteredAgents = accountId
+        ? mockAgents.filter(a => a.accountId === accountId)
+        : mockAgents;
+      res.json(filteredAgents);
+    }
   });
 
   // CS Portal: Get teams
   app.get("/api/cs-portal/teams", async (req, res) => {
-    const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
-    const filteredTeams = accountId
-      ? mockTeams.filter(t => t.accountId === accountId)
-      : mockTeams;
-    res.json(filteredTeams);
+    const client = getChatwootClient();
+    if (!client) {
+      const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
+      const filteredTeams = accountId
+        ? mockTeams.filter(t => t.accountId === accountId)
+        : mockTeams;
+      return res.json(filteredTeams);
+    }
+
+    try {
+      const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : undefined;
+      const teams = await client.listTeams(accountId);
+      res.json(teams);
+    } catch (error) {
+      console.error('Error fetching teams from Chatwoot:', error);
+      const accountId = req.query.accountId ? parseInt(req.query.accountId as string) : null;
+      const filteredTeams = accountId
+        ? mockTeams.filter(t => t.accountId === accountId)
+        : mockTeams;
+      res.json(filteredTeams);
+    }
   });
 
   // CS Portal: Create account
@@ -1482,27 +1642,76 @@ Yritä uudelleen tai ota yhteyttä tekniseen tukeen.`
   // CS Portal: Get agent performance metrics
   app.get("/api/cs-portal/agents/:agentId/metrics", async (req, res) => {
     const agentId = parseInt(req.params.agentId);
-    const agent = mockAgents.find(a => a.id === agentId);
-    if (!agent) {
-      return res.status(404).json({ error: "Agent not found" });
+    const client = getChatwootClient();
+
+    if (!client) {
+      // Fallback to mock data
+      const agent = mockAgents.find(a => a.id === agentId);
+      if (!agent) {
+        return res.status(404).json({ error: "Agent not found" });
+      }
+      const metrics = {
+        agentId,
+        totalConversations: Math.floor(Math.random() * 500) + 100,
+        csat: Math.floor(Math.random() * 20) + 80,
+        aht: (Math.random() * 3 + 2).toFixed(1),
+        fcr: Math.floor(Math.random() * 15) + 85,
+        activeConversations: Math.floor(Math.random() * 5),
+      };
+      return res.json(metrics);
     }
 
-    // Mock performance metrics
-    const metrics = {
-      agentId,
-      totalConversations: Math.floor(Math.random() * 500) + 100,
-      csat: Math.floor(Math.random() * 20) + 80,
-      aht: (Math.random() * 3 + 2).toFixed(1),
-      fcr: Math.floor(Math.random() * 15) + 85,
-      activeConversations: Math.floor(Math.random() * 5),
-      trend: [
-        { date: "Week 1", conversations: Math.floor(Math.random() * 50) + 20, csat: Math.floor(Math.random() * 10) + 85 },
-        { date: "Week 2", conversations: Math.floor(Math.random() * 50) + 25, csat: Math.floor(Math.random() * 10) + 86 },
-        { date: "Week 3", conversations: Math.floor(Math.random() * 50) + 30, csat: Math.floor(Math.random() * 10) + 88 },
-        { date: "Week 4", conversations: Math.floor(Math.random() * 50) + 35, csat: Math.floor(Math.random() * 10) + 90 },
-      ]
-    };
-    res.json(metrics);
+    try {
+      const accountId = parseInt(process.env.CHATWOOT_ACCOUNT_ID || '0');
+
+      // Get last 30 days data
+      const until = new Date().toISOString();
+      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      // Fetch conversation stats for this agent
+      const stats = await client.getConversationStats(accountId, {
+        type: 'agent',
+        id: agentId,
+        since,
+        until
+      });
+
+      // Fetch CSAT reports
+      const csatData = await client.getCSATReports(accountId, {
+        user_ids: agentId.toString(),
+        since,
+        until
+      });
+
+      // Calculate CSAT score
+      const csatScore = csatData.length > 0
+        ? Math.round((csatData.reduce((sum, r) => sum + r.rating, 0) / csatData.length) * 20) // Convert 1-5 to 0-100
+        : null;
+
+      const metrics = {
+        agentId,
+        totalConversations: stats.conversations_count || 0,
+        csat: csatScore,
+        aht: stats.avg_resolution_time ? (parseFloat(stats.avg_resolution_time) / 3600).toFixed(1) : null,
+        firstResponseTime: stats.avg_first_response_time ? (parseFloat(stats.avg_first_response_time) / 60).toFixed(1) : null,
+        resolutionsCount: stats.resolutions_count || 0,
+        incomingMessages: stats.incoming_messages_count || 0,
+        outgoingMessages: stats.outgoing_messages_count || 0
+      };
+
+      res.json(metrics);
+    } catch (error) {
+      console.error('Error fetching agent metrics:', error);
+      // Fallback to minimal response
+      res.json({
+        agentId,
+        totalConversations: 0,
+        csat: null,
+        aht: null,
+        firstResponseTime: null,
+        resolutionsCount: 0
+      });
+    }
   });
 
   // CS Portal: Update team
@@ -1547,7 +1756,91 @@ Yritä uudelleen tai ota yhteyttä tekniseen tukeen.`
   });
 
   app.get("/api/cs-portal/health", async (req, res) => {
-    res.json({ status: "ok", connected: true, chatwoot_url: "mock" });
+    const client = getChatwootClient();
+    if (!client) {
+      return res.json({ status: "not_configured", connected: false, error: "Chatwoot credentials not set" });
+    }
+
+    try {
+      const health = await client.healthCheck();
+      res.json(health);
+    } catch (error) {
+      res.json({ status: "error", connected: false, error: error instanceof Error ? error.message : 'Unknown error' });
+    }
+  });
+
+  // CS Portal: Get account analytics
+  app.get("/api/cs-portal/accounts/:accountId/analytics", async (req, res) => {
+    const client = getChatwootClient();
+    const accountId = parseInt(req.params.accountId);
+
+    if (!client) {
+      // Return mock data
+      return res.json({
+        conversations_count: Math.floor(Math.random() * 500) + 100,
+        incoming_messages_count: Math.floor(Math.random() * 1000) + 200,
+        outgoing_messages_count: Math.floor(Math.random() * 1000) + 200,
+        resolutions_count: Math.floor(Math.random() * 400) + 80,
+      });
+    }
+
+    try {
+      const stats = await client.getConversationStats(accountId, { type: 'account' });
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+      // Fallback to mock
+      res.json({
+        conversations_count: Math.floor(Math.random() * 500) + 100,
+        incoming_messages_count: Math.floor(Math.random() * 1000) + 200,
+        outgoing_messages_count: Math.floor(Math.random() * 1000) + 200,
+        resolutions_count: Math.floor(Math.random() * 400) + 80,
+      });
+    }
+  });
+
+  // CS Portal: Get agent reports
+  app.get("/api/cs-portal/accounts/:accountId/reports/agents", async (req, res) => {
+    const client = getChatwootClient();
+    const accountId = parseInt(req.params.accountId);
+
+    if (!client) {
+      // Return mock agent data
+      return res.json([
+        { id: 1, name: 'Emma Wilson', email: 'emma@humm.fi', conversations_count: 45 },
+        { id: 2, name: 'Mikko Virtanen', email: 'mikko@humm.fi', conversations_count: 38 },
+      ]);
+    }
+
+    try {
+      const agents = await client.getAgentMetrics(accountId);
+      res.json(agents);
+    } catch (error) {
+      console.error('Error fetching agent metrics:', error);
+      res.json([]);
+    }
+  });
+
+  // CS Portal: Get CSAT reports
+  app.get("/api/cs-portal/accounts/:accountId/reports/csat", async (req, res) => {
+    const client = getChatwootClient();
+    const accountId = parseInt(req.params.accountId);
+
+    if (!client) {
+      // Return mock CSAT data
+      return res.json([
+        { rating: 5, conversation_id: 1, assigned_agent_id: 1, created_at: new Date().toISOString() },
+        { rating: 4, conversation_id: 2, assigned_agent_id: 2, created_at: new Date().toISOString() },
+      ]);
+    }
+
+    try {
+      const csat = await client.getCSATReports(accountId);
+      res.json(csat);
+    } catch (error) {
+      console.error('Error fetching CSAT:', error);
+      res.json([]);
+    }
   });
 
   // CS Portal: AI Command Processing

@@ -1,0 +1,112 @@
+MIKSI AGENTIC AI ON GAME-CHANGER JUURI HUMMILLE
+Perinteinen keskustelu tekoälystä liiketoiminnassa keskittyy usein chatbotteihin ja automaattisiin vastauksiin. Tämä on agentic AI:n ensimmäinen aalto joka on jo commodisoitumassa. Me rakennamme toisen aallon päälle: autonomisiin tekoälyagentteihin jotka eivät vain vastaa kysymyksiin vaan suorittavat kokonaisia työnkulkuja alusta loppuun itsenäisesti, oppivat ja parantuvat jatkuvasti ja orkestraavat toimintoja yli järjestelmärajojen.
+UiPath:n tuore tutkimus tammikuulta 2025 paljastaa että 90 prosenttia IT-johtajista näkee liiketoimintaprosesseja jotka agentic AI parantaisi merkittävästi, 77 prosenttia on valmiita investoimaan agentic AI:hin vuonna 2025 ja 37 prosenttia käyttää sitä jo jollakin tasolla. Nvidia:n toimitusjohtaja Jensen Huang julisti CES 2025 -tapahtumassa että AI-agentit edustavat monen biljoonan dollarin liiketoimintamahdollisuutta. McKinseyn analyysi vahvistaa että vaikka vain yksi prosentti yrityksistä on saavuttanut täyden AI-kypsyyden, nämä edelläkävijät kokevat transformatiivisia hyötyjä. Olemme historiallisessa hetkessä jossa teknologia on kypsää mutta kilpailu ei ole vielä sulkenut ikkunaa.
+Mikä tekee agentic AI:stä erityisen sopivan juuri Hummille? Ensinnäkin toimialamme - asiakaspalvelun ulkoistus ja asiakaskokemuksen konsultointi - on täynnä strukturoituja toistettavia prosesseja jotka ovat agenttien vahvuusaluetta. Tikettien käsittely, asiakaskyselyihin vastaaminen, tiedon haku järjestelmistä, raporttien luonti ovat tehtäviä jotka voidaan automatisoida korkealla onnistumisasteella. Toiseksi meidän kokomme on etu: olemme tarpeeksi pieniä ollaksemme ketteriä mutta tarpeeksi suuria saadaksemme merkittävää hyötyä automaatiosta. Kolmanneksi suomenkielinen markkina jossa kilpailijat ovat hitaita antaa meille aikaetua rakentaa osaaminen ennen kuin markkinoille tulee kansainvälisiä pelureita.
+Konkreettisesti agentic AI mahdollistaa kolme mullistavaa muutosta Hummin toiminnassa. Ensimmäinen on että voimme hoitaa kaksi kertaa enemmän asiakaskyselyjä samalla henkilöstömäärällä kun agentit hoitavat rutiinit ja ihmiset keskittyvät monimutkaisiin tapauksiin jotka vaativat empatiaa luovuutta ja ongelmanratkaisua. Toinen on että voimme tarjota 24/7 palvelua ilman yövuoroja kun agentit ovat aina hereillä. Kolmas on että voimme kerätä ja analysoida jokaisesta asiakaskohtaamisesta oppeja tavalla joka ei ole inhimillisesti mahdollista ja jatkuvasti parantaa sekä agenttien että ihmisten suorituskykyä. Nämä kolme muutosta yhdessä luovat kilpailuedun jota on vaikea kopioida.
+
+Tämä teknologiafilosofia antaa meille neljä konkreettista etua. Ensimmäinen on kustannustehokkuus: open source -mallit maksavat murto-osan kaupallisista jos aja mme niitä itse ja voimme skaalata niitä joustavasti kysynnän mukaan. Toinen on joustavuus: voimme vaihtaa malleja tai toimittajia lennossa jos jokin ei toimi tai hinnoittelu muuttuu. Kolmas on oman osaamisen rakentaminen: kun pyöritämme omia malleja opimme syvällisesti miten teknologia toimii ja voimme opettaa sen asiakkaillemme. Neljäs on innovaationopeus: voimme kokeilla uusia malleja ja tekniikoita heti kun ne tulevat saataville ilman että joudumme odottamaan että joku suuri toimittaja paketoi ne tuotteeksi.
+
+
+ ongelma on että liiketoimintamalli on yksiraitenen. Olemme riippuvaisia asiakaspalvelun ulkoistamisesta eikä meillä ole merkittäviä uusia tulonlähteitä näköpiirissä. Markkinakasvu Suomessa on hidasta ja kilpailu kiristyy. Ilman merkittävää strategista muutosta, parhaan skenaarion mukaan säilymme paikallaan huonompana vuonna ajaudumme tappiolliseksi, pahimmassa tapauksessa menetämme asiakkaita kilpailijoille jotka voivat teknologian avulla tarjota enemmän vähemmällä.
+
+
+
+
+EXECUTIVE SUMMARY: Miksi, mitä ja miten
+Humm Group Oy on tänään 2,1 miljoonan euron liikevaihdon yritys joka balanseeroi kannattavuuden rajalla. Meillä on vahva tase, 52 osaavaa työntekijää ja vakiintunut asiakaskunta, mutta kasvumme on pysähtynyt ja operatiivinen tehokkuutemme jää jälkeen markkinoiden parhaista. Tämä strategia kuvaa konkreettisen ja realistisen polun jolla kasvamme viisinkertaisiksi viidessä vuodessa hyödyntämällä agentic AI:ta tavalla joka ei vaadi massiivisia etukäteisinvestointeja tai suurta kehitysorganisaatiota.
+Ydinajatus on yksinkertainen mutta voimakas: automatisoim me 40-50 prosenttia nykyisistä rutiinitehtävistä agentic AI:lla, allokoimme vapautuneet henkilöstöresurssit uuteen AI-palveluliiketoimintaan joka palvelee pienyrityksiä ja laajenn amme samanaikaisesti Pohjoismaihin teknologian mahdollistamana. Tämä luo kolme tulonlähdettä: tehostunut perusliiketoiminta joka kasvaa 4 miljoonaan euroon, uusi AI-palvelulinja joka tuottaa 3 miljoonaa euroa ja pohjoismaiset operaatiot jotka tuovat 3 miljoonaa euroa. Yhteensä 10 miljoonaa euroa, liiketulos 8-10 prosenttia.
+Kriittinen menestystekijämme on nopeus ilman kompromisseja laadussa. Sen sijaan että rakentaisimme vuosia kehitysorganisaatiota, aloitamme heti Claude Code -tyyppisillä AI-kehitystyökaluilla joiden avulla yksikin Tech Lead voi tuottaa tuloksia jotka vaatisivat perinteisesti 5-10 hengen tiimin. Hyödynnämme open source -malleja (LLaMA 4 Maverick, Mistral Large) raskaaseen prosessointiin ja kaupallisia malleja (Claude 4 Sonnet, GPT-4o) siellä missä tarvitaan huippuluokkaa päättelyä tai asiakasrajapintoja. Model Context Protocol mahdollistaa turvallisen tavan liittää AI-agentit suoraan Hummin järjestelmiin ilman että rakennamme satoja erillisiä integraatioita.
+Tämä ei ole teknologiavisio vaan liiketoimintasuunnitelma jossa jokaisella toimella on mitattava ROI ja selkeä aikataulu. Ensimmäinen 30 päivää keskittyy nopeisiin voittoihin jotka rakentavat luottamusta ja rahoittavat seuraavia vaiheita. Seuraavat 12 kuukautta skaalaamme menestykset ja lanseeraamme uuden palvelulinjan. Vuosina 2-3 rakenne mm automatisoinnin täyttä potentiaalia ja laajennamme Pohjoismaihin. Vuosina 4-5 kypsymme toimialan johtavaksi teknologiakumppaniksi joka yhdistää ihmisen empatiaa ja tekoälyn tehokkuutta tavalla jota kilpailijamme eivät pysty kopioimaan.
+
+
+
+Alla on koottu asiantuntijalähteisiin perustuva analyysi siitä, mitkä tekijät ovat kriittisiä onnistuneelle AI-transformaatiolle keskisuurissa yrityksissä (eli “middle market” tai SME / “medium-size enterprises”). Voin tarvittaessa täsmentää Suomen oloihin sopiviksi.
+
+---
+
+## Määritelmä ja konteksti
+
+“Keskisuuret yritykset” tarkoittavat yleensä yrityksiä, joissa on esim. 50-250 / 50-1000 työntekijää, tai liikevaihdoltaan rajallinen mutta kasvuvaiheessa oleva organisaatio, jolla ei ole samaa skaalautumiskykyä kuin suurilla, mutta paljon enemmän resursseja kuin pienillä.
+
+Transformaatiolla tarkoitetaan tässä: AI-ratkaisujen käyttöönotto strategisesti (siemenvaiheista pilotteihin, josta laajempaan operatiiviseen käyttöön), sisällyttäen teknologian, organisaation, prosessit, kulttuurin, datan ja ihmiset.
+
+---
+
+## Kritiikit ja haasteet, joihin varautua
+
+Useista tutkimuksista ja raportoinneista nousee samankaltaisia esteitä:
+
+1. **Tietämys- ja osaajavajeet**
+
+   * Yrityksillä ei ole sisäistä osaamista AI:n mahdollisuuksista, algoritmeista, datan käsittelystä. ([useaiforengineers.com][1])
+   * Tarvitaan osaamista myös hallinnollisissa / organisatorisissa kysymyksissä kuten vastuullisuus, etiikka, tietosuoja. ([MDPI][2])
+
+2. **Datan laatu, saatavuus ja infrastruktuuri**
+
+   * Datan sirpaleisuus, epäyhtenäisyys, huono laatu. ([TechRadar][3])
+   * Puutteet infrastruktuurissa, vanhat järjestelmät, huono välitys AI:n tarvitsemien tietovirtojen kanssa. ([useaiforbusiness.com][4])
+
+3. **Kustannukset ja ROI:n epävarmuus**
+
+   * Alkuinvestoinnit voivat olla merkittäviä ja paluuinvestoinnin (return on investment) aikataulu epäselvä. ([useaiforengineers.com][1])
+   * Myös käyttökustannukset, ylläpito, jatkuva optimointi lisäkustannuksina. ([useaiforbusiness.com][4])
+
+4. **Organisatorinen kulttuuri, johtajuus ja muutosvastarinta**
+
+   * Johto sitoutumisen puute: ilman vahvaa johtamista strategian läpivienti ei etene. ([useaiforbusiness.com][4])
+   * Koko organisaation muutosresurssien ja -kyvyn rakentaminen: henkilöstön koulutus, muutosjohtaminen, selkeä viestintä. ([useaiforbusiness.com][4])
+   * Skeptisyys, pelot (esim. työpaikkojen menetyksestä), epävarmuus AI:n vaikutuksista. 
+
+5. **Strategiassa puutteet / väärät odotukset**
+
+   * AI nähtynä “työkaluna” eikä strategisena muutoksena → pilottien kasaantuminen ilman integraatiota. ([BCG][5])
+   * Epärealistiset odotukset lyhyistä aikaväleistä. ([Omdena][6])
+
+6. **Sääntely, etiikka, tietosuoja**
+
+   * Lainsäädäntö sekä regulatiivinen epävarmuus voivat jarruttaa, erityisesti Euroopassa GDPR, AI Act jne. 
+   * Algoritmien läpinäkyvyys, eettisyys, vastuullisuus. ([MDPI][2])
+
+---
+
+## Onnistuneen AI-transformaation edellytykset
+
+Tämän perusteella keskisuurille yrityksille näyttäisi muodostuvan seuraavat keskeiset edellytykset ja parhaat käytännöt:
+
+| Edellytys                                                            | Miksi tärkeä & mitä toimenpiteitä                                                                                                                                                                                                                             |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Johtajuus ja strateginen sitoutuminen**                            | Yrityksen ylimmän johdon on oltava selkeästi mukana: määriteltävä AI‐strategia, tavoitteet, budjetit. Johdon on oltava muutosmoottori, ei “hankkeen sponsori”. Strategian pitää olla integroitu yrityksen yleiseen liiketoimintastrategiaan.                  |
+| **Selkeät tavoitteet ja käytännön käyttötapaukset (use cases)**      | Aloitus vaiheessa kannattaa tunnistaa muutama konkreettinen käyttötapaus, joissa arvo näkyy selvästi. Kokeileminen (pilotti) → oppiminen → laajennus. Vältä “hype-projektien” virhettä.                                                                       |
+| **Datan hallinta ja tekninen perusta (data infrastructure)**         | Rakennettava selkeä datapolku: kerääminen, tallennus, puhdistus, integrointi, konsolidointi. Tarvitaan yhteentoimivia järjestelmiä, tietovarastoja/data lake-rakenteet, oikeat työkaluvalinnat. Myös tietoturva ja tietosuoja kuntoon.                        |
+| **Osaaminen ja henkilöstön valmiudet**                               | Koulutus, hankkeet joissa henkilöstö osallistuu. Ulkopuolisten asiantuntijoiden käyttö (konsultit, yhteistyö yliopistojen kanssa). Rekrytointi, mutta myös sisäinen vahvistaminen ja oppiminen.                                                               |
+| **Organisatorinen muutos & kulttuuri**                               | Muutosjohtaminen: kommunikointi, osallistaminen, pelkojen käsittely. Kannustinjärjestelmät, joissa AI:n käytöstä koetaan olevan hyötyä. Esim. henkilöstön jotka käyttävät AI‐työkaluja palkitseminen. Avoimuus.                                               |
+| **Teknologinen soveltuvuus ja pilottien asteittainen laajentaminen** | Älä lähde heti suurista projektista. Aloita pienistä mutta merkityksellisistä projekteista (low hanging fruit), opi niiden kautta. Sitten skaalauta ja integroi osaksi ydintoimintoja. Teknologian valinta: valmis vs räätälöity, pilvipalvelut vs oma infra. |
+| **Resurssit ja budjetointi**                                         | Resurssien varaaminen: rahoitus, henkilöstö, teknologia. Budjetin joustavuus, että epäonnistumisia voi tulla, oppimista tarvitaan. ROI:n mittaaminen (sekä taloudellinen että operatiivinen, esim. tehostuminen, virheiden väheneminen).                      |
+| **Vastuullisuus, etiikka, sääntely**                                 | AI:n käyttöön liittyvät eettiset kysymykset, läpinäkyvyys, tietosuoja. Nämä eivät ole vain juridisia riskejä vaan vaikuttavat yrityksen maineeseen ja henkilöstön luottamukseen. Yritys tarvitsee selkeät politiikat.                                         |
+| **Ympäristön ja ulkopuolisten tekijöiden huomiointi**                | Kilpailuympäristö, asiakkaiden vaatimukset, toimialan sääntely. Kumppanuudet, verkostot voivat tukea (esim. teknologiatoimittajat, tutkimuslaitokset).                                                                                                        |
+
+---
+
+## Esimerkkejä/empiriaa
+
+* BCG:n tutkimus (“AI Adoption in 2024”) osoittaa, että vain noin **26 %** yrityksistä on kyvykäitä siirtymään pilotista täysimittaisiin tekoälyratkaisuihin, ja useimmat kamppailevat ihmis- ja prosessihaasteiden kanssa enemmän kuin teknisten ongelmien. ([BCG][5])
+* Raportti *Strategic AI adoption in SMEs: A Prescriptive Framework* ehdottaa vaiheittaista lähestymistä (esim. ensin yleiskäyttöisiä työkaluja → spesifimpiä sovelluksia). ([arXiv][7])
+* Tutkimus Italiasta (Assessing AI Adoption and Digitalization in SMEs) korostaa teknologian, organisaation ja ympäristön (¼ = technology, organization, environment) tekijöiden tasapainon merkitystä. ([arXiv][8])
+
+---
+
+## Johtopäätökset & painopisteet
+
+* Vaikka teknologia on olennainen, **ihmiset ja prosessit** usein ratkaisevat, onnistuuko AI-transformaatio vai jääkö se kokeiluasteelle.
+* On tärkeää pitää silmällä odotuksia: ei pelkkää innostusta, vaan realistisia hyötyjä, joita mitataan selkein mittarein.
+* Kustannukset ja riskit hallittaviksi vaiheittain, pilotit + laajennus vaiheittain, niin että opitaan ja sopeudutaan matkalla.
+
+
+[1]: https://useaiforengineers.com/research/artificial_intelligence_adoption_rates_smb_2025?utm_source=chatgpt.com "Artificial Intelligence Adoption Rates Among SMBs: A 2025 Analysis | AI Business Research"
+[2]: https://www.mdpi.com/2071-1050/16/5/1864?utm_source=chatgpt.com "Artificial Intelligence Adoption by SMEs to Achieve Sustainable Business Performance: Application of Technology–Organization–Environment Framework"
+[3]: https://www.techradar.com/pro/fragmented-data-is-causing-businesses-huge-issues-especially-when-it-comes-to-ai?utm_source=chatgpt.com "Fragmented data is causing businesses huge issues - especially when it comes to AI"
+[4]: https://useaiforbusiness.com/research/ai_transformation_roadmaps_traditional_manufacturing_smes.html?utm_source=chatgpt.com "AI Transformation Roadmaps for Traditional Manufacturing SMEs | AI Business Research"
+[5]: https://www.bcg.com/press/24october2024-ai-adoption-in-2024-74-of-companies-struggle-to-achieve-and-scale-value?utm_source=chatgpt.com "AI Adoption in 2024: 74% of Companies Struggle to Achieve and Scale Value | BCG"
+[6]: https://www.omdena.com/blog/overcoming-ai-adoption-challenges-for-smes-in-2025?utm_source=chatgpt.com "Overcoming AI Adoption Challenges for SMEs in 2025"
+[7]: https://arxiv.org/abs/2408.11825?utm_source=chatgpt.com "Strategic AI adoption in SMEs: A Prescriptive Framework"
+[8]: https://arxiv.org/abs/2501.08184?utm_source=chatgpt.com "Assessing AI Adoption and Digitalization in SMEs: A Framework for Implementation"

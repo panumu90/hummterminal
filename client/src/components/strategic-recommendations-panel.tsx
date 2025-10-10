@@ -1,888 +1,627 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { TrendingUp, Target, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  TrendingUp, Target, CheckCircle2, AlertCircle, Info, AlertTriangle,
+  Star, Lightbulb, Rocket, Users, Brain, MessageSquare, Sparkles,
+  Calendar, DollarSign, TrendingDown, Zap, Shield
+} from 'lucide-react';
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { StrategyChat } from "./StrategyChat";
 
-const strategyContent = `# Strateginen tiekartta 5-kertaiseen liikevaihdon kasvuun
+// Roadmap data structure with extensive narrative fields
+const roadmapData = [
+  {
+    phase: "Nykytilan Brutaali Analyysi",
+    timeline: "Nyt",
+    category: "Perustila",
+    kpis: [
+      "Liikevaihto: 2,13 milj. € (-7,7%)",
+      "Liikevoitto: -0,2% (-4 870 €)",
+      "52 työntekijää",
+      "40 385 € per työntekijä"
+    ],
+    strategicInsight: "Humm Group Oy balanseeroi kannattavuuden rajalla. Liikevaihto laskee, liikevoitto on tappiollinen ja tuottavuus per työntekijä on 27-54% alle optimaalisen tason. Vertailuyritykset kasvavat kaksinumeroisesti ja tekevät terveellisiä tuloksia. Syy ei ole laadun puute vaan rakenteellinen: perinteinen työvoimaintensiivinen malli ei skaalaudu kannattavasti ilman radikaalisti parempaa tuottavuutta.",
+    narrativeJustification: "Kilpailijat jotka ovat ottaneet tekoälyn käyttöön näkevät 15-25% tehokkuushyödyt ja voivat tarjota parempaa palvelua samalla tai pienemmällä hinnalla. Liiketoimintamalli on yksiraiteinen: olemme riippuvaisia asiakaspalvelun ulkoistamisesta eikä meillä ole merkittäviä uusia tulonlähteitä. Ilman merkittävää strategista muutosta, parhaan skenaarion mukaan säilymme paikallaan, pahimmassa tapauksessa menetämme asiakkaita kilpailijoille.",
+    executiveRecommendation: "Toimintamme on kiireellistä. Meillä on vahva tase ja osaava henkilöstö, mikä antaa mahdollisuuden investoida tulevaisuuteen. AI-transformaatio ei ole vaihtoehto vaan välttämättömyys. Ikkuna toimia on auki, mutta sulkeutuu nopeasti kun kilpailijat ottavat etumatkaa teknologiassa.",
+    marketSignals: "Westernacher Consulting Oy kasvaa 192% ja tekee 9,3% liikettulosta. Rakennustieto Oy kasvaa 5,2% tuloksella 7,9%. UiPath:n tutkimus paljastaa että 77% IT-johtajista on valmiita investoimaan agentic AI:hin vuonna 2025.",
+    color: "red"
+  },
+  {
+    phase: "30 Ensimmäistä Päivää",
+    timeline: "Kk 1",
+    category: "Nopeat Voitot",
+    kpis: [
+      "Ensimmäinen toimiva prototyyppi",
+      "50% yksinkertaisista kyselyistä automatisoidaan",
+      "Claude Code -kehitysympäristö käytössä",
+      "MCP-arkkitehtuuri pystytetty"
+    ],
+    strategicInsight: "Sen sijaan että aloittaisimme massiivisella suunnitteluvaiheella, aloitamme nopeilla kokeiluilla jotka tuottavat mitattavaa arvoa viikkojen sisällä. Ensimmäinen viikko on intensiivistä uppoutumista: istutaan asiakaspalvelijoiden vieressä, analysoidaan satoja tikettejä, tunnistetaan toistuvat mallit ja kartoitetaan kaikki järjestelmät. Viikon lopussa meillä on lista vähintään 10 automatisoitavasta tehtävästä.",
+    narrativeJustification: "Viikolla kaksi rakennetaan ensimmäinen prototyyppi: yksinkertainen MCP-palvelin joka yhdistää tikettijärjestelmään ja sähköpostiin, Claude Sonnet -pohjainen agentti joka lukee tiketit, etsii ratkaisut tietopohjasta ja generoi vastauksia. Tämä rakentuu Claude Coden avulla 2-3 päivässä ilman kokonaista kehitystiimiä. Viikolla kolme testataan prototyyppiä rajatussa ympäristössä todellisilla tiketeillä, kerätään palautetta ja iteroidaan.",
+    executiveRecommendation: "Viikon neljä on lanseeraus: otetaan järjestelmä käyttöön valikoiduille asiakaspalvelijoille, kerätään tarkka data säästyneestä ajasta, parantuneista vastausajoista ja asiakastyytyväisyydestä. Ensimmäinen raportti johdolle sisältää kovaa dataa, ei PowerPoint-showta: X tikettejä käsitelty, Y tuntia säästetty, Z% parannus vastausajoissa, euromääräinen hyöty.",
+    marketSignals: "Jensen Huang (Nvidia) julisti CES 2025:ssä että AI-agentit edustavat monen biljoonan dollarin mahdollisuutta. McKinsey vahvistaa että vaikka vain 1% yrityksistä on saavuttanut täyden AI-kypsyyden, nämä edelläkävijät kokevat transformatiivisia hyötyjä.",
+    color: "orange"
+  },
+  {
+    phase: "Kuukaudet 2-6",
+    timeline: "Kk 2-6",
+    category: "Skaalaus",
+    kpis: [
+      "40% yksinkertaisista kyselyistä automatisoidaan",
+      "15h/henkilö/viikko säästetty (700h/kk yhteensä)",
+      "5-8 maksavaa AI-palveluasiakasta",
+      "2,5 milj. € liikevaihto",
+      "Liiketulos kääntyy positiiviseksi 2-3%"
+    ],
+    strategicInsight: "Ensimmäisen 30 päivän nopeat voitot ovat todistaneet että agentic AI toimii. Nyt skaala amme menestyksen koko organisaatioon ja käynnistämme uuden AI-palveluliiketoiminnan. Toisessa kuukaudessa jokainen asiakaspalvelija saa oman agentin joka toimii henkilökohtaisena assistenttina, oppii kunkin työntekijän tyyliin ja preferensseihin. Rakennamme myös proaktiivisen viestintäagentin joka tunnistaa milloin asiakas on ollut pitkään hiljainen tai vuorovaikutus oli negatiivinen.",
+    narrativeJustification: "Kolmannessa kuukaudessa lanseeraamme uuden AI-palveluliiketoiminnan: kolme pakettituotetta pienyrityksille. Starter-paketti (500€/kk) on yksinkertainen chatbot, Professional-paketti (1200€/kk) lisää tikettijärjestelmäintegraation, Enterprise-paketti (2500€/kk) sisältää täyden agenttiorkestraation. Allokoimme kaksi ihmistä operatiivisesta asiakaspalvelusta myyntiin - he tuntevat asiakaspalvelun kipupisteet syvällisesti ja voivat autenttiisesti kertoa miten AI ratkaisee ongelmia.",
+    executiveRecommendation: "Kuukausina 4-6 rakennaamme lisäagentteja: data- ja raportointiagentti analysoi asiakaskohtaamisia ja generoi viikottaiset raportit, myyntiagentti tunnistaa parhaat liidit ja priorisoi myyjien toimet, laatuagentti kuuntelee puhelut ja antaa reaaliaikaista palautetta. Kuudennen kuukauden lopussa teemme laajan arvioinnin: operatiivinen tehokkuus, asiakastyytyväisyys, taloudellinen vaikutus, uuden liiketoiminnan tila.",
+    marketSignals: "Suomen IT-ulkoistus kasvaa 2,6 mrd €:oon vuoteen 2025 (4,2% CAGR). AI-mahdollistetut palvelut kasvavat 27,9% vuosittain Suomessa. Euroopan CX-ulkoistus kasvaa 82 mrd €:oon vuoteen 2033 (13,1% CAGR).",
+    color: "yellow"
+  },
+  {
+    phase: "Vuosi 2",
+    timeline: "Vuosi 2",
+    category: "Pohjoismainen Laajentuminen",
+    kpis: [
+      "4,5 milj. € liikevaihto (2,5M perus + 1,2M AI-palvelu + 0,8M Pohjoismaat)",
+      "Liiketulos 5-6%",
+      "58 työntekijää (vain +6 mutta 120% kasvu kapasiteetissa)",
+      "40-50 AI-palveluasiakasta",
+      "Ruotsi ja Norja operatiivisina"
+    ],
+    strategicInsight: "Olemme todistaneet että strategia toimii. Nyt on aika kahteen suurempaan liikkeeseen: laajentuminen Ruotsiin ja Norjaan sekä automaation syventäminen lähes täyteen skaalautuvuuteen. Tämä ei ole perinteinen kansainvälistyminen jossa avataan toimistoja - hyödynnämme täysimääräisesti agentteja jotka toimivat ruotsiksi ja norjaksi. LLaMA 4 Maverick ja Claude 4 Sonnet ovat molemmat monikielisiä ja toimivat erinomaisesti Pohjoismaisten kielten kanssa.",
+    narrativeJustification: "Ensimmäisellä kvartaalilla käynnistämme Ruotsin operaatiot: ruotsinkieliset chatbotit ja asiakaspalveluagentit toimivat 24/7 täysin autonomisesti 90% tapauksista. Vain monimutkaisimmat eskaloituvat ihmisille. Myynti keskittyy aluksi suomalaisiin yrityksiin joilla on Ruotsin operaatioita. Toisella kvartaalilla rakennamme agenttien välistä orkestrointia: asiakaspalveluagentti konsultoi teknistä asiantuntija-agenttia, myyntiagentti tarkistaa avoimet tarjoukset, kaikki tapahtuu sekunteissa.",
+    executiveRecommendation: "Kolmannella kvartaalilla lanseeraamme Norjan markkinoille. Norja on houkutteleva koska vahva palvelukulttuuri ja yritykset ovat valmiita maksamaan laadusta. Investoimme yhden norjalaisen myyntiyhteyshenkilön joka avaa ovia. Neljännellä kvartaalilla maksimoimme skaalautuvuuden: rakennamme täysin automatisoidun onboarding-prosessin uusille asiakkaille. Agentti tekee koko asennuksen 24 tunnissa, ihmisen tarvitsee vain tarkistaa laatu.",
+    marketSignals: "Klarna saavutti 73% kasvu liikevaihto/työntekijä -mittarissa AI-investointien ansiosta. Vodafone saavutti 70% automaatioasteen asiakaspalvelussa. Pohjoismainen BPO-markkina kasvaa 15,2 mrd €:oon vuoteen 2029 (3,9% CAGR).",
+    color: "blue"
+  },
+  {
+    phase: "Vuosi 3",
+    timeline: "Vuosi 3",
+    category: "Transformaation Kiihdytys",
+    kpis: [
+      "7,0 milj. € liikevaihto",
+      "Liiketulos 7-8% (noin 500 000 €)",
+      "72 työntekijää",
+      "60% automaatioaste",
+      "10 agenttia → tuottaviin rooleihin",
+      "Liikevaihto/työntekijä: 97 222 €"
+    ],
+    strategicInsight: "Kolmannen vuoden aikana keskitymme kolmeen asiaan: viemme automaation vielä syvemmälle rakentaen agentteja jotka hoitavat kokonaisia prosesseja alusta loppuun (onboardaus, off-boarding, laskutus, reklamaatiot), laajennamme AI-palveluliiketoimintaa uusille asiakassegmenteille (keskisuuret yritykset joiden tarpeet ovat monimutkaisemmat mutta maksavat enemmän), ja laajennamme Tanskaan täydentäen Pohjoismaisen läsnäolon.",
+    narrativeJustification: "Olemme oppineet mitä toimii pienyritysten kanssa ja voimme nyt skaalata oppeja. Automaatio ei enää ole yksittäisiä tehtäviä vaan kokonaisia työnkulkuja: asiakas lähettää kysymyksen → agentti analysoi → hakee tietoa useista järjestelmistä → konsultoi muita agentteja → muotoilee ratkaisun → tarjoaa lisämyyntiä → esittää valmiin paketin ihmiselle hyväksyttäväksi. Ihmisen rooli muuttuu ylläpitäjästä valvojaksi ja laadun varmistajaksi.",
+    executiveRecommendation: "Vapautunut työaika allokoidaan strategiseen asiakkuudenhallintaan ja konsultointiin. Asiakaspalvelijoista tulee asiakkuusvastaavia jotka rakentavat syvällisiä suhteita ja ymmärtävät liiketoimintaa. Tekninen osaaminen kasvaa: luomme AI trainer -rooleja, joissa ihmiset arvioivat agenttien laatua ja opettavat niitä paremmiksi. Tämä on korkea-arvoista työtä joka rakentaa kestävää kilpailuetua.",
+    marketSignals: "McKinseyn analyysi vahvistaa että yritykset jotka investoivat AI-koulutukseen ja henkilöstön uudelleenkoulutukseen saavuttavat 3-4x paremman ROI:n kuin ne jotka pelkästään ostavat teknologiaa. BCG:n tutkimus osoittaa että 74% yrityksistä kamppailee AI-skaalautumisen kanssa - me olemme 26% joukossa joka onnistuu.",
+    color: "green"
+  },
+  {
+    phase: "Vuosi 4-5",
+    timeline: "Vuosi 4-5",
+    category: "Kypsyys ja Markkinajohtajuus",
+    kpis: [
+      "10,0 milj. € liikevaihto (vuosi 5)",
+      "Liiketulos 10% = 1 milj. € (vuosi 5)",
+      "100 työntekijää",
+      "70% automaatioaste (toimialan johtava)",
+      "5x liikevaihto, vain 1,9x henkilöstö",
+      "2,54 milj. € kumulatiivinen voitto"
+    ],
+    strategicInsight: "Neljäntenä vuonna keskitymme kannattavuuden maksimoimiseen. Olemme saavuttaneet koon jossa kiinteät kulut jakautuvat tarpeeksi suurelle pohjalle, joten lisäkasvu pudottaa suoraan katteeseen. Hienosäädämme hinnoittelua molemmissa liiketoiminnoissa, parannamme churn-lukuja investoimalla asiakasmenestykseen, rakennamme upselling-moottorin joka systemaattisesti tarjoaa lisäpalveluita potentiaaliasiakkaille.",
+    narrativeJustification: "Viidennen vuoden aikana saavutamme 10 miljoonan euron liikevaihdon ja 10% liiketuloksen. Liikevaihto jakautuu: perinteinen asiakaspalvelu 4M€ (kasvanut maltillisesti mutta kannattavuus parantunut merkittävästi), AI-palvelulinja 3M€ (noin 100 aktiivista asiakasta, 2500€/kk keskihinta), Pohjoismaiset operaatiot 3M€ (jakautuneena Ruotsi/Norja/Tanska). Henkilöstö 100: 35 asiakaspalvelussa, 50 myynnissä/asiakasmenestyksessä, 15 teknologiassa/datassa.",
+    executiveRecommendation: "Kilpailuasemamme on ainutlaatuinen: emme ole puhdas teknologiayritys emmekä perinteinen ulkoistaja vaan hybridiyritys joka yhdistää ihmisen empatiaa ja tekoälyn tehokkuutta. Asiakkaat ostavat kumppanuutta jossa he saavat sekä osaavat ihmiset että maailmanluokan teknologian. Tämä on vaikea kopioida koska vaatii sekä syvää substanssiosaamista että vahvaa teknologista osaamista ja kokemusta niiden yhdistämisestä. Olemme rakentaneet 3-5 vuoden kilpailuetua.",
+    marketSignals: "Gartner ennustaa että vuoteen 2027 mennessä 25% yrityksistä käyttää AI-agentteja operatiivisessa toiminnassa (vs. 1% 2025). Forrester arvioi että agentic AI -markkina kasvaa 60% CAGR:llä. IDC raportoi että AI-kypsät yritykset kasvavat 50% nopeammin kuin muut.",
+    color: "purple"
+  }
+];
 
-## Johdon yhteenveto
+// Agentic AI modal content
+const agenticAIContent = `
+## MIKSI AGENTIC AI ON GAME-CHANGER JUURI HUMMILLE
 
-Humm Group Oy on kriittisessä käännekohdassa. Vuoden 2024 liikevaihto oli 2,1 miljoonaa euroa 52 työntekijällä ja -7,7 % negatiivinen kasvu. Yritys tuottaa vain **40 385 euroa per työntekijä**—kaukana pohjoismaiselle BPO-toiminnalle kestävästä 55 000–89 000 euron vertailutasosta.
+Perinteinen keskustelu tekoälystä liiketoiminnassa keskittyy usein chatbotteihin ja automaattisiin vastauksiin. Tämä on agentic AI:n ensimmäinen aalto joka on jo commodisoitumassa. Me rakennamme toisen aallon päälle: **autonomisiin tekoälyagentteihin** jotka eivät vain vastaa kysymyksiin vaan suorittavat kokonaisia työnkulkuja alusta loppuun itsenäisesti, oppivat ja parantuvat jatkuvasti ja orkestraavat toimintoja yli järjestelmärajojen.
 
-Tämä analyysi esittää polun **10 miljoonan euron liikevaihdon saavuttamiseksi vuoteen 2030 mennessä** strategisen AI-toteutuksen kautta.
+### Markkinatrendit Vahvistavat Kiireellisyyden
 
----
+UiPath:n tuore tutkimus tammikuulta 2025 paljastaa että:
+- **90% IT-johtajista** näkee liiketoimintaprosesseja jotka agentic AI parantaisi merkittävästi
+- **77%** on valmiita investoimaan agentic AI:hin vuonna 2025
+- **37%** käyttää sitä jo jollakin tasolla
 
-## Kriittinen konteksti: Markkina-asema ja kiireellisyys
+Nvidia:n toimitusjohtaja Jensen Huang julisti CES 2025 -tapahtumassa että AI-agentit edustavat **monen biljoonan dollarin** liiketoimintamahdollisuutta. McKinseyn analyysi vahvistaa että vaikka vain yksi prosentti yrityksistä on saavuttanut täyden AI-kypsyyden, nämä edelläkävijät kokevat transformatiivisia hyötyjä. Olemme historiallisessa hetkessä jossa teknologia on kypsää mutta kilpailu ei ole vielä sulkenut ikkunaa.
 
-### Nykyinen taloudellinen todellisuus
+### Miksi Juuri Humm Hyötyy Eniten?
 
-**Humm Group Oy:n suorituskyky 2024:**
-- Liikevaihto: 2,13 milj. € (laskua -7,7 %)
-- Työntekijät: 52 kokoaikaista
-- Liikevoittomarginaali: -0,2 % (21 000 € tappio)
-- Liikevaihto per työntekijä: 40 385 € (27–54 % alle optimin)
+**1. Toimialan soveltuvuus:** Asiakaspalvelun ulkoistus ja asiakaskokemuksen konsultointi on täynnä strukturoituja toistettavia prosesseja jotka ovat agenttien vahvuusaluetta. Tikettien käsittely, asiakaskyselyihin vastaaminen, tiedon haku järjestelmistä, raporttien luonti ovat tehtäviä jotka voidaan automatisoida korkealla onnistumisasteella.
 
-**Markkinavertailut paljastavat tilanteen vakavuuden:**
-- Pohjoismainen agenttikustannus: 22 200 € vuodessa
-- Terve BPO-tavoite: 2,5–4x agenttikustannus liikevaihtona per työntekijä
-- **Kuilu-analyysi: Humm toimii 1,8x kertoimella vs. tarvittava 3–4x**
+**2. Optimaalinen koko:** Olemme tarpeeksi pieniä ollaksemme ketteriä mutta tarpeeksi suuria saadaksemme merkittävää hyötyä automaatiosta. 52 työntekijän organisaatio voi liikkua nopeasti ilman byrokraattisia päätöksentekoprosesseja.
 
-### Markkinamahdollisuuden koko
+**3. Markkina-etu:** Suomenkielinen markkina jossa kilpailijat ovat hitaita antaa meille aikaetua rakentaa osaaminen ennen kuin markkinoille tulee kansainvälisiä pelureita. Voimme olla Pohjoismaiden ensimmäisiä jotka todella hallitsevat agentic AI:n asiakaspalvelussa.
 
-**Pohjoismainen BPO-markkinadynamiikka:**
-- Suomen IT-ulkoistus: 2,6 mrd € vuoteen 2025 (4,2 % CAGR)
-- Euroopan CX-ulkoistus: 82 mrd € vuoteen 2033 (13,1 % CAGR)
-- Pohjoismainen BPO: 15,2 mrd € vuoteen 2029 (3,9 % CAGR)
-- **AI-mahdollistetut palvelut kasvavat 27,9 % vuosittain Suomessa**
+### Kolme Mullistavaa Muutosta
 
----
+**1. Kapasiteetin kaksinkertaistuminen:** Voimme hoitaa kaksi kertaa enemmän asiakaskyselyjä samalla henkilöstömäärällä kun agentit hoitavat rutiinit ja ihmiset keskittyvät monimutkaisiin tapauksiin jotka vaativat empatiaa luovuutta ja ongelmanratkaisua.
 
-## Alustavaihtoehtojen vertailu
+**2. 24/7 palvelu ilman yövuoroja:** Voimme tarjota ympärivuorokautista palvelua ilman yövuoroja kun agentit ovat aina hereillä. Tämä parantaa asiakaskokemusta radikaalisti ja luo kilpailuetua.
 
-### Kokonaiskustannusanalyysi (5 vuoden projektiot)
+**3. Jatkuva oppiminen ja parantuminen:** Voimme kerätä ja analysoida jokaisesta asiakaskohtaamisesta oppeja tavalla joka ei ole inhimillisesti mahdollista ja jatkuvasti parantaa sekä agenttien että ihmisten suorituskykyä. Nämä kolme muutosta yhdessä luovat kilpailuedun jota on vaikea kopioida.
 
-| Kustannuskomponentti | Avoin lähdekoodi (Chatwoot+n8n) | Keskimarkkina (Intercom) | Yritystaso (Zendesk) |
-|---------------------|--------------------------------|--------------------------|---------------------|
-| **Lisenssit** | 6 840–59 340 € | 300 000–320 000 € | 1 350 000 € |
-| **Infrastruktuuri** | 26 580 € | Sisältyy | Sisältyy |
-| **Käyttöönotto** | 8 000–50 000 € | 50 000–100 000 € | 50 000–100 000 € |
-| **Tekninen työvoima** | 80 000–400 000 € | 60 000–120 000 € | 495 000 € |
-| **Koulutus** | 15 000 € | 25 000 € | 136 000 € |
-| **Tuki** | 0–52 500 € | Sisältyy | 400 000 € |
-| **5 VUODEN YHTEENSÄ** | **85 000–165 000 €** | **300 000–320 000 €** | **2 060 000 €** |
-| **Per agentti/vuosi** | 850–1 650 € | 3 000–3 200 € | 20 600 € |
+### Teknologian Kypsyys Nyt
 
-### Hybridiratkaisu: Chatwoot + n8n + Claude API
+Vuonna 2025 olemme saavuttaneet kriittisen pisteen:
+- **Claude 4 Sonnet** tarjoaa empaattisen sävyn ja pitkän kontekstin käsittelyn
+- **LLaMA 4 Maverick** (400B parametria) tarjoaa miljoonan tokenin kontekstin ja open source -vapauden
+- **Model Context Protocol (MCP)** mahdollistaa turvallisen integraation ilman satoja erillisiä liitäntöjä
+- **Claude Code** -tyyppiset työkalut mahdollistavat että yksi Tech Lead tuottaa 5-10 kehittäjän tulokset
 
-**Vahvuudet:**
-- **40–60 % kustannussäästöt** alustakustannuksissa vs. Zendesk/Intercom
-- Täydellinen datasuvereniteetti (kriittinen GDPR-yhteensopivuudelle)
-- **Paras LLM-laatu:** Claude 3.5 Sonnet API korkea-arvolle, Claude Haiku rutiinille
-- Todistettu skaalautuvuus: 180+ agenttia, 10M+ viestiä/kk (Chatwoot)
-- 400+ integraatiomahdollisuutta n8n:n kautta
-- **50–70 % automaatioaste** saavutettavissa 24 kuukaudessa
-- MIT-lisenssi (Chatwoot/n8n) varmistaa nolla alustalukko
+Tämä teknologiafilosofia antaa meille **neljä konkreettista etua:**
 
-**Rajoitukset:**
-- Vaatii omistautunutta DevOps-osaamista (1–1,5 FTE jatkuvasti)
-- Claude API-kustannukset skaalautuvat käytön mukaan (~€80K/v täydessä mittakaavassa)
-- 8–12 viikon käyttöönottoaikataulu
-
-**Automaatiokyvykkyydet:**
-- Taso 1 (kk 1–3): 30–40 % FAQ-automaatio (Claude Haiku)
-- Taso 2 (kk 4–12): 50–60 % AI-pohjaisilla vastauksilla (Claude Sonnet)
-- Taso 3 (vuodet 2–3): 65–70 % kehittyneillä agenteilla (n8n orchestration)
-
-### Keskimarkkinan kaupallinen: Intercom AI:lla
-
-**Vahvuudet:**
-- Alan johtava **41–51 % keskimääräinen AI-ratkaisuaste**
-- No-code-konfiguraatio mahdollistaa liiketoimintakäyttäjien hallinnan
-- **2–4 viikon käyttöönotto**
-- 450+ natiivia integraatiota
-- Todistettu kasvuskaalautuvuus
-
-**Rajoitukset:**
-- Monimutkainen, arvaamaton hinnoittelu volyymien kasvaessa
-- Per-paikka kustannukset voivat eskaloitua nopeasti
-
-**Todelliset asiakastulokset:**
-- Zip: 450 000 € säästetty 7 kuukaudessa, 33,6 % automaatio
-- Stuart: 88 tuntia säästetty viikoittain, 400 % volyymi käsitelty
-- Synthesia: 87 % itsepalveluaste 6 kuukaudessa
-
-### Strateginen suositus: Chatwoot + n8n + Claude API
-
-**Suora käyttöönotto (vuodesta 1 alkaen):**
-- **Perustelu:** Paras LLM-laatu (Claude) + edulliset alustat + nolla vendor lock-in
-- Välitön 40–50 % automaatio Claude Sonnet + Haiku -mallien avulla
-- **€400K säästöt 5 vuodessa** vs. Zendesk, **€150K säästöt** vs. Intercom
-
-**Kustannusrakenne:**
-- Chatwoot + n8n alustat: €50K 5v
-- Claude API (skaalautuva): €30K v1 → €80K v5
-- DevOps-henkilöstö: €80K/v (1 FTE)
-- **5v kokonaisinvestointi: €480K** vs. €2.06M (Zendesk) tai €630K (Intercom)
-
-**Teknologinen etu:**
-- n8n: Visuaalinen workflow-editor (ei koodausta tarvita moniin käyttötapauksiin)
-- Chatwoot: Natiivi integraatiot yleisimpiin CRM:iin
-- Claude API: SOTA-laatu asiakaspalvelussa, ylivoimainen kontekstin ymmärrys
-
----
-
-## 5-vuoden kasvupolku: €2.1M → €10M
-
-### Vuosi 1 (2026): Vakauttaminen ja perusta
-
-**Liikevaihto: 2,5 milj. €** (+19 % elpymiskasvu)
-
-**Keskeiset aloitteet:**
-- Q1 2026: Chatwoot + n8n käyttöönotto, Claude API-integraatio
-- Q2 2026: Ensimmäiset automaatiopilotit (FAQ + rutiinit)
-- Q3 2026: Henkilöstökoulutus, tietokantakehitys
-- Q4 2026: Skaalaa automaatio 30 %:iin
-
-**Henkilöstö: 54 FTE**
-- Asiakaspalvelu: 38 agenttia
-- Myynti/asiakkuudenhallinta: 12
-- Transformaatiotiimi: 2
-- Johto/hallinto: 2
-
-**Taloudelliset:**
-- AI-investointi: 229 000 € (9,2 % liikevaihdosta)
-- Liikevaihto/työntekijä: 46 296 € (+15 %)
-- **Liikevoittomarginaali: 5 %** (125 000 € voitto)
-
-**Automaation vaikutus:**
-- 30 % kyselyistä automatisoitu
-- Agenttikapasiteetti: 1,2x perustaso
-
-### Vuosi 2 (2027): Automaation skaalaus
-
-**Liikevaihto: 3,5 milj. €** (+40 % kasvu)
-
-**Keskeiset aloitteet:**
-- 50 % automaatioaste saavutettu
-- 5 agenttia → asiakkuudenhallinta
-- Asiakashankinnan kiihdytys
-
-**Henkilöstö: 60 FTE**
-- Asiakaspalvelu: 36 agenttia (huolimatta 40 % liikevaihdon kasvusta)
-- Myynti/AM: 18 (+50 %)
-- Operaatiot: 3
-
-**Taloudelliset:**
-- AI-investointi: 295 000 € (8,4 %)
-- Liikevaihto/työntekijä: 58 333 € (+26 % v/v)
-- **Liikevoittomarginaali: 10 %**
-
-**Automaation vaikutus:**
-- 50 % automaatioaste
-- Kustannus/ratkaisu: 8,50 € → 5,20 € (39 % vähennys)
-
-### Vuosi 3 (2028): Transformaation kiihdytys
-
-**Liikevaihto: 5,2 milj. €** (+49 % kasvu)
-
-**Keskeiset aloitteet:**
-- 60 % automaatioaste
-- 10 agenttia → tuottavat roolit
-- Premium AI-palvelut lanseerattu
-- Alustasiirtymän arviointi
-
-**Henkilöstö: 72 FTE**
-- Asiakaspalvelu: 32
-- Myynti/AM: 30 (67 % kasvu)
-- AI-operaatiot: 5
-
-**Taloudelliset:**
-- Liikevaihto/työntekijä: 72 222 € (+24 % v/v)
-- **Liikevoittomarginaali: 15 %** (780 000 €)
-
-### Vuosi 4 (2029): Markkinajohtajuus
-
-**Liikevaihto: 7,5 milj. €** (+44 % kasvu)
-
-**Keskeiset aloitteet:**
-- 65 % automaatioaste
-- Täysi hybridimalli toiminnassa
-- Vertikaalinen erikoistuminen (e-commerce, fintech)
-- Claude API + Chatwoot optimointi täydessä tehossa
-
-**Henkilöstö: 88 FTE**
-
-**Taloudelliset:**
-- Liikevaihto/työntekijä: 85 227 € (+18 % v/v)
-- **Liikevoittomarginaali: 18 %** (1,35 milj. €)
-
-### Vuosi 5 (2030): Kestävä mittakaava
-
-**Liikevaihto: 10,0 milj. €** (+33 % kasvu)
-
-**Keskeiset aloitteet:**
-- 70 % automaatioaste
-- AI-natiivit palvelutarjoomat
-- Kilpailuvaltihaudat
-- M&A-asemointi
-
-**Henkilöstö: 100 FTE**
-- Asiakaspalvelu: 35
-- Myynti/AM: 50
-- AI-operaatiot: 8
-
-**Taloudelliset:**
-- Liikevaihto/työntekijä: 100 000 € (+148 % vs. 2024)
-- **Liikevoittomarginaali: 20 %** (2,0 milj. €)
-
-**Transformaatio valmis:**
-- 70 % automaatioaste (alan johtava)
-- 5x liikevaihto, vain 1,9x henkilöstömäärä
-- **2,54 milj. € kumulatiivinen 5v voitto**
+1. **Kustannustehokkuus:** Open source -mallit maksavat murto-osan kaupallisista ja voimme skaalata joustavasti
+2. **Joustavuus:** Voimme vaihtaa malleja tai toimittajia lennossa ilman vendor lock-inia
+3. **Oman osaamisen rakentaminen:** Opimme syvällisesti teknologian ja voimme opettaa asiakkaille
+4. **Innovaationopeus:** Voimme kokeilla uusia malleja heti kun ne tulevat saataville
 
 ---
 
-## Kumulatiivinen 5 vuoden yhteenveto
-
-**Liikevaihdon kehitys:**
-- **5 vuoden CAGR: 32 %**
-- Kumulatiivinen liikevaihto: 28,7 milj. €
-
-**Kokonaisinvestointi:**
-- AI-alustat: 184 000–294 000 €
-- Transformaatiotiimi: 1,75 milj. €
-- Koulutus: 155 000 €
-- **5v kokonaisinvestointi: 2,23–2,42 milj. €** (8,5 % liikevaihdosta)
-
-**Tuotot:**
-- Kumulatiivinen liikevoitto: 2,54 milj. €
-- **ROI: 113–136 % AI-investoinnille**
-- **Takaisinmaksuaika: 18 kuukautta**
-
-**Tehokkuusmittarit:**
-- Liikevaihto/työntekijä: +148 %
-- Kustannus/ratkaisu: -74 %
-- Automaatioaste: 0 % → 70 %
-- Liikevoittomarginaali: -0,2 % → 20 %
-
----
-
-## Henkilöstön uudelleenkohdennusstrategia
-
-### Nykyinen vs. Tavoite
-
-**2024 perustaso (52 FTE):**
-- Asiakaspalvelu: 42 (81 %)
-- AM/Myynti: 8 (15 %)
-- **Malli: Työvoimavaltainen, reaktiivinen**
-
-**2030 tavoite (100 FTE):**
-- Asiakaspalvelu: 35 (35 %)
-- AM/Myynti: 50 (50 %)
-- AI-operaatiot: 8 (8 %)
-- **Malli: AI-täydennetty, proaktiivinen suhdejohtaminen**
-
-### Siirtymäpolut
-
-**Vaihe 1 (Vuosi 2): Huippusuorittajat → AM**
-- Top 10–15 % CSAT-suorittajat
-- 3kk intensiivinen koulutus
-- Odotettu: 100 000 € liikevaihto/AM vuosittain
-- Määrä: 5 agenttia
-
-**Vaihe 2 (Vuosi 3): Kokeneet → Tekninen AM**
-- 3+ vuoden kokemus, tuotetietämys
-- 6kk hybridi-koulutus
-- Vertikaalinen erikoistuminen
-- Odotettu: 120 000 € liikevaihto/AM
-- Määrä: 10 agenttia
-
-**Vaihe 3 (Vuodet 4–5): Agentit → AI-spesialistit**
-- Tekninen soveltuvuus
-- 9–12kk koulutus
-- Vastuu: AI-koulutus, työnkulkuoptimointi
-- Vaikutus: 500 000+ € lisäkapasiteetti per spesialisti
-- Määrä: 5 agenttia
-
-**Uudelleenkoulutusbudjetti: 155 000 € (5v)**
-- Kustannus/siirtymä: 3 100 €
-- Liikevaihdon kasvu: 50 000–100 000 € vuosittain
-- **ROI: 1 600–3 200 %**
-
----
-
-## Kustannussäästöt ja marginaalin parannus
-
-### Työvoimakustannusten optimointi
-
-**5v kumulatiiviset säästöt: 3,14 milj. €**
-
-| Vuosi | Automaatio | Vapautettu kapasiteetti | Säästöt |
-|-------|-----------|------------------------|---------|
-| 1 | 30 % | 12 FTE | 266 400 € |
-| 2 | 50 % | 21 FTE | 466 200 € |
-| 3 | 60 % | 29 FTE | 643 800 € |
-| 5 | 70 % | 35–40 FTE | 777 000–888 000 € |
-
-### Toiminnallinen tehokkuus
-
-**Kustannus per ratkaisu:**
-- Perinteinen: 13,50 €
-- Vuosi 1: 10,20 €
-- Vuosi 3: 5,50 €
-- Vuosi 5: 3,80 € (**72 % vähennys**)
-
-**Käsittelyaikojen parannus:**
-- Perustaso: 12 min
-- AI-kopilotilla: 6,5 min (46 % vähennys)
-- Agentit käsittelevät: 2,3x volyymi
-
-### Premium-palvelut
-
-**AI-täydennetyt tarjoomat:**
-- 24/7 AI-ensipalvelu: +520 000 € (vuosi 3)
-- Ennakoiva analytiikka: +300 000 € (vuosi 4)
-- Vertikaaliratkaisut: +750 000 € (vuosi 5)
-- **Premium-liikevaihto yhteensä v5: 1,57 milj. €** (16 % kokonaisliikevaihdosta)
-
----
-
-## Toteutuksen tiekartta
-
-### Vaihe 1: Perusta (kk 1–6)
-
-**Kuukausi 1–2: Arviointi**
-- Johdon linjaus
-- AI-valmiusarviointi
-- Alustavalinta
-- Muutosviestintä
-
-**Kuukausi 3–4: Käyttöönotto**
-- Intercom-toteutus (2–4 viikkoa)
-- Tietokannan siirtäminen
-- Pilottitiimi (5 agenttia)
-- Alkuperäinen automaatio
-
-**Kuukausi 5–6: Skaalaus**
-- Optimointi
-- 20 työnkulkua → 30 % volyymi
-- Koulutuskohortti (AI-lukutaito)
-- Asiakasviestintä
-
-**Menestys:**
-- 30 % automaatio saavutettu
-- CSAT säilytetty/parannettu
-- Ensiratkaisuaika -20 %
-
-**Investointi: 100 000 €**
-
-### Vaihe 2: Kiihdytys (kk 7–18)
-
-**Kuukausi 7–9:**
-- Kehittynyt automaatio (50 aikomusta)
-- CRM-integraatiot
-- AM-koulutuskohortti
-
-**Kuukausi 10–12:**
-- Ensimmäiset siirtymät (5 agenttia)
-- Premium-palvelut
-- Asiakasmenestysohjelmia
-
-**Kuukausi 13–18:**
-- 60 % automaatioaste
-- Toinen siirtymäaalto (10 agenttia)
-- Vertikaalinen erikoistuminen
-
-**Investointi: 400 000 €**
-
-### Vaihe 3: Johtajuus (kk 19–36)
-
-**Kuukausi 19–24:**
-- 65 % automaatio
-- Hybridimalli
-- Alustasiirtymä
-
-**Kuukausi 25–30:**
-- Proprietary-kyvykkyydet
-- Strategiset kumppanuudet
-- 70 % automaatio
-
-**Kuukausi 31–36:**
-- AI-natiivi kulttuuri
-- 10M€ virstanpylväs
-- Markkinajohtajuus
-
-**Investointi: 1,5 milj. €**
-
----
-
-## Kriittiset riskit ja vähentäminen
-
-### Teknologiariskit
-
-**Riski: Alusta ei toimita automaatioasteita**
-- Vähentäminen: Pilotti-ensin, 90 päivän arviointi
-- Varautuminen: Kyky vaihtaa alustoja
-
-**Riski: Integraation monimutkaisuus**
-- Vähentäminen: Yksityiskohtainen arviointi, vaiheistus
-- Aikataulupuskuri: +20 %
-
-### Organisaatioriskit
-
-**Riski: Työntekijöiden vastustus**
-- Vähentäminen:
-  - "Täydennys, ei korvaus" -viestit
-  - Ei-pakkoirtisanomisia -politiikka
-  - Selkeät urapolut
-  - Aktiivinen osallistuminen
-- Seuranta: Kuukausittaiset pulssikyselyt
-
-**Riski: Suomen työlainsäädäntö**
-- Vähentäminen:
-  - Työoikeusspesialistit mukaan heti
-  - 6+ viikon konsultaatio
-  - Varhainen ammattiliittojen osallistuminen
-- Aikataulu: +3–6kk konsultaatiolle
-
-**Riski: Taitojen siirtymävirhe**
-- Vähentäminen:
-  - Tiukka ehdokasvalinta
-  - 3–6kk koulutus
-  - Mentorointi
-  - AI-kopilotti tuki
-- Onnistumisaste: 80 %
-
-### Markkinariskit
-
-**Riski: Asiakkaiden vastustus AI:lle**
-- Vähentäminen:
-  - Hybridimalli
-  - Läpinäkyvyys
-  - Kokeilujaksot
-  - Laatumittarit
-
-**Riski: Kilpailullinen vastaus**
-- Vähentäminen:
-  - Nopeusetu
-  - Vertikaalinen erikoistuminen
-  - Brändäys AI-innovaattorina
-
-### Taloudelliset riskit
-
-**Riski: Liikevaihdon tavoitteet eivät toteudu**
-- Vähentäminen:
-  - Konservatiivinen mallinnus
-  - Useita tulovirtoja
-  - Kuukausittaiset putken tarkistukset
-- Katkaisijat: Jos v1 < 2,3M€ tai v2 < 3,0M€
-
----
-
-## Pohjoismaiset erityishuomiot
-
-### GDPR-vaatimukset
-
-**Pakolliset elementit:**
-1. DPIA korkean riskin AI-käsittelylle
-2. Artikla 22: Ihmisen valvonta automatisoiduille päätöksille
-3. Läpinäkyvyys AI:n käytöstä
-4. Suostumusenhallinta
-5. Rekisteröidyn oikeudet
-
-**Toteutus:**
-- Sisäänrakennettu tietosuoja
-- Yksityisyyttä parantavat teknologiat
-- Datan lokalisointi (Suomi/EU)
-- Neljännesvuosittaiset auditoinnit
-
-**Budjetti: 25 000 € vuosittain**
-
-### Suomen työlainsäädäntö
-
-**Konsultaatiovelvollisuudet:**
-- Kynnys: 20+ työntekijää (Humm täyttää)
-- Aikataulu:
-  - 2 viikkoa < 10 muutosta
-  - 6 viikkoa 10+ irtisanomista
-
-**Parhaat käytännöt:**
-- Proaktiivinen ilmoitus (kk 1)
-- Työntekijöiden osallistuminen
-- Ei-pakkolomautuksia
-- Vaiheittainen käyttöönotto
-- Oikeudellinen kumppani (15 000 € pidättäjä)
-
-**Rangaistukset:**
-- 35 590 € per työntekijä konsultaatiorikkomuksesta
-- Vararahasto: 100 000 €
-
----
-
-## Vaihtoehtoiset skenaariot
-
-### Skenaario A: Konservatiivinen (15 % CAGR)
-
-**Tulokset:**
-- Liikevaihto v5: 4,2 milj. € vs. 10 milj. € perustapaus
-- Työntekijät: 65 vs. 100
-- Liikevoittomarginaali: 12 % vs. 20 %
-- ROI: 85 % (silti positiivinen)
-
-### Skenaario B: Aggressiivinen (40 % CAGR)
-
-**Tulokset:**
-- Liikevaihto v5: 14,3 milj. €
-- Liikevoittomarginaali: 25 %
-- Liikevaihto/työntekijä: 130 000 €
-- Markkinajohtaja-asema
-
-**Mahdollisuudet:**
-- Maantieteellinen laajennus
-- Vertikaalinen laajennus
-- Ulkoinen rahoitus
-- Yrityskaupat
-
-### Skenaario C: Alustastrategian kääntö
-
-**Laukaisin:** Intercom-kustannusten eskaloituminen
-
-**Vaihtoehto:**
-- Kiihdytä Chatwoot+n8n siirtymä (v2 vs. v3)
-- Lisää DevOps-henkilöstö (+2 FTE)
-- 3–6kk tuottavuuden lasku
-- 110 000 € säästöt aikaisemmin
-
-**NPV-hyöty: +50 000 €**
-
----
-
-## Välittömät seuraavat askeleet
-
-### 30 päivää: Johdon linjaus
-
-**Viikko 1–2:**
-- Toimitusjohtajan sitoutuminen
-- Hallituksen esitys
-- Johtoryhmän työpaja
-- Viestintäsuunnitelma
-
-**Viikko 3–4:**
-- AI-valmiusarviointi
-- Toimittajaesittelyt
-- Oikeudellinen konsultaatio
-- Budjetin viimeistely
-
-**Päätöspiste: Jatka/Keskeytä/Muokkaa**
-
-### 90 päivää: Sprintti
-
-**Alustavalinta:**
-- Lopullinen toimittaja (viikko 5)
-- Sopimusneuvottelu
-- Käyttöönoton aloitus (viikko 6)
-
-**Organisaation valmistelu:**
-- Transformaatiotiimin palkkaaminen
-- Muutosjohtamisohjelma
-- Työntekijäviestintä
-- Tietokannan auditointi
-
-**Nopeat voitot:**
-- Top 10–20 FAQ-tavoitteet
-- Pilottitiimi (5 huippuagenttia)
-- Menestyksen mittarit
-
-**Tuotos: 30 % automaatio, positiiviset tulokset**
-
-### 6 kuukautta: Virstanpylväät
-
-**Automaation skaalaus:**
-- 30 työnkulkua
-- 35–40 % jatkuva automaatio
-- Ensimmäinen siirtymäkohortti
-- AM-koulutus
-
-**Asiakassitoutuminen:**
-- Pilotointi 3–5 asiakkaan kanssa
-- Tapaustutkimukset
-- Markkinointikampanja
-
-**Hallinto:**
-- GDPR-auditointi
-- Laadunvarmistus
-- Kuukausittainen raportointi
-
-**Tuotos: 2,5M€ juoksutus, positiivinen marginaali**
-
----
-
-## Kriittiset menestystekijät
-
-**Pakolliset:**
-
-1. **Toimitusjohtajan sitoutuminen**: Näkyvä, jatkuva sponsorointi
-2. **Keskittyminen**: 4–5 domeinia maksimissaan
-3. **Hybridi ihmis-AI**: 70 % automaatio + 100 % ihminen monimutkaisille
-4. **Muutoksenhallinta**: 7–30 % osallistuminen, läpinäkyvyys
-5. **Prosessin uudelleensuunnittelu**: Ei rikkinäisten automaatiota
-6. **Mittarivetoinen**: Viikoittainen seuranta
-7. **Vaatimustenmukaisuus**: GDPR + työlainsäädäntö
-8. **Asiakaskeskeinen**: CSAT/NPS säilytys
-
----
-
-## Johtopäätös: Toiminnan välttämättömyys
-
-Humm Group Oy on määrittävässä hetkessä. Kolmen tekijän lähentyminen luo poikkeuksellisen mahdollisuuden:
-
-**1. Markkina-ajoitus:** 56 % pohjoismaisista B2B-yrityksistä sitoutunut AI:hin juuri nyt
-
-**2. Todistettu pelikirja:** Klarna 73 % liikevaihto/työntekijä kasvu, Vodafone 70 % automaatio
-
-**3. Saavutettavissa oleva teknologia:** 40–50 % automaatio 6kk, 150 000 € 2v investoinnilla
-
-Polku on selkeä: **2,1M€ → 10M€ liikevaihto 5 vuodessa**
-
-Kysymys ei ole transformoitumisesta, vaan **johtaako vai seuraako Humm**.
-
-Ensiliikkujilla on 12–24kk ikkuna kilpailullisten vallihaudan perustamiseen.
-
-**Hetki aloittaa on nyt.**
-
----
-
-*Johdon toimenpide vaaditaan: Jatka vaiheen 1 toteutuksella välittömästi.*
+**Johtopäätös:** Agentic AI ei ole tulevaisuuden teknologia - se on tämän päivän kilpailuetu. Yritykset jotka toimivat nyt rakentavat 3-5 vuoden etumatkaa. Yritykset jotka odottavat joutuvat kalliiseen kiinni ottamiseen.
 `;
 
 export function StrategicRecommendationsPanel() {
+  const [isAgenticModalOpen, setIsAgenticModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(true); // Chat widget auki oletuksena
+
   return (
-    <ScrollArea className="h-full bg-gradient-to-br from-slate-950 via-blue-950/50 to-slate-950">
-      <div className="max-w-6xl mx-auto p-6 sm:p-8 lg:p-12">
-        {/* Hero Header - Enhanced with sophisticated glassmorphism */}
-        <div className="mb-10 p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-900/40 via-blue-900/30 to-purple-900/40 border border-white/10 backdrop-blur-xl shadow-2xl transition-all duration-500 hover:shadow-blue-500/20 hover:scale-[1.01] animate-in fade-in-0 slide-in-from-top-8 duration-700">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mb-6">
-            <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-400/30 shadow-lg shadow-emerald-500/20 backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:shadow-emerald-500/40">
-              <CheckCircle2 className="h-10 w-10 text-emerald-400" strokeWidth={2.5} />
+    <ScrollArea className="h-full bg-gradient-to-br from-slate-950 via-blue-950/30 to-slate-950">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-10">
+
+        {/* Critical Context Header - Always Visible */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-red-900/30 via-orange-900/20 to-red-900/30 border-2 border-red-500/30 backdrop-blur-xl shadow-2xl"
+        >
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-3 rounded-xl bg-red-500/20 border border-red-400/40">
+              <AlertTriangle className="h-7 w-7 text-red-400" strokeWidth={2.5} />
             </div>
-            <div className="flex-1">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-3 tracking-tight leading-tight">
-                Strategiset Suositukset Johdolle
-              </h1>
-              <p className="text-white/70 text-base sm:text-lg lg:text-xl leading-relaxed">
-                5-vuoden AI-transformaatio-ohjelma: <span className="text-emerald-400 font-semibold">€2.1M → €10M</span> kasvupolku
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                Kriittinen Konteksti: Markkina-asema ja Kiireellisyys
+              </h2>
+              <p className="text-red-200/80 text-sm sm:text-base">
+                Humm Group Oy:n nykyinen tilanne vaatii välitöntä toimintaa
               </p>
             </div>
           </div>
 
-          {/* Key Metrics - Enhanced glassmorphism cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-emerald-400/20 backdrop-blur-md p-5 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20 hover:border-emerald-400/40 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <Target className="h-4 w-4 text-emerald-400" />
-                  <p className="text-xs font-medium text-emerald-300/70 uppercase tracking-wider">Tavoite</p>
+          <div className="space-y-4">
+            <div className="p-5 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-sm">
+              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <TrendingDown className="h-5 w-5 text-red-400" />
+                Nykyinen Taloudellinen Todellisuus
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div className="flex justify-between p-3 rounded-lg bg-slate-800/40">
+                  <span className="text-slate-300">Liikevaihto 2024:</span>
+                  <span className="font-bold text-red-300">2,13 milj. € (-7,7%)</span>
                 </div>
-                <p className="text-xl sm:text-2xl font-bold text-emerald-300">€10M</p>
-                <p className="text-xs text-emerald-400/60 mt-1">liikevaihto 2030</p>
+                <div className="flex justify-between p-3 rounded-lg bg-slate-800/40">
+                  <span className="text-slate-300">Työntekijät:</span>
+                  <span className="font-bold text-white">52 kokoaikaista</span>
+                </div>
+                <div className="flex justify-between p-3 rounded-lg bg-slate-800/40">
+                  <span className="text-slate-300">Liikevoittomarginaali:</span>
+                  <span className="font-bold text-red-300">-0,2% (-21 000 €)</span>
+                </div>
+                <div className="flex justify-between p-3 rounded-lg bg-slate-800/40">
+                  <span className="text-slate-300">€/työntekijä:</span>
+                  <span className="font-bold text-orange-300">40 385 € (27-54% alle opt.)</span>
+                </div>
               </div>
             </div>
 
-            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-400/20 backdrop-blur-md p-5 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 hover:border-blue-400/40 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="h-4 w-4 text-blue-400" />
-                  <p className="text-xs font-medium text-blue-300/70 uppercase tracking-wider">Investointi</p>
-                </div>
-                <p className="text-xl sm:text-2xl font-bold text-blue-300">€2.5M</p>
-                <p className="text-xs text-blue-400/60 mt-1">5 vuoden aikana</p>
-              </div>
+            <div className="p-5 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-sm">
+              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-orange-400" />
+                Markkinavertailut Paljastavat Tilanteen Vakavuuden
+              </h3>
+              <ul className="space-y-2 text-sm text-slate-200">
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-400 mt-1">→</span>
+                  <span>Pohjoismainen agenttikustannus: <strong className="text-white">22 200 € vuodessa</strong></span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-400 mt-1">→</span>
+                  <span>Terve BPO-tavoite: <strong className="text-white">2,5-4x agenttikustannus</strong> liikevaihtona per työntekijä</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-1 font-bold">⚠</span>
+                  <span><strong className="text-red-300">Kuilu-analyysi: Humm toimii 1,8x kertoimella vs. tarvittava 3-4x</strong></span>
+                </li>
+              </ul>
             </div>
 
-            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-400/20 backdrop-blur-md p-5 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20 hover:border-purple-400/40 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle2 className="h-4 w-4 text-purple-400" />
-                  <p className="text-xs font-medium text-purple-300/70 uppercase tracking-wider">Säästöt</p>
+            <div className="p-5 rounded-xl bg-gradient-to-br from-emerald-900/20 to-blue-900/20 border border-emerald-500/20 backdrop-blur-sm">
+              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-emerald-400" />
+                Markkinamahdollisuuden Koko
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-slate-200">
+                <div>
+                  <div className="font-semibold text-emerald-300 mb-1">Suomen IT-ulkoistus:</div>
+                  <div>2,6 mrd € vuoteen 2025 (4,2% CAGR)</div>
                 </div>
-                <p className="text-xl sm:text-2xl font-bold text-purple-300">€520K/v</p>
-                <p className="text-xs text-purple-400/60 mt-1">vs. proprietary</p>
-              </div>
-            </div>
-
-            <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500/10 to-orange-600/5 border border-orange-400/20 backdrop-blur-md p-5 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/20 hover:border-orange-400/40 hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="h-4 w-4 text-orange-400" />
-                  <p className="text-xs font-medium text-orange-300/70 uppercase tracking-wider">ROI</p>
+                <div>
+                  <div className="font-semibold text-blue-300 mb-1">Euroopan CX-ulkoistus:</div>
+                  <div>82 mrd € vuoteen 2033 (13,1% CAGR)</div>
                 </div>
-                <p className="text-xl sm:text-2xl font-bold text-orange-300">113-136%</p>
-                <p className="text-xs text-orange-400/60 mt-1">AI-investointi</p>
+                <div>
+                  <div className="font-semibold text-purple-300 mb-1">Pohjoismainen BPO:</div>
+                  <div>15,2 mrd € vuoteen 2029 (3,9% CAGR)</div>
+                </div>
+                <div className="sm:col-span-2">
+                  <div className="font-bold text-emerald-300 mb-1 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4" />
+                    AI-mahdollistetut palvelut:
+                  </div>
+                  <div className="text-emerald-200 font-semibold">Kasvavat 27,9% vuosittain Suomessa</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Markdown Content - Enhanced with sophisticated glassmorphism containers */}
-        <div className="prose prose-invert prose-lg max-w-none">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              h1: ({ children }) => (
-                <div className="mb-10 mt-16 first:mt-0 p-6 rounded-2xl bg-gradient-to-br from-slate-900/60 via-blue-900/40 to-slate-900/60 border border-white/10 backdrop-blur-lg shadow-xl animate-in fade-in-0 slide-in-from-bottom-4 duration-500">
-                  <h1 className="text-3xl sm:text-4xl font-bold text-white leading-tight tracking-tight">
-                    {children}
-                  </h1>
-                  <div className="mt-3 h-1 w-24 bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 rounded-full"></div>
-                </div>
-              ),
-              h2: ({ children }) => (
-                <div className="mb-8 mt-12 p-5 rounded-xl bg-gradient-to-br from-slate-800/40 to-slate-900/40 border border-white/8 backdrop-blur-md shadow-lg group hover:shadow-xl hover:border-white/15 transition-all duration-300">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-4 leading-snug tracking-tight">
-                    <span className="flex-shrink-0 w-1.5 h-10 bg-gradient-to-b from-blue-500 via-purple-500 to-emerald-500 rounded-full group-hover:scale-110 transition-transform duration-300"></span>
-                    <span className="flex-1">{children}</span>
-                  </h2>
-                </div>
-              ),
-              h3: ({ children }) => (
-                <h3 className="text-xl sm:text-2xl font-semibold mb-5 mt-10 text-blue-300 leading-snug tracking-tight pl-4 border-l-4 border-blue-500/40 hover:border-blue-400 transition-colors duration-300">
-                  {children}
-                </h3>
-              ),
-              h4: ({ children }) => (
-                <h4 className="text-lg sm:text-xl font-semibold mb-4 mt-8 text-emerald-300 leading-snug">
-                  {children}
-                </h4>
-              ),
-              p: ({ children }) => (
-                <p className="mb-5 text-slate-200 leading-relaxed text-base sm:text-lg tracking-wide">
-                  {children}
-                </p>
-              ),
-              ul: ({ children }) => (
-                <ul className="list-none pl-0 mb-6 space-y-3">
-                  {children}
-                </ul>
-              ),
-              ol: ({ children }) => (
-                <ol className="list-decimal pl-6 mb-6 space-y-3 marker:text-blue-400 marker:font-semibold">
-                  {children}
-                </ol>
-              ),
-              li: ({ children }) => (
-                <li className="text-slate-200 leading-relaxed pl-6 relative before:content-['→'] before:absolute before:left-0 before:text-blue-400 before:font-bold">
-                  {children}
-                </li>
-              ),
-              strong: ({ children }) => (
-                <strong className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-blue-400">
-                  {children}
-                </strong>
-              ),
-              em: ({ children }) => (
-                <em className="italic text-purple-300 not-italic font-medium">
-                  {children}
-                </em>
-              ),
-              code: ({ children }) => (
-                <code className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 text-emerald-300 px-3 py-1.5 rounded-lg text-sm font-mono border border-emerald-500/20 shadow-inner">
-                  {children}
-                </code>
-              ),
-              table: ({ children }) => (
-                <div className="overflow-x-auto my-8 rounded-2xl border border-white/10 backdrop-blur-lg shadow-2xl animate-in fade-in-0 zoom-in-95 duration-500">
-                  <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/60 backdrop-blur-xl">
-                    <table className="w-full border-collapse">
-                      {children}
-                    </table>
+        {/* Main Strategy Content with Tabs */}
+        <Tabs defaultValue="narrative" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6 bg-slate-900/60 border border-white/10 p-1">
+            <TabsTrigger value="narrative" className="data-[state=active]:bg-blue-600/80">
+              <Lightbulb className="h-4 w-4 mr-2" />
+              Strateginen Narratiivi
+            </TabsTrigger>
+            <TabsTrigger value="operational" className="data-[state=active]:bg-purple-600/80">
+              <Rocket className="h-4 w-4 mr-2" />
+              Operatiivinen Suunnitelma
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Strategic Narrative View */}
+          <TabsContent value="narrative" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Executive Summary Card */}
+              <Card className="p-6 sm:p-8 bg-gradient-to-br from-slate-900/60 to-blue-900/40 border-2 border-blue-500/30 backdrop-blur-xl">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="p-3 rounded-xl bg-blue-500/20 border border-blue-400/40">
+                    <Star className="h-7 w-7 text-blue-400" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                      Executive Summary: Miksi, Mitä ja Miten
+                    </h2>
+                    <Badge variant="outline" className="text-blue-300 border-blue-400/50">
+                      Strateginen Visio
+                    </Badge>
                   </div>
                 </div>
-              ),
-              thead: ({ children }) => (
-                <thead className="bg-gradient-to-r from-slate-900/80 via-blue-900/60 to-slate-900/80 backdrop-blur-sm">
-                  {children}
-                </thead>
-              ),
-              tbody: ({ children }) => (
-                <tbody className="divide-y divide-slate-700/40">
-                  {children}
-                </tbody>
-              ),
-              tr: ({ children }) => (
-                <tr className="hover:bg-slate-700/20 transition-all duration-200 hover:scale-[1.01]">
-                  {children}
-                </tr>
-              ),
-              th: ({ children }) => (
-                <th className="px-5 py-4 text-left text-sm font-bold text-blue-300 border-b-2 border-blue-500/40 uppercase tracking-wider">
-                  {children}
-                </th>
-              ),
-              td: ({ children }) => (
-                <td className="px-5 py-4 text-sm text-slate-200 leading-relaxed">
-                  {children}
-                </td>
-              ),
-              blockquote: ({ children }) => (
-                <blockquote className="relative my-6 p-6 rounded-xl bg-gradient-to-br from-blue-900/20 to-purple-900/20 border-l-4 border-blue-500 backdrop-blur-sm shadow-lg italic text-slate-200 overflow-hidden group hover:shadow-blue-500/20 transition-all duration-300">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative">{children}</div>
-                </blockquote>
-              ),
-              hr: () => (
-                <hr className="my-12 border-t border-slate-700/50 relative overflow-hidden after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-blue-500/30 after:to-transparent after:h-[1px] after:top-0" />
-              ),
-            }}
+
+                <div className="space-y-4 text-slate-200 leading-relaxed">
+                  <p className="text-base sm:text-lg">
+                    Humm Group Oy on tänään <strong className="text-white">2,1 miljoonan euron liikevaihdon yritys</strong> joka
+                    balanseeroi kannattavuuden rajalla. Meillä on vahva tase, 52 osaavaa työntekijää ja vakiintunut
+                    asiakaskunta, mutta kasvumme on pysähtynyt ja operatiivinen tehokkuutemme jää jälkeen markkinoiden
+                    parhaista. Tämä strategia kuvaa <span className="text-emerald-300 font-semibold">konkreettisen ja realistisen polun
+                    jolla kasvamme viisinkertaisiksi viidessä vuodessa</span> hyödyntämällä agentic AI:ta tavalla joka ei
+                    vaadi massiivisia etukäteisinvestointeja tai suurta kehitysorganisaatiota.
+                  </p>
+
+                  <div className="p-5 rounded-xl bg-gradient-to-r from-emerald-900/30 to-blue-900/30 border border-emerald-500/30">
+                    <h3 className="text-lg font-bold text-emerald-300 mb-3 flex items-center gap-2">
+                      <Zap className="h-5 w-5" />
+                      Ydinajatus
+                    </h3>
+                    <p className="text-base">
+                      Automatisoimme <strong className="text-white">40-50% nykyisistä rutiinitehtävistä</strong> agentic AI:lla,
+                      allokoimme vapautuneet henkilöstöresurssit uuteen AI-palveluliiketoimintaan joka palvelee pienyrityksiä
+                      ja laajennamme samanaikaisesti Pohjoismaihin teknologian mahdollistamana. Tämä luo kolme tulonlähdettä:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                      <div className="p-3 rounded-lg bg-slate-900/60 border border-white/10">
+                        <div className="text-2xl font-bold text-emerald-300 mb-1">4M€</div>
+                        <div className="text-xs text-slate-300">Tehostunut perusliiketoiminta</div>
+                      </div>
+                      <div className="p-3 rounded-lg bg-slate-900/60 border border-white/10">
+                        <div className="text-2xl font-bold text-blue-300 mb-1">3M€</div>
+                        <div className="text-xs text-slate-300">Uusi AI-palvelulinja</div>
+                      </div>
+                      <div className="p-3 rounded-lg bg-slate-900/60 border border-white/10">
+                        <div className="text-2xl font-bold text-purple-300 mb-1">3M€</div>
+                        <div className="text-xs text-slate-300">Pohjoismaiset operaatiot</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-base">
+                    Kriittinen menestystekijämme on <strong className="text-white">nopeus ilman kompromisseja laadussa</strong>.
+                    Sen sijaan että rakentaisimme vuosia kehitysorganisaatiota, aloitamme heti <span className="text-blue-300 font-semibold">Claude
+                    Code -tyyppisillä AI-kehitystyökaluilla</span> joiden avulla yksikin Tech Lead voi tuottaa tuloksia jotka
+                    vaatisivat perinteisesti 5-10 hengen tiimin.
+                  </p>
+
+                  <div className="flex items-start gap-3 p-4 rounded-lg bg-blue-900/20 border border-blue-500/30">
+                    <Info className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-blue-100">
+                      <strong>Tärkeä huomio:</strong> Tämä ei ole teknologiavisio vaan liiketoimintasuunnitelma jossa
+                      jokaisella toimella on mitattava ROI ja selkeä aikataulu. Ensimmäinen 30 päivää keskittyy nopeisiin
+                      voittoihin jotka rakentavat luottamusta ja rahoittavat seuraavia vaiheita.
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Agentic AI CTA Button */}
+              <Dialog open={isAgenticModalOpen} onOpenChange={setIsAgenticModalOpen}>
+                <DialogTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      className="w-full p-6 h-auto bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-2 border-purple-400/50 text-lg font-bold"
+                      size="lg"
+                    >
+                      <Brain className="h-6 w-6 mr-3" />
+                      Miksi Agentic AI on Game-Changer Juuri Hummille?
+                      <Sparkles className="h-5 w-5 ml-3" />
+                    </Button>
+                  </motion.div>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-gradient-to-br from-slate-900 to-purple-900/50 border-2 border-purple-500/30">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
+                      <Brain className="h-7 w-7 text-purple-400" />
+                      Agentic AI: Strateginen Kilpailuetu
+                    </DialogTitle>
+                    <DialogDescription className="text-slate-300 text-base">
+                      Syvällinen analyysi siitä miksi agentic AI on transformatiivinen mahdollisuus Hummille
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="prose prose-invert max-w-none mt-4">
+                    {agenticAIContent.split('\n').map((paragraph, idx) => {
+                      if (paragraph.startsWith('##')) {
+                        return (
+                          <h2 key={idx} className="text-2xl font-bold text-white mt-6 mb-4">
+                            {paragraph.replace('##', '').trim()}
+                          </h2>
+                        );
+                      } else if (paragraph.startsWith('###')) {
+                        return (
+                          <h3 key={idx} className="text-xl font-semibold text-blue-300 mt-5 mb-3">
+                            {paragraph.replace('###', '').trim()}
+                          </h3>
+                        );
+                      } else if (paragraph.startsWith('**') && paragraph.includes(':**')) {
+                        return (
+                          <h4 key={idx} className="text-lg font-semibold text-emerald-300 mt-4 mb-2">
+                            {paragraph.replace(/\*\*/g, '').trim()}
+                          </h4>
+                        );
+                      } else if (paragraph.startsWith('- ')) {
+                        return (
+                          <li key={idx} className="text-slate-200 ml-4 mb-2">
+                            {paragraph.replace('- ', '').replace(/\*\*/g, '').trim()}
+                          </li>
+                        );
+                      } else if (paragraph.startsWith('---')) {
+                        return <hr key={idx} className="my-6 border-slate-700" />;
+                      } else if (paragraph.trim()) {
+                        return (
+                          <p key={idx} className="text-slate-200 mb-4 leading-relaxed">
+                            {paragraph.trim()}
+                          </p>
+                        );
+                      }
+                      return null;
+                    })}
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* Roadmap Cards - Narrative Focus */}
+              {roadmapData.map((phase, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className={`p-6 bg-gradient-to-br from-slate-900/80 to-${phase.color}-900/20 border-2 border-${phase.color}-500/30 backdrop-blur-xl hover:shadow-xl hover:shadow-${phase.color}-500/20 transition-all duration-300`}>
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-6">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <Badge variant="outline" className={`text-${phase.color}-300 border-${phase.color}-400/50`}>
+                            {phase.timeline}
+                          </Badge>
+                          <Badge className={`bg-${phase.color}-600/20`}>
+                            {phase.category}
+                          </Badge>
+                        </div>
+                        <h3 className="text-2xl font-bold text-white">{phase.phase}</h3>
+                      </div>
+                      <div className={`p-3 rounded-xl bg-${phase.color}-500/20 border border-${phase.color}-400/40`}>
+                        <Calendar className={`h-6 w-6 text-${phase.color}-400`} />
+                      </div>
+                    </div>
+
+                    {/* Strategic Insight */}
+                    <div className="mb-4 p-4 rounded-lg bg-slate-800/40 border border-white/10">
+                      <h4 className="text-sm font-bold text-blue-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <Lightbulb className="h-4 w-4" />
+                        Strateginen Oivallus
+                      </h4>
+                      <p className="text-slate-200 text-sm leading-relaxed">
+                        {phase.strategicInsight}
+                      </p>
+                    </div>
+
+                    {/* Narrative Justification */}
+                    <div className="mb-4 p-4 rounded-lg bg-slate-800/40 border border-white/10">
+                      <h4 className="text-sm font-bold text-purple-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <Info className="h-4 w-4" />
+                        Narratiivinen Perustelu
+                      </h4>
+                      <p className="text-slate-200 text-sm leading-relaxed">
+                        {phase.narrativeJustification}
+                      </p>
+                    </div>
+
+                    {/* Executive Recommendation */}
+                    <div className="mb-4 p-4 rounded-lg bg-gradient-to-r from-emerald-900/30 to-blue-900/30 border border-emerald-500/30">
+                      <h4 className="text-sm font-bold text-emerald-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <Target className="h-4 w-4" />
+                        Johdon Suositus
+                      </h4>
+                      <p className="text-slate-200 text-sm leading-relaxed">
+                        {phase.executiveRecommendation}
+                      </p>
+                    </div>
+
+                    {/* Market Signals */}
+                    <div className="mb-4 p-4 rounded-lg bg-slate-800/40 border border-orange-500/30">
+                      <h4 className="text-sm font-bold text-orange-300 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4" />
+                        Markkinasignaalit
+                      </h4>
+                      <p className="text-slate-200 text-sm leading-relaxed">
+                        {phase.marketSignals}
+                      </p>
+                    </div>
+
+                    {/* KPIs */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {phase.kpis.map((kpi, kpiIndex) => (
+                        <div key={kpiIndex} className="flex items-start gap-2 p-2 rounded bg-slate-900/40">
+                          <CheckCircle2 className={`h-4 w-4 text-${phase.color}-400 flex-shrink-0 mt-0.5`} />
+                          <span className="text-xs text-slate-300">{kpi}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+
+          {/* Operational Plan View */}
+          <TabsContent value="operational" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              {roadmapData.map((phase, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className={`p-6 bg-gradient-to-br from-slate-900/80 to-${phase.color}-900/20 border-2 border-${phase.color}-500/30 backdrop-blur-xl`}>
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <Badge variant="outline" className={`text-${phase.color}-300 border-${phase.color}-400/50 mb-2`}>
+                          {phase.timeline}
+                        </Badge>
+                        <h3 className="text-2xl font-bold text-white">{phase.phase}</h3>
+                      </div>
+                      <div className={`p-3 rounded-xl bg-${phase.color}-500/20 border border-${phase.color}-400/40`}>
+                        <Rocket className={`h-6 w-6 text-${phase.color}-400`} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <Target className="h-4 w-4 text-blue-400" />
+                        Keskeiset Tavoitteet (KPIs)
+                      </h4>
+                      {phase.kpis.map((kpi, kpiIndex) => (
+                        <div key={kpiIndex} className="flex items-start gap-3 p-3 rounded-lg bg-slate-800/60 border border-white/10 hover:border-white/20 transition-colors">
+                          <CheckCircle2 className={`h-5 w-5 text-${phase.color}-400 flex-shrink-0 mt-0.5`} />
+                          <span className="text-sm text-slate-200 font-medium">{kpi}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </motion.div>
+          </TabsContent>
+        </Tabs>
+
+        {/* Strategy Chat Widget */}
+        <StrategyChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+
+        {/* Floating button to reopen chat if closed */}
+        {!isChatOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="fixed bottom-6 right-6 z-40"
           >
-            {strategyContent}
-          </ReactMarkdown>
-        </div>
+            <Button
+              onClick={() => setIsChatOpen(true)}
+              className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-2xl hover:shadow-purple-500/50 transition-all"
+            >
+              <MessageSquare className="h-6 w-6 text-white" />
+            </Button>
+          </motion.div>
+        )}
 
-        {/* Footer CTA - Enhanced with sophisticated glassmorphism */}
-        <div className="mt-16 p-8 sm:p-10 lg:p-12 rounded-3xl bg-gradient-to-br from-slate-900/60 via-blue-900/40 to-purple-900/50 border-2 border-white/15 text-center backdrop-blur-xl shadow-2xl transition-all duration-500 hover:shadow-blue-500/30 hover:scale-[1.01] animate-in fade-in-0 zoom-in-95 duration-700 relative overflow-hidden group">
-          {/* Animated gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-          <div className="relative">
-            {/* Icon */}
-            <div className="flex justify-center mb-6">
-              <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 border border-emerald-400/30 shadow-lg shadow-emerald-500/20 backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:shadow-emerald-500/40">
-                <AlertCircle className="h-10 w-10 text-emerald-400" strokeWidth={2.5} />
-              </div>
-            </div>
-
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-5 tracking-tight">
-              Seuraavat Askeleet
-            </h2>
-            <p className="text-white/80 text-base sm:text-lg lg:text-xl mb-8 max-w-4xl mx-auto leading-relaxed">
-              Aloitetaan <span className="text-emerald-400 font-semibold">Phase 1 pilotti Q1 2026</span>: Chatwoot + n8n + Claude API käyttöönotto yhden asiakkaan tiimille.
-              Tavoitteena validoida hybridiratkaisu ja ROI ennen laajempaa skaalausta.
-            </p>
-
-            {/* Action Cards Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
-              <div className="group/card relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-emerald-400/20 backdrop-blur-md p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/20 hover:border-emerald-400/40 hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative">
-                  <CheckCircle2 className="h-6 w-6 text-emerald-400 mb-3 mx-auto" />
-                  <p className="text-xs font-medium text-emerald-300/70 uppercase tracking-wider mb-2">Aloitus</p>
-                  <p className="text-lg font-bold text-emerald-300">Q1 2026</p>
-                </div>
-              </div>
-
-              <div className="group/card relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-400/20 backdrop-blur-md p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 hover:border-blue-400/40 hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative">
-                  <Target className="h-6 w-6 text-blue-400 mb-3 mx-auto" />
-                  <p className="text-xs font-medium text-blue-300/70 uppercase tracking-wider mb-2">Budget</p>
-                  <p className="text-lg font-bold text-blue-300">€100K</p>
-                  <p className="text-xs text-blue-400/60 mt-1">Phase 1</p>
-                </div>
-              </div>
-
-              <div className="group/card relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500/10 to-purple-600/5 border border-purple-400/20 backdrop-blur-md p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/20 hover:border-purple-400/40 hover:-translate-y-1">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300"></div>
-                <div className="relative">
-                  <TrendingUp className="h-6 w-6 text-purple-400 mb-3 mx-auto" />
-                  <p className="text-xs font-medium text-purple-300/70 uppercase tracking-wider mb-2">ROI-tavoite</p>
-                  <p className="text-lg font-bold text-purple-300">3 kk</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Call to Action */}
-            <div className="mt-10 pt-8 border-t border-white/10">
-              <p className="text-white/60 text-sm italic">
-                Johdon toimenpide vaaditaan: Jatka vaiheen 1 toteutuksella välittömästi.
-              </p>
+        {/* Final CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-10 p-8 rounded-3xl bg-gradient-to-br from-emerald-900/40 to-blue-900/40 border-2 border-emerald-500/40 backdrop-blur-xl text-center"
+        >
+          <div className="flex justify-center mb-4">
+            <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-400/40">
+              <Rocket className="h-8 w-8 text-emerald-400" strokeWidth={2.5} />
             </div>
           </div>
-        </div>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+            Polku Menestykseen On Kirkas
+          </h2>
+          <p className="text-slate-200 text-base sm:text-lg mb-6 max-w-3xl mx-auto leading-relaxed">
+            Humm Group Oy:llä on edessään valinta joka määrittää yrityksen tulevaisuuden vuosikymmeneksi eteenpäin.
+            Voimme tarttua historialliseen mahdollisuuteen ja muuttua teknologiajohtavaksi asiakaskokemuksen
+            kumppaniksi joka yhdistää ihmisen parhaat puolet ja tekoälyn voiman.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <Badge variant="outline" className="text-emerald-300 border-emerald-400/50 text-sm px-4 py-2">
+              <DollarSign className="h-4 w-4 mr-1" />
+              €10M tavoite 2030
+            </Badge>
+            <Badge variant="outline" className="text-blue-300 border-blue-400/50 text-sm px-4 py-2">
+              <Users className="h-4 w-4 mr-1" />
+              100 työntekijää
+            </Badge>
+            <Badge variant="outline" className="text-purple-300 border-purple-400/50 text-sm px-4 py-2">
+              <TrendingUp className="h-4 w-4 mr-1" />
+              20% liikevoitto
+            </Badge>
+          </div>
+          <p className="text-white font-bold text-xl mt-6">
+            Aloitetaan nyt. Rakennetaan yhdessä Hummin tulevaisuus.
+          </p>
+        </motion.div>
       </div>
     </ScrollArea>
   );

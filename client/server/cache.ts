@@ -113,10 +113,10 @@ async function readAttachedAssets(): Promise<string> {
         console.log(`📁 Caching attached_assets: ${supportedFiles.length} files found (${supportedFiles.join(', ')})`);
         
         const contents = await Promise.all(
-          supportedFiles.slice(0, 25).map(async f => {
+          supportedFiles.slice(0, 50).map(async f => {
             const filePath = path.join(assetsDir, f);
             let content = "";
-            
+
             try {
               if (f.endsWith('.pdf') && pdfParse) {
                 // Parse PDF file
@@ -135,8 +135,8 @@ async function readAttachedAssets(): Promise<string> {
               console.error(`❌ Failed to read ${f}:`, pdfError);
               content = `[Virhe luettaessa tiedostoa ${f}]`;
             }
-            
-            return `📋 **${f}**:\n${content.substring(0, 1500)}${content.length > 1500 ? '...' : ''}`;
+
+            return `📋 **${f}**:\n${content.substring(0, 5000)}${content.length > 5000 ? '...(truncated)' : ''}`;
           })
         );
         
