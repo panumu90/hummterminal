@@ -2439,7 +2439,6 @@ export function ChatInterface() {
           </div>
         </DialogContent>
       </Dialog>
-      </div>
 
       {/* Feedback Modal */}
       <FeedbackModal
