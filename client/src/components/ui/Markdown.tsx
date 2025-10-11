@@ -14,12 +14,13 @@ interface MarkdownProps {
  */
 export function Markdown({ children, className, components }: MarkdownProps) {
   return (
-    <ReactMarkdown
-      className={className}
-      remarkPlugins={[remarkGfm]}
-      components={components}
-    >
-      {children}
-    </ReactMarkdown>
+    <div className={className}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={components}
+      >
+        {children}
+      </ReactMarkdown>
+    </div>
   );
 }
