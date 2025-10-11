@@ -1,0 +1,440 @@
+{
+  "phases": [
+    {
+      "id": "phase1",
+      "quarter": "2026 Q1-Q2",
+      "title": "Perusta & Nopeat Voitot",
+      "revenue": "€2.1M → €2.5M",
+      "margin": "-0.2% → +8%",
+      "status": "in-progress",
+      "kpis": [
+        { "name": "Liikevaihto", "current": 2.1, "target": 2.5, "unit": "M€", "change": "+19%" },
+        { "name": "Käyttökate", "current": -0.2, "target": 8, "unit": "%", "change": "+8.2pp" },
+        { "name": "Asiakastyytyväisyys", "current": 72, "target": 80, "unit": "%", "change": "+11%" },
+        { "name": "Tehokkuus", "current": 100, "target": 115, "unit": "%", "change": "+15%" }
+      ],
+      "categories": [
+        {
+          "id": "efficiency",
+          "name": "Tehokkuuden Parantaminen",
+          "description": "Automatisoi manuaaliset prosessit ja optimoi resurssiallokointi AI:n avulla",
+          "icon": "Zap",
+          "color": "from-amber-500/80 to-orange-600/80",
+          "metrics": {
+            "current": "60-70% henkilöstökustannukset liikevaihdosta",
+            "target": "15-25% parannus operatiivisessa tehokkuudessa",
+            "impact": "20+ tuntia/viikko säästö tiimiltä"
+          },
+          "actions": [
+            "Automatisoi CRM-datasyöttö GPT-4 API:lla → vähennä 30-50% manuaalista työtä",
+            "Rakenna ennakoiva resurssimalli (XGBoost/LSTM) → vähennä tyhjiä resursseja 25%",
+            "Chatbotit hoitavat 50% yksinkertaisista kyselyistä",
+            "Älykkäät järjestelmät priorisoivat ja reitittävät pyynnöt tehokkaammin"
+          ],
+          "technologies": ["GPT-4/Claude API", "XGBoost", "LSTM", "CRM-integraatiot", "Chatbot-alusta"],
+          "risks": ["Integraatioiden kompleksisuus", "Muutosvastarinta henkilöstössä"],
+          "benchmarks": [
+            { "company": "Epassi Group", "achievement": "20% vähennys manuaalisessa työssä automaation avulla" },
+            { "company": "Accountor Group", "achievement": "15-20% tuottavuuden parannus AI-ratkaisuilla" }
+          ]
+        },
+        {
+          "id": "customer-experience",
+          "name": "Asiakaskokemuksen Kehittäminen",
+          "description": "Personoitu, reaaliaikainen palvelu 24/7 AI-avusteisella järjestelmällä",
+          "icon": "Users",
+          "color": "from-blue-500/80 to-cyan-600/80",
+          "metrics": {
+            "current": "Ei tietoa asiakastyytyväisyydestä",
+            "target": "20-30% parannus asiakastyytyväisyydessä",
+            "impact": "60% vähennys käsittelyajassa, +12 NPS-pistettä"
+          },
+          "actions": [
+            "Langchain-pohjainen chatbot Zendesk-integraatiolla → ymmärtää kontekstin",
+            "24/7 palvelu monikielisellä tuella → parannus tyytyväisyydessä 20-30%",
+            "Personoidut kokemukset asiakashistorian analyysillä",
+            "Ennakoiva palvelu: tunnista ongelmat ennen ilmenemistä"
+          ],
+          "technologies": ["Langchain", "Zendesk API", "Sentence Transformers", "Embedding-tech"],
+          "risks": ["Asiakasluottamus AI:hin", "Tietosuoja (GDPR)"],
+          "benchmarks": [
+            { "company": "Epassi", "achievement": "Merkittävä parannus asiakastyytyväisyydessä 24/7 mobiilipalvelun ansiosta" },
+            { "company": "Accountor", "achievement": "25% parannus asiakastyytyväisyydessä AI-palveluilla" }
+          ]
+        },
+        {
+          "id": "mcp-security",
+          "name": "MCP-Protokolla & Tietoturva",
+          "description": "Model Context Protocol turvalliseen AI-integraatioon roolipohjaisen pääsynhallinnan kanssa",
+          "icon": "Shield",
+          "color": "from-emerald-500/80 to-green-600/80",
+          "metrics": {
+            "current": "Perustason AI-integraatiot ilman MCP:tä",
+            "target": "100% turvallinen AI-datavirta MCP:n kautta",
+            "impact": "GDPR-compliance + 66% asiakkaista huolissaan tietoturvasta"
+          },
+          "actions": [
+            "Ota käyttöön MCP roolipohjaisella pääsynhallinnalla (RBAC)",
+            "Eksplisiittinen kontekstin rajaus → AI pääsee vain sallittuun dataan",
+            "Audit-jäljet kaikista AI-toiminnoista → läpinäkyvyys ja compliance",
+            "Vahva autentikointi + TLS-salaus kaikille MCP-kutsuille"
+          ],
+          "technologies": ["MCP (Model Context Protocol)", "OAuth 2.0", "TLS 1.3", "Audit logging", "RBAC"],
+          "risks": ["Väärinkonfigurointi voi johtaa datan vuotoon", "Monimutkainen toteutus"],
+          "benchmarks": [
+            { "company": "Cerbos", "achievement": "Fine-grained access control AI-agenteille MCP:n kanssa" },
+            { "company": "CyberArk", "achievement": "MCP-standardi turvalliseen AI-integrointiin" }
+          ]
+        },
+        {
+          "id": "data-insights",
+          "name": "Datalähtöiset Innovaatiot",
+          "description": "Generatiivinen AI ja RAG-arkkitehtuuri uusien palvelumallien luomiseen",
+          "icon": "Brain",
+          "color": "from-purple-500/80 to-pink-600/80",
+          "metrics": {
+            "current": "Perinteinen konsultointi ilman AI-tukea",
+            "target": "15-20% lisätuloja uusista AI-palveluista",
+            "impact": "Uudet markkinaraot embedding-analyysillä"
+          },
+          "actions": [
+            "Kehitä RAG-arkkitehtuuri (Retrieval-Augmented Generation) omalle datalle",
+            "AI generoi räätälöityjä suosituksia: 'Asiakas X tilanne → 3 toimintavaihtoehtoa'",
+            "Analysoi asiakaskäyttäytyminen Sentence Transformers -mallilla",
+            "Identifioi uudet markkinaraot embedding-teknologialla"
+          ],
+          "technologies": ["RAG (Retrieval-Augmented Generation)", "Vector DBs", "Embeddings", "Claude Sonnet"],
+          "risks": ["AI-generoitujen suositusten laatu", "Riippuvuus datan laadusta"],
+          "benchmarks": [
+            { "company": "McKinsey", "achievement": "AI-investointien ROI 20-35% 2-3 vuodessa PKY-yrityksille" },
+            { "company": "Gartner", "achievement": "CX-tekoäly tuottaa 15-30% hyödyt eri mittareissa" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase2",
+      "quarter": "2026 Q3-Q4",
+      "title": "Skaalautuvuus & Kasvu",
+      "revenue": "€2.5M → €3.2M",
+      "margin": "8% → 12%",
+      "status": "upcoming",
+      "kpis": [
+        { "name": "Liikevaihto", "current": 2.5, "target": 3.2, "unit": "M€", "change": "+28%" },
+        { "name": "Käyttökate", "current": 8, "target": 12, "unit": "%", "change": "+4pp" },
+        { "name": "Asiakastyytyväisyys", "current": 80, "target": 88, "unit": "%", "change": "+10%" },
+        { "name": "Automaatioaste", "current": 30, "target": 50, "unit": "%", "change": "+67%" }
+      ],
+      "categories": [
+        {
+          "id": "full-automation",
+          "name": "Täysi Automaatio",
+          "description": "Ensitason asiakaspalvelu täysin automatisoitu AI-agenttien toimesta",
+          "icon": "Bot",
+          "color": "from-violet-500/80 to-purple-600/80",
+          "metrics": {
+            "current": "50% yksinkertaisista kyselyistä automatisoidut",
+            "target": "80% ensitason kyselyistä hoidettu ilman ihmistä",
+            "impact": "Skaalaa 3x ilman henkilöstölisäystä"
+          },
+          "actions": [
+            "Kokonaan automatisoitu Tier-1 asiakaspalvelu agentic AI:lla",
+            "Multi-agentti-systeemi: erikoistuneet agentit eri tehtäviin",
+            "Seamless eskalaatio ihmiselle vain kompleksisissa tapauksissa",
+            "Jatkuva oppiminen: AI paranee jokaisesta vuorovaikutuksesta"
+          ],
+          "technologies": ["Agentic AI", "Multi-agent systems", "Reinforcement learning", "Transfer learning"],
+          "risks": ["Asiakaskokemus voi kärsiä liian nopeasta automaatiosta", "Henkilöstön motivaatio"],
+          "benchmarks": [
+            { "company": "Alibaba", "achievement": "Virtuaaliassistentit hoitavat 95% asiakasviesteistä kiinalaisten yritysten kesken" }
+          ]
+        },
+        {
+          "id": "predictive-analytics",
+          "name": "Ennakoiva Analytiikka",
+          "description": "Proaktiivinen ongelmanratkaisu ennen asiakkaan yhteydenottoa",
+          "icon": "BarChart3",
+          "color": "from-rose-500/80 to-red-600/80",
+          "metrics": {
+            "current": "Reaktiivinen asiakaspalvelu",
+            "target": "40% ongelmista ratkaistu ennakoivasti",
+            "impact": "CES lasku 2.3 → 1.8 (proaktiivinen palvelu)"
+          },
+          "actions": [
+            "Streaming-data-analytiikka (Apache Flink) asiakaskäyttäytymisen seuraamiseen",
+            "Trigger automaattiset viestit: 'Asiakas hiljainen 7 päivää → lähetä tarjous'",
+            "Tunnista toistuvat ongelmat AI:lla ja ehdota ratkaisuja etukäteen",
+            "Ennakoiva resurssiallokointi kysyntäpiikkeihin"
+          ],
+          "technologies": ["Apache Flink", "Time-series analysis", "Anomaly detection", "Predictive models"],
+          "risks": ["False positives voivat ärsyttää asiakkaita", "Datan laatuvaatimukset korkeat"],
+          "benchmarks": [
+            { "company": "Nordea", "achievement": "Ennakoiva analytiikka vähensi asiakaspoistumaa 15%" }
+          ]
+        },
+        {
+          "id": "new-products",
+          "name": "Uudet AI-Palvelutuotteet",
+          "description": "Lanseeraa AI-as-a-Service -tuotteita muille yrityksille",
+          "icon": "Rocket",
+          "color": "from-cyan-500/80 to-blue-600/80",
+          "metrics": {
+            "current": "Perinteinen konsultointi",
+            "target": "€0.7M lisäliikevaihto AI-tuotteista",
+            "impact": "Uusi tulonlähde, parannettu kate"
+          },
+          "actions": [
+            "Lanseeraa 'Humm AI Assistant' SaaS-tuote PK-yrityksille",
+            "Kehitä valmis RAG-pohjainen järjestelmä helposti räätälöitäväksi",
+            "AI-konsultointipalvelu: auta yrityksiä ottamaan AI käyttöön",
+            "Lisenssimalli: recurring revenue vs. projektimyynti"
+          ],
+          "technologies": ["SaaS-arkkitehtuuri", "White-label solutions", "API-first design", "Multi-tenancy"],
+          "risks": ["Markkinan kylläisyys AI-tuotteissa", "Tuotekehityksen aikataulu"],
+          "benchmarks": [
+            { "company": "Loihde", "achievement": "AI-konsultointi ja SaaS-tuotteet kasvattivat liikevaihtoa 22%" }
+          ]
+        },
+        {
+          "id": "personalization",
+          "name": "Hyperpersonointi",
+          "description": "Jokainen asiakaskohtaaminen räätälöity yksilöllisesti",
+          "icon": "Star",
+          "color": "from-amber-500/80 to-yellow-600/80",
+          "metrics": {
+            "current": "Segmenttipohjainen palvelu",
+            "target": "100% yksilöllisesti personoidut kohtaamiset",
+            "impact": "NPS +68 → +82 (World-class)"
+          },
+          "actions": [
+            "Real-time customer segmentation streaming-datalla",
+            "AI analysoi asiakkaan historian, preferenssit, kontekstin",
+            "Dynaaminen sisällön generointi jokaiselle asiakkaalle",
+            "Monikielinen, kulttuuriin sopiva viestintä automaattisesti"
+          ],
+          "technologies": ["Real-time segmentation", "Dynamic content generation", "NLP", "Translation AI"],
+          "risks": ["Privacy concerns", "Liian personoitu voi tuntua tungettelevalta"],
+          "benchmarks": [
+            { "company": "Amazon", "achievement": "35% liikevaihdosta personoiduista suosituksista" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase3",
+      "quarter": "2027-2028",
+      "title": "Markkinajohtajuus",
+      "revenue": "€3.2M → €7.2M",
+      "margin": "12% → 28%",
+      "status": "upcoming",
+      "kpis": [
+        { "name": "Liikevaihto", "current": 3.2, "target": 7.2, "unit": "M€", "change": "+125%" },
+        { "name": "Käyttökate", "current": 12, "target": 28, "unit": "%", "change": "+16pp" },
+        { "name": "Markkinaosuus", "current": 2, "target": 8, "unit": "%", "change": "+300%" },
+        { "name": "AI-automation", "current": 50, "target": 85, "unit": "%", "change": "+70%" }
+      ],
+      "categories": [
+        {
+          "id": "own-models",
+          "name": "Omat AI-Mallit",
+          "description": "Kehitä proprietäärejä AI-malleja kilpailueduksi",
+          "icon": "Cpu",
+          "color": "from-indigo-500/80 to-blue-600/80",
+          "metrics": {
+            "current": "Kolmannen osapuolen AI-mallit (OpenAI, Anthropic)",
+            "target": "Omat fine-tuned mallit CX-domainille",
+            "impact": "50% alhaisemmat AI-kustannukset, parempi laatu"
+          },
+          "actions": [
+            "Fine-tune LLaMA 3 / Mistral omalle CX-datalle",
+            "Kehitä domain-specific embeddings asiakaspalveluun",
+            "On-premise deployment kriittisille asiakkaille",
+            "Continuous learning pipeline: mallit parantuvat automaattisesti"
+          ],
+          "technologies": ["LLaMA 3", "Mistral", "LoRA fine-tuning", "Vector embeddings", "MLOps"],
+          "risks": ["Korkeat kehityskustannukset", "Tarvitaan huippuosaamista"],
+          "benchmarks": [
+            { "company": "Hugging Face", "achievement": "Open-source mallit demokratisoivat AI:n PKY-yrityksille" }
+          ]
+        },
+        {
+          "id": "international",
+          "name": "Kansainvälinen Laajentuminen",
+          "description": "Skaalaa AI-palvelut Pohjoismaihin ja Baltian maihin",
+          "icon": "Globe",
+          "color": "from-teal-500/80 to-emerald-600/80",
+          "metrics": {
+            "current": "Vain Suomi",
+            "target": "5 maata: FI, SE, NO, DK, EE",
+            "impact": "5x markkinapotentiaali, €4M+ lisämyynti"
+          },
+          "actions": [
+            "Monikielinen AI (Ruotsi, Norja, Tanska, Viro)",
+            "Lokalisointi kulttuureihin: AI ymmärtää paikallisia erityispiirteitä",
+            "Kumppanuudet: integraatiot paikallisten CRM/ERP-järjestelmien kanssa",
+            "Compliance: GDPR + paikalliset tietosuojasäännöt"
+          ],
+          "technologies": ["Multilingual NLP", "Localization APIs", "Regional cloud (EU)", "Compliance automation"],
+          "risks": ["Kulttuurierot", "Regulaatiot vaihtelevat maittain"],
+          "benchmarks": [
+            { "company": "Epassi", "achievement": "Laajentui 150M€ liikevaihtoon digitaalisten palveluiden avulla" }
+          ]
+        },
+        {
+          "id": "ecosystem",
+          "name": "AI-Ekosysteemi",
+          "description": "Rakenna avoin ekosysteemi kumppaneille ja kehittäjille",
+          "icon": "Network",
+          "color": "from-fuchsia-500/80 to-purple-600/80",
+          "metrics": {
+            "current": "Suljettu järjestelmä",
+            "target": "50+ kumppania ekosysteemissä",
+            "impact": "Network effect, ecosystem ARR €2M+"
+          },
+          "actions": [
+            "Avaa API:t kolmansille osapuolille (API-first approach)",
+            "Marketplace: kumppanit voivat rakentaa AI-plugin-sovelluksia",
+            "Developer program: ilmainen tier + maksullinen enterprise",
+            "Co-innovation lab: yhteiskehitys suurten asiakkaiden kanssa"
+          ],
+          "technologies": ["API gateway", "GraphQL", "Webhooks", "OAuth 2.0", "Developer portal"],
+          "risks": ["Quality control kumppanisovellusten osalta", "Kannibalisointi omia tuotteita"],
+          "benchmarks": [
+            { "company": "Salesforce AppExchange", "achievement": "7000+ kumppanisovellusta, miljardibisnes" }
+          ]
+        },
+        {
+          "id": "thought-leadership",
+          "name": "Ajatusjohtajuus",
+          "description": "Asemoidu CX AI:n edelläkävijäksi Pohjoismaissa",
+          "icon": "Award",
+          "color": "from-orange-500/80 to-amber-600/80",
+          "metrics": {
+            "current": "Tuntematon brändi AI-kentällä",
+            "target": "Top 3 CX AI -ajatusjohtaja Pohjoismaissa",
+            "impact": "Inbound leads +200%, premium pricing"
+          },
+          "actions": [
+            "Julkaise whitepapers, case studies, tutkimuksia",
+            "Speaking engagements konferensseissa (Web Summit, Slush)",
+            "LinkedIn-läsnäolo: CTO/Tech Lead jakaa insights viikoittain",
+            "Open-source contributiot: rakenna mainetta kehittäjäyhteisössä"
+          ],
+          "technologies": ["Content marketing", "Social media", "Community building", "PR"],
+          "risks": ["Kilpailijoiden vastareaktio", "Resurssit sisällöntuotantoon"],
+          "benchmarks": [
+            { "company": "HubSpot", "achievement": "Inbound marketing -ajatusjohtajuudesta SaaS-jätti" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "phase4",
+      "quarter": "2029-2030",
+      "title": "AI-Natiivi Yritys",
+      "revenue": "€7.2M → €10M+",
+      "margin": "28% → 32%+",
+      "status": "upcoming",
+      "kpis": [
+        { "name": "Liikevaihto", "current": 7.2, "target": 10, "unit": "M€", "change": "+39%" },
+        { "name": "Käyttökate", "current": 28, "target": 32, "unit": "%", "change": "+4pp" },
+        { "name": "AI-automaatio", "current": 85, "target": 95, "unit": "%", "change": "+12%" },
+        { "name": "ARR", "current": 8, "target": 9, "unit": "M€", "change": "+13%" }
+      ],
+      "categories": [
+        {
+          "id": "autonomous-ai",
+          "name": "Autonomiset AI-Agentit",
+          "description": "Täysin itsenäiset AI-agentit hoitavat liiketoimintaprosesseja end-to-end",
+          "icon": "Bot",
+          "color": "from-pink-500/80 to-rose-600/80",
+          "metrics": {
+            "current": "85% automaatio",
+            "target": "95% prosesseista täysin autonomisia",
+            "impact": "Marginaali 32%+, skaalautuvuus rajaton"
+          },
+          "actions": [
+            "Self-improving AI: agentit oppivat ja optimoivat itseään",
+            "Multi-modal AI: teksti, kuva, ääni, video yhtenäisesti",
+            "Autonomous decision-making rajatuissa konteksteissa",
+            "Human-in-the-loop vain kriittisissä päätöksissä"
+          ],
+          "technologies": ["AGI-prototypes", "Multi-modal transformers", "Reinforcement learning", "Autonomous agents"],
+          "risks": ["Eettiset kysymykset", "Regulation (EU AI Act)"],
+          "benchmarks": [
+            { "company": "OpenAI", "achievement": "GPT-5 odotetaan lähestyvän AGI-tason kyvykkyyksiä" }
+          ]
+        },
+        {
+          "id": "ai-native-culture",
+          "name": "AI-Natiivi Kulttuuri",
+          "description": "Koko organisaatio rakennettu AI-ensisijaiseksi",
+          "icon": "Brain",
+          "color": "from-violet-500/80 to-indigo-600/80",
+          "metrics": {
+            "current": "AI-avusteinen työkulttuuri",
+            "target": "AI-native: jokainen prosessi AI-optimoitu",
+            "impact": "Revenue per employee €192k (vs. €40k nykytila)"
+          },
+          "actions": [
+            "Jokainen työntekijä = AI-superintendentti: 10x tuottavuus",
+            "AI co-founder: strategiset päätökset AI-avusteisia",
+            "Continuous learning: AI kouluttaa henkilöstöä reaaliaikaisesti",
+            "Remote-first + AI-tools: globaali talent pool"
+          ],
+          "technologies": ["AI assistants", "Copilot integrations", "Knowledge graphs", "Adaptive learning"],
+          "risks": ["Riippuvuus AI:sta", "Henkilöstön roolin muutos"],
+          "benchmarks": [
+            { "company": "GitHub Copilot", "achievement": "55% koodista AI-generoitua, developers 2x tuottavampia" }
+          ]
+        },
+        {
+          "id": "quantum-ready",
+          "name": "Kvanttivalmiudet",
+          "description": "Varaudu kvanttitietokoneiden aikakauteen",
+          "icon": "Zap",
+          "color": "from-sky-500/80 to-blue-600/80",
+          "metrics": {
+            "current": "Klassiset algoritmit",
+            "target": "Quantum-ready infra ja algoritmit",
+            "impact": "1000x nopeutus kompleksisissa optimoinneissa"
+          },
+          "actions": [
+            "Kvanttiresistentit salausmenetelmät (post-quantum cryptography)",
+            "Hybrid quantum-classical algoritmit optimointiin",
+            "Kumppanuudet: IBM Quantum, AWS Braket",
+            "Koulutus: quantum computing osa tech-osaamista"
+          ],
+          "technologies": ["Quantum algorithms", "Post-quantum crypto", "Hybrid quantum-classical", "Qiskit"],
+          "risks": ["Teknologia vielä varhainen", "Korkeat kustannukset"],
+          "benchmarks": [
+            { "company": "IBM", "achievement": "Quantum computers ratkaisevat tiettyjä ongelmia eksponentiaalisesti nopeammin" }
+          ]
+        },
+        {
+          "id": "sustainability",
+          "name": "Kestävä AI",
+          "description": "Ympäristöystävällinen AI-infra ja carbon-neutral toiminta",
+          "icon": "Globe",
+          "color": "from-green-500/80 to-emerald-600/80",
+          "metrics": {
+            "current": "Perinteinen cloud-infra",
+            "target": "Carbon-neutral AI, 100% renewable energy",
+            "impact": "ESG-pisteet korkealle, houkuttelee green investors"
+          },
+          "actions": [
+            "Green AI: optimoi mallit energiatehokkuuteen",
+            "Carbon-neutral data centers (Iceland, Norway)",
+            "Efficient inference: pruning, quantization, distillation",
+            "Transparency: raportoi AI:n hiilijalanjälki"
+          ],
+          "technologies": ["Model compression", "Green cloud", "Energy monitoring", "Carbon offsetting"],
+          "risks": ["Viherpesun syytökset", "Kustannukset lyhyellä tähtäimellä"],
+          "benchmarks": [
+            { "company": "Google", "achievement": "Carbon-neutral since 2007, AI-models optimized for sustainability" }
+          ]
+        }
+      ]
+    }
+  ]
+}
