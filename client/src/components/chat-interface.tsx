@@ -5,8 +5,7 @@ import { PulseButton } from "@/components/ui/pulse-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+import { Markdown } from '@/components/ui/Markdown';
 import { motion } from "framer-motion";
 import { Bot, User, Send, TrendingUp, Wrench, MapPin, Target, Zap, DollarSign, Crosshair, Globe, Building, Users, Shield, Database, Workflow, MessageCircle, Phone, Heart, GraduationCap, BookOpen, Cpu, Scale, Star, Maximize2, Minimize2, HelpCircle, FileText, ExternalLink, BarChart3, Rocket } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -2033,8 +2032,7 @@ export function ChatInterface() {
                       <span className="whitespace-pre-wrap">{message.content}</span>
                     ) : (
                       <div className="max-w-none text-gray-100">
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkGfm]}
+                        <Markdown
                           components={{
                             h1: ({children}) => <h1 className="text-lg font-bold mb-2 text-white">{children}</h1>,
                             h2: ({children}) => <h2 className="text-base font-semibold mb-2 text-white">{children}</h2>,
@@ -2050,7 +2048,7 @@ export function ChatInterface() {
                           }}
                         >
                           {message.content}
-                        </ReactMarkdown>
+                        </Markdown>
                       </div>
                     )}
                   </div>
@@ -2340,8 +2338,7 @@ export function ChatInterface() {
                           <span className="whitespace-pre-wrap">{message.content}</span>
                         ) : (
                           <div className="max-w-none text-gray-100">
-                            <ReactMarkdown 
-                              remarkPlugins={[remarkGfm]}
+                            <Markdown
                               components={{
                                 h1: ({children}) => <h1 className="text-lg font-bold mb-2 text-white">{children}</h1>,
                                 h2: ({children}) => <h2 className="text-base font-semibold mb-2 text-white">{children}</h2>,
@@ -2357,7 +2354,7 @@ export function ChatInterface() {
                               }}
                             >
                               {message.content}
-                            </ReactMarkdown>
+                            </Markdown>
                           </div>
                         )}
                       </div>
