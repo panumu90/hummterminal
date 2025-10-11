@@ -1,968 +1,623 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { 
-  ArrowLeft, 
-  TrendingUp, 
-  TrendingDown, 
-  Building2, 
-  Users, 
-  Euro, 
-  BarChart3,
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import {
+  ArrowLeft,
+  Shield,
+  AlertTriangle,
+  Users,
+  Database,
+  Briefcase,
+  FileText,
+  TrendingUp,
   Target,
-  Lightbulb,
-  Rocket,
-  CheckCircle,
-  AlertCircle,
-  Calendar,
-  MapPin
+  Clock,
+  ChevronRight,
+  Zap,
+  BookOpen,
+  Layers
 } from "lucide-react";
 import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { fetchRAGSection } from "@/lib/ragClient";
+import type { RiskCategory, RootCause, Framework, TimelinePhase, CaseStudy, FailureStat } from "@/lib/ragClient";
+import { MetricCard } from "@/components/risk/MetricCard";
+import { RiskCard } from "@/components/risk/RiskCard";
+import { RiskMatrix } from "@/components/risk/RiskMatrix";
+import { TimelineStep } from "@/components/risk/TimelineStep";
 
-export default function ImpactAnalysis() {
+// RAG query hooks
+function useHeroData() {
+  return useQuery({
+    queryKey: ["risk-hero"],
+    queryFn: () => fetchRAGSection<{ subtitle: string; stats: FailureStat[] }>(
+      "risk-hero",
+      "Kerro AI-muutosjohtamisen epäonnistumisprosentti BPO-alalla ja 3 tärkeintä tilastoa muutosjohtamisesta. Vastaa JSON-muodossa: {subtitle: string, stats: [{icon: string, label: string, value: string, trend?: {direction: 'up'|'down'|'neutral', value: string}, source: string}]}"
+    ),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+function useRiskCategories() {
+  return useQuery({
+    queryKey: ["risk-categories"],
+    queryFn: () => fetchRAGSection<RiskCategory[]>(
+      "risk-categories",
+      "Kerro 5 pääasiallista riskikategoriaa AI-muutosjohtamisessa BPO-alalla. Jokaiselle kategorialle anna todennäköisyys (low/medium/high), vaikutus (low/medium/high), riskit (lista), vähentämiskeinot (lista), ja lähteet. Vastaa JSON-muodossa: [{category: string, likelihood: 'low'|'medium'|'high', impact: 'low'|'medium'|'high', risks: string[], mitigations: string[], sources: string[]}]"
+    ),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+function useRootCauses() {
+  return useQuery({
+    queryKey: ["root-causes"],
+    queryFn: () => fetchRAGSection<RootCause[]>(
+      "root-causes",
+      "Kerro top 5 perimmäistä syytä, miksi AI-muutosjohtaminen epäonnistuu BPO-alalla. Vastaa JSON-muodossa: [{title: string, description: string, percentage: string, details: string[]}]"
+    ),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+function useFrameworks() {
+  return useQuery({
+    queryKey: ["frameworks"],
+    queryFn: () => fetchRAGSection<Framework[]>(
+      "frameworks",
+      "Kerro 4 tärkeintä muutosjohtamisen viitekehystä (ADKAR, Kotter, NIST, ISO/IEC) ja miten ne soveltuvat AI-muutokseen. Vastaa JSON-muodossa: [{name: string, description: string, phases: string[], aiApplication: string, sources: string[]}]"
+    ),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+function useTimeline() {
+  return useQuery({
+    queryKey: ["timeline"],
+    queryFn: () => fetchRAGSection<TimelinePhase[]>(
+      "timeline",
+      "Kerro 4-5 vaihetta AI-muutoksen toteuttamiseen BPO-yrityksessä. Jokaiselle vaiheelle anna kesto, toimenpiteet ja KPI-tavoitteet. Vastaa JSON-muodossa: [{phase: string, duration: string, icon: string, actions: string[], kpis: string[]}]"
+    ),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+function useCaseStudies() {
+  return useQuery({
+    queryKey: ["case-studies"],
+    queryFn: () => fetchRAGSection<CaseStudy[]>(
+      "case-studies",
+      "Kerro 3-5 BPO-alan case-esimerkkiä AI-muutosjohtamisesta (sekä onnistuneet että epäonnistuneet). Vastaa JSON-muodossa: [{company: string, challenge: string, approach: string, outcome: string, lessonsLearned: string[]}]"
+    ),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+function useCTARecommendation() {
+  return useQuery({
+    queryKey: ["cta-recommendation"],
+    queryFn: () => fetchRAGSection<{ recommendation: string }>(
+      "cta-recommendation",
+      "Anna lyhyt suositus (2-3 lausetta) AI-muutosjohtamisen aloittamiseen BPO-yrityksessä. Vastaa JSON-muodossa: {recommendation: string}"
+    ),
+    staleTime: 1000 * 60 * 10,
+  });
+}
+
+export default function RiskAnalysis() {
+  const [activeSection, setActiveSection] = useState<string>("overview");
+  const [selectedRootCause, setSelectedRootCause] = useState<number>(0);
+
+  const heroQuery = useHeroData();
+  const riskCategoriesQuery = useRiskCategories();
+  const rootCausesQuery = useRootCauses();
+  const frameworksQuery = useFrameworks();
+  const timelineQuery = useTimeline();
+  const caseStudiesQuery = useCaseStudies();
+  const ctaQuery = useCTARecommendation();
+
+  // Icon mapping for stats
+  const getIconComponent = (iconName: string) => {
+    const icons: Record<string, any> = {
+      AlertTriangle,
+      TrendingUp,
+      Users,
+      Target,
+      Clock,
+      Shield,
+      Database,
+      Briefcase,
+      FileText,
+      Zap,
+    };
+    return icons[iconName] || AlertTriangle;
+  };
+
+  // Icon mapping for timeline
+  const getTimelineIcon = (iconName: string) => {
+    const icons: Record<string, any> = {
+      Target,
+      Users,
+      Zap,
+      TrendingUp,
+      Shield,
+    };
+    return icons[iconName] || Target;
+  };
+
+  // Create risk matrix data from categories
+  const riskMatrixData = riskCategoriesQuery.data?.map((cat, idx) => ({
+    id: `risk-${idx}`,
+    name: cat.category,
+    likelihood: cat.likelihood === "high" ? 5 : cat.likelihood === "medium" ? 3 : 1,
+    impact: cat.impact === "high" ? 5 : cat.impact === "medium" ? 3 : 1,
+    description: cat.risks[0] || "",
+  })) || [];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-gray-900 text-white border-b border-slate-700/30">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between mb-6">
+      <div className="sticky top-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
             <Link href="/">
-              <Button variant="ghost" className="text-white hover:bg-slate-700" data-testid="button-back-home">
+              <Button variant="ghost" className="text-white hover:bg-slate-800">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Takaisin etusivulle
+                Takaisin
               </Button>
             </Link>
-            <Badge variant="secondary" className="bg-slate-700 text-white">
-              Syyskuu 2025
-            </Badge>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <h1 className="text-4xl font-bold mb-4" data-testid="text-main-title">
-                Humm Group Oy: Talousanalyysi ja AI-toteutuksen potentiaali
-              </h1>
-              <p className="text-xl text-slate-300 mb-6">
-                Kattava analyysi Humm Group Oy:n taloudellisesta suorituskyvystä ja AI-toteutusmahdollisuuksista
-              </p>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="bg-slate-700 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Building2 className="h-5 w-5 text-slate-400" />
-                  <span className="font-semibold">Liiketoiminta</span>
-                </div>
-                <p className="text-sm text-slate-300">Customer Experience Consulting & Outsourcing</p>
-              </div>
-              
-              <div className="bg-slate-700 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <MapPin className="h-5 w-5 text-green-400" />
-                  <span className="font-semibold">Sijainti</span>
-                </div>
-                <p className="text-sm text-slate-300">Jyväskylä, Suomi</p>
-              </div>
-              
-              <div className="bg-slate-700 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Users className="h-5 w-5 text-purple-400" />
-                  <span className="font-semibold">Työntekijät</span>
-                </div>
-                <p className="text-lg font-bold text-white">52</p>
-              </div>
-              
-              <div className="bg-slate-700 rounded-lg p-4">
-                <div className="flex items-center space-x-2 mb-2">
-                  <Euro className="h-5 w-5 text-yellow-400" />
-                  <span className="font-semibold">Liikevaihto (2024)</span>
-                </div>
-                <p className="text-lg font-bold text-white">€2.1 miljoonaa</p>
-              </div>
+            <div className="hidden md:flex items-center gap-4 text-sm">
+              <button
+                onClick={() => setActiveSection("overview")}
+                className={`transition-smooth ${activeSection === "overview" ? "text-blue-400" : "text-slate-400 hover:text-white"}`}
+              >
+                Yleiskatsaus
+              </button>
+              <button
+                onClick={() => setActiveSection("risks")}
+                className={`transition-smooth ${activeSection === "risks" ? "text-blue-400" : "text-slate-400 hover:text-white"}`}
+              >
+                Riskit
+              </button>
+              <button
+                onClick={() => setActiveSection("frameworks")}
+                className={`transition-smooth ${activeSection === "frameworks" ? "text-blue-400" : "text-slate-400 hover:text-white"}`}
+              >
+                Viitekehykset
+              </button>
+              <button
+                onClick={() => setActiveSection("roadmap")}
+                className={`transition-smooth ${activeSection === "roadmap" ? "text-blue-400" : "text-slate-400 hover:text-white"}`}
+              >
+                Tiekartta
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
-        <div className="container mx-auto px-4 py-8 space-y-8 bg-gradient-to-b from-transparent to-blue-900/20">
-          
-          {/* Financial Analysis */}
-          <section>
-            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-financial-analysis">
-              Talousanalyysi
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center space-x-2 text-lg">
-                    <TrendingUp className="h-5 w-5 text-slate-400" />
-                    <span>Liikevaihto (2024)</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-slate-400 mb-2" data-testid="text-revenue-2024">€2.1M</div>
-                  <div className="flex items-center space-x-1">
-                    <TrendingDown className="h-4 w-4 text-red-500" />
-                    <span className="text-red-500 font-medium">-7.7%</span>
-                    <span className="text-sm text-slate-300">edellisestä vuodesta</span>
-                  </div>
-                </CardContent>
-              </Card>
+      <ScrollArea className="h-[calc(100vh-73px)]">
+        <div className="container mx-auto px-4 sm:px-6 py-8 space-y-16">
 
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center space-x-2 text-lg">
-                    <BarChart3 className="h-5 w-5 text-red-600" />
-                    <span>Liikevoitto (2024)</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-red-600 mb-2" data-testid="text-operating-profit">-€4,870</div>
-                  <div className="flex items-center space-x-1">
-                    <TrendingUp className="h-4 w-4 text-green-500" />
-                    <span className="text-green-500 font-medium">Parantunut</span>
-                    <span className="text-sm text-slate-300">-€94,816:sta</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center space-x-2 text-lg">
-                    <Target className="h-5 w-5 text-orange-600" />
-                    <span>Liikevoittomarginaali</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-orange-600 mb-2" data-testid="text-profit-margin">-0.2%</div>
-                  <div className="flex items-center space-x-1">
-                    <TrendingUp className="h-4 w-4 text-green-500" />
-                    <span className="text-green-500 font-medium">Parantunut</span>
-                    <span className="text-sm text-slate-300">-4.1%:sta</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center space-x-2 text-lg">
-                    <Users className="h-5 w-5 text-purple-600" />
-                    <span>Työntekijät</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-purple-600 mb-2" data-testid="text-employees">52</div>
-                  <div className="flex items-center space-x-1">
-                    <TrendingDown className="h-4 w-4 text-red-500" />
-                    <span className="text-red-500 font-medium">-2</span>
-                    <span className="text-sm text-slate-300">edellisestä vuodesta</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          <Separator />
-
-          {/* Company Comparison */}
-          <section>
-            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-company-comparison">
-              Yritysvertailu
-            </h2>
-            <Card>
-              <CardHeader>
-                <CardTitle>Humm Group Oy verrattuna vastaaviin suomalaisiin yrityksiin</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b">
-                        <th className="text-left py-3 px-4 font-semibold">Yritys</th>
-                        <th className="text-right py-3 px-4 font-semibold">Liikevaihto (€M)</th>
-                        <th className="text-right py-3 px-4 font-semibold">Kasvu</th>
-                        <th className="text-right py-3 px-4 font-semibold">Liikevoitto (€K)</th>
-                        <th className="text-right py-3 px-4 font-semibold">Marginaali</th>
-                        <th className="text-right py-3 px-4 font-semibold">Henkilöstö</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-b bg-slate-800/30" data-testid="row-humm-group">
-                        <td className="py-3 px-4 font-medium">Humm Group Oy</td>
-                        <td className="text-right py-3 px-4">2.1</td>
-                        <td className="text-right py-3 px-4 text-red-600">-7.7%</td>
-                        <td className="text-right py-3 px-4 text-red-600">-4.9</td>
-                        <td className="text-right py-3 px-4 text-red-600">-0.2%</td>
-                        <td className="text-right py-3 px-4">52</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4">Suomen Asiakaspalvelu Oy¹</td>
-                        <td className="text-right py-3 px-4">2.4</td>
-                        <td className="text-right py-3 px-4 text-green-400">+8.1%</td>
-                        <td className="text-right py-3 px-4 text-green-400">192</td>
-                        <td className="text-right py-3 px-4 text-green-400">8.0%</td>
-                        <td className="text-right py-3 px-4">58</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4">CX Konsultointi Oy²</td>
-                        <td className="text-right py-3 px-4">1.9</td>
-                        <td className="text-right py-3 px-4 text-green-400">+12.5%</td>
-                        <td className="text-right py-3 px-4 text-green-400">152</td>
-                        <td className="text-right py-3 px-4 text-green-400">8.0%</td>
-                        <td className="text-right py-3 px-4">43</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4">Kontaktikeskus Nord Oy³</td>
-                        <td className="text-right py-3 px-4">1.6</td>
-                        <td className="text-right py-3 px-4 text-green-400">+5.2%</td>
-                        <td className="text-right py-3 px-4 text-green-400">128</td>
-                        <td className="text-right py-3 px-4 text-green-400">8.0%</td>
-                        <td className="text-right py-3 px-4">38</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4">Asiakaskokemus Pro Oy⁴</td>
-                        <td className="text-right py-3 px-4">1.4</td>
-                        <td className="text-right py-3 px-4 text-green-400">+3.8%</td>
-                        <td className="text-right py-3 px-4 text-green-400">98</td>
-                        <td className="text-right py-3 px-4 text-green-400">7.0%</td>
-                        <td className="text-right py-3 px-4">32</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-3 px-4">Finnish Contact Solutions⁵</td>
-                        <td className="text-right py-3 px-4">1.1</td>
-                        <td className="text-right py-3 px-4 text-green-400">+6.9%</td>
-                        <td className="text-right py-3 px-4 text-green-400">66</td>
-                        <td className="text-right py-3 px-4 text-green-400">6.0%</td>
-                        <td className="text-right py-3 px-4">28</td>
-                      </tr>
-                    </tbody>
-                  </table>
+          {/* Hero Section */}
+          <section id="overview" className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center max-w-4xl mx-auto"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-sm mb-6">
+                <AlertTriangle className="h-4 w-4" />
+                <span>Kriittinen Analyysi</span>
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+                Riskianalyysi: AI-muutosjohtaminen
+              </h1>
+              {heroQuery.isLoading ? (
+                <Skeleton className="h-6 w-3/4 mx-auto bg-slate-800" />
+              ) : heroQuery.isError ? (
+                <div className="text-red-400">
+                  Tietojen lataus epäonnistui.{" "}
+                  <button onClick={() => heroQuery.refetch()} className="underline">
+                    Yritä uudelleen
+                  </button>
                 </div>
-                <div className="mt-4 text-sm text-gray-400">
-                  <div className="mb-2"><strong>Lähteet:</strong></div>
-                  <div>¹ Suomen Asiakaspalvelu Oy - PRH Y-tunnus 1234567-8, Tilastokeskus 2024</div>
-                  <div>² CX Konsultointi Oy - PRH Y-tunnus 2345678-9, toimialavertailu</div>
-                  <div>³ Kontaktikeskus Nord Oy - PRH Y-tunnus 3456789-0, Tilastokeskus</div>
-                  <div>⁴ Asiakaskokemus Pro Oy - PRH Y-tunnus 4567890-1, toimialavertailu</div>
-                  <div>⁵ Finnish Contact Solutions - PRH Y-tunnus 5678901-2, Tilastokeskus</div>
-                  <div className="mt-2 text-xs">* AI-implementointivaikutukset arvioitu markkinavertailun perusteella</div>
+              ) : (
+                <p className="text-lg sm:text-xl text-slate-300 leading-relaxed">
+                  {heroQuery.data?.subtitle || "Kattava analyysi AI-transformaation riskeistä BPO-sektorilla"}
+                </p>
+              )}
+            </motion.div>
+
+            {/* Stats Pills */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {heroQuery.isLoading ? (
+                <>
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} className="h-32 bg-slate-800" />
+                  ))}
+                </>
+              ) : heroQuery.isError ? (
+                <div className="col-span-full text-center text-red-400">
+                  Tilastoja ei voitu ladata.
                 </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          <Separator />
-
-          {/* AI Initiatives */}
-          <section>
-            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-ai-initiatives">
-              AI-aloitteet ja strategia
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Rocket className="h-5 w-5 text-slate-400" />
-                    <span>Nykyiset AI-projektit</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start space-x-3" data-testid="item-virtual-assistant">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>Virtuaalinen assistentti 50%:n ratkaisuasteella</span>
-                  </div>
-                  <div className="flex items-start space-x-3" data-testid="item-ai-customer-service">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>AI-pohjaiset asiakaspalveluratkaisut</span>
-                  </div>
-                  <div className="flex items-start space-x-3" data-testid="item-chatgpt-integration">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>ChatGPT-integraatio asiakastukeen</span>
-                  </div>
-                  <div className="flex items-start space-x-3" data-testid="item-reduced-call-time">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>Vähennetty puhelinkäsittelyaika AI:n avulla</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Users className="h-5 w-5 text-purple-600" />
-                    <span>AI-osaaminen ja rekrytointi</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start space-x-3" data-testid="item-tech-lead-hiring">
-                    <AlertCircle className="h-5 w-5 text-orange-600 mt-0.5" />
-                    <span>Aktiivinen Technology Lead -rekrytointi</span>
-                  </div>
-                  <div className="flex items-start space-x-3" data-testid="item-ai-transformation">
-                    <TrendingUp className="h-5 w-5 text-slate-400 mt-0.5" />
-                    <span>Painopiste AI-transformaatioaloitteissa</span>
-                  </div>
-                  <div className="flex items-start space-x-3" data-testid="item-testing-solutions">
-                    <Lightbulb className="h-5 w-5 text-yellow-600 mt-0.5" />
-                    <span>Uusien AI- ja automaatioratkaisujen testaus</span>
-                  </div>
-                  <div className="flex items-start space-x-3" data-testid="item-team-building">
-                    <Building2 className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>Tiimin rakentaminen "suuriin AI-muutoksiin"</span>
-                  </div>
-                </CardContent>
-              </Card>
+              ) : (
+                heroQuery.data?.stats.map((stat, idx) => (
+                  <MetricCard
+                    key={idx}
+                    icon={getIconComponent(stat.icon)}
+                    label={stat.label}
+                    value={stat.value}
+                    trend={stat.trend}
+                    source={stat.source}
+                    delay={idx * 0.1}
+                  />
+                ))
+              )}
             </div>
           </section>
 
-          <Separator />
-
-          {/* Potential Impact */}
-          <section>
-            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-potential-impact">
-              AI-toteutuksen potentiaalinen vaikutus
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="border-slate-600">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-slate-400">
-                    <TrendingUp className="h-6 w-6" />
-                    <span>Operatiivinen tehokkuus</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Prosessiautomaatio</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Lyhennetty vastausaika</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Optimoitu resurssien allokaatio</span>
-                  </div>
-                  <div className="text-2xl font-bold text-slate-400 mt-4" data-testid="text-efficiency-gain">
-                    +25-30% tehokkuuden parannus
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-green-200 dark:border-green-800">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-green-600">
-                    <Euro className="h-6 w-6" />
-                    <span>Kustannussäästöt</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Alhaisemmat asiakaspalvelukustannukset</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Vähennetty manuaalinen työ</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Parempi resurssien suunnittelu</span>
-                  </div>
-                  <div className="text-2xl font-bold text-green-600 mt-4" data-testid="text-cost-savings">
-                    15-20% kustannussäästö
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-purple-200 dark:border-purple-800">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-purple-600">
-                    <Users className="h-6 w-6" />
-                    <span>Asiakaskokemus</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">24/7 AI-pohjainen tuki</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Personoidut vuorovaikutukset</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Ennakoiva palvelu</span>
-                  </div>
-                  <div className="text-2xl font-bold text-purple-600 mt-4" data-testid="text-satisfaction-increase">
-                    +35-40% tyytyväisyys
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-orange-200 dark:border-orange-800">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2 text-orange-600">
-                    <BarChart3 className="h-6 w-6" />
-                    <span>Liikevaihdon kasvu</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Uudet AI-palvelutarjonnat</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Parantunut asiakaspito</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="text-sm">Kilpailuetu markkinoilla</span>
-                  </div>
-                  <div className="text-2xl font-bold text-orange-600 mt-4" data-testid="text-revenue-growth">
-                    +20-25% liikevaihdon kasvu
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
-
-          <Separator />
-
-          {/* Recommendations */}
-          <section>
-            <h2 className="text-3xl font-bold mb-6 text-white" data-testid="text-recommendations">
-              Suositukset AI-toteutukseen
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Target className="h-5 w-5 text-slate-400" />
-                    <span>Strategiset prioriteetit</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start space-x-3">
-                    <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
-                    <span>Keskity asiakaskokemus AI-ratkaisuihin</span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Users className="h-5 w-5 text-purple-600 mt-0.5" />
-                    <span>Kehitä omia AI-kykyjä</span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Building2 className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>Integroi AI olemassa oleviin palveluihin</span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Lightbulb className="h-5 w-5 text-yellow-600 mt-0.5" />
-                    <span>Investoi henkilöstön AI-koulutukseen</span>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-2">
-                    <Rocket className="h-5 w-5 text-purple-600" />
-                    <span>Toimenpiteet</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-start space-x-3">
-                    <Users className="h-5 w-5 text-slate-400 mt-0.5" />
-                    <span>Palkkaa Technology Lead ja AI-asiantuntijoita</span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <Rocket className="h-5 w-5 text-green-600 mt-0.5" />
-                    <span>Käynnistä AI-pilottiprojektit Q1 2026</span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <CheckCircle className="h-5 w-5 text-purple-600 mt-0.5" />
-                    <span>Kehitä AI-palveluportfolio</span>
-                  </div>
-                  <div className="flex items-start space-x-3">
-                    <TrendingUp className="h-5 w-5 text-orange-600 mt-0.5" />
-                    <span>Positionoi AI-asiakaskokemusjohtajaksi</span>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Timeline */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Calendar className="h-5 w-5 text-slate-400" />
-                  <span>AI-toteutuksen aikataulu</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center">
-                    <div className="bg-slate-700 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                      <span className="text-slate-400 font-bold">1</span>
-                    </div>
-                    <h3 className="font-semibold mb-2" data-testid="text-foundation-phase">Perusta</h3>
-                    <p className="text-sm text-slate-300 text-slate-300">
-                      Q1-Q2 2026: Tiimin rakentaminen, infrastruktuurin setup, pilottiprojektit
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <div className="bg-green-100 dark:bg-green-900 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                      <span className="text-green-600 font-bold">2</span>
-                    </div>
-                    <h3 className="font-semibold mb-2" data-testid="text-development-phase">Kehitys</h3>
-                    <p className="text-sm text-slate-300 text-slate-300">
-                      Q3-Q4 2026: Palvelukehitys, markkinatestaus, hienosäätö
-                    </p>
-                  </div>
-                  <div className="text-center">
-                    <div className="bg-purple-100 dark:bg-purple-900 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                      <span className="text-purple-600 font-bold">3</span>
-                    </div>
-                    <h3 className="font-semibold mb-2" data-testid="text-scale-phase">Skaalaus</h3>
-                    <p className="text-sm text-slate-300 text-slate-300">
-                      2027: Täysi markkinatuotanto, laajentuminen, kasvun optimointi
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </section>
-
-          {/* Syväanalyysi */}
-          <section className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-white mb-3" data-testid="text-deep-analysis-title">
-                Syväanalyysi: AI-toteutuksen vaikutusarviot
+          {/* Risk Panel */}
+          <section id="risks" className="space-y-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Shield className="h-8 w-8 text-blue-400" />
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">
+                Riskikategoriat
               </h2>
-              <p className="text-slate-300 max-w-3xl mx-auto">
-                Perusteellinen analyysi tekoälyn käyttöönoton potentiaalisista vaikutuksista Humm Group Oy:llä, 
-                vertailtuna suomalaisten asiakaspalvelun ulkoistajien kanssa.
-              </p>
             </div>
-
-            {/* Analyysin perusteet */}
-            <Card className="border-slate-600 bg-slate-800/50">
-              <CardHeader>
-                <CardTitle className="text-emerald-400 flex items-center space-x-2">
-                  <BarChart3 className="h-5 w-5" />
-                  <span>Analyysin perusteet ja lähtökohdat</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-white">Tutkimuspohjaiset arviot</h4>
-                    <ul className="space-y-2 text-sm text-slate-300">
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>McKinsey, Gartner ja Deloitte -tutkimukset</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Asiakaspalvelualan AI-ratkaisujen hyödyt 15-30%</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>PK-yritysten AI-investointien ROI 20-35% (2-3v)</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-white">Yrityskohtaiset tekijät</h4>
-                    <ul className="space-y-2 text-sm text-slate-300">
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>52 työntekijää - nopeat päätökset</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Korkeat henkilöstökustannukset (60-70%)</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Olemassa oleva AI-pohja (virtuaaliavustaja)</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Vaikutusarviot */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Operatiivinen tehokkuus */}
-              <Card className="border-slate-600 bg-gradient-to-br from-green-900/20 to-green-800/10">
-                <CardHeader>
-                  <CardTitle className="text-green-400 flex items-center space-x-2">
-                    <TrendingUp className="h-5 w-5" />
-                    <span>Operatiivinen tehokkuus</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-green-400 mb-1">15-25%</div>
-                    <div className="text-sm text-slate-400">Parannus</div>
-                  </div>
-                  <div className="space-y-3 text-sm text-slate-300">
-                    <div className="bg-slate-700/50 rounded-lg p-3">
-                      <h5 className="font-medium text-white mb-2">Perustelut:</h5>
-                      <ul className="space-y-1">
-                        <li>• Chatbotit hoitavat 50% yksinkertaisista kyselyistä</li>
-                        <li>• Älykkäät reititysjärjestelmät vähentävät odotusaikoja</li>
-                        <li>• Automaattinen analytiikka tunnistaa toistuvia ongelmia</li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Asiakastyytyväisyys */}
-              <Card className="border-slate-600 bg-gradient-to-br from-blue-900/20 to-blue-800/10">
-                <CardHeader>
-                  <CardTitle className="text-blue-400 flex items-center space-x-2">
-                    <Users className="h-5 w-5" />
-                    <span>Asiakastyytyväisyys</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-blue-400 mb-1">20-30%</div>
-                    <div className="text-sm text-slate-400">Parannus</div>
-                  </div>
-                  <div className="space-y-3 text-sm text-slate-300">
-                    <div className="bg-slate-700/50 rounded-lg p-3">
-                      <h5 className="font-medium text-white mb-2">Konkreettiset edut:</h5>
-                      <ul className="space-y-1">
-                        <li>• 24/7 saatavuus ilman lisäkustannuksia</li>
-                        <li>• Personoidut palvelukokemukset</li>
-                        <li>• Ennakoiva asiakaspalvelu</li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Liikevaihdon kasvu */}
-              <Card className="border-slate-600 bg-gradient-to-br from-purple-900/20 to-purple-800/10">
-                <CardHeader>
-                  <CardTitle className="text-purple-400 flex items-center space-x-2">
-                    <Euro className="h-5 w-5" />
-                    <span>Liikevaihdon kasvu</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-purple-400 mb-1">10-15%</div>
-                    <div className="text-sm text-slate-400">2-3 vuoden aikajänne</div>
-                  </div>
-                  <div className="space-y-3 text-sm text-slate-300">
-                    <div className="bg-slate-700/50 rounded-lg p-3">
-                      <h5 className="font-medium text-white mb-2">Kasvulähteet:</h5>
-                      <ul className="space-y-1">
-                        <li>• Uudet AI-pohjaiset palvelutuotteet</li>
-                        <li>• Parempi asiakkaiden säilyttäminen</li>
-                        <li>• Uusien markkinoiden valloitus</li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Kannattavuus */}
-              <Card className="border-slate-600 bg-gradient-to-br from-orange-900/20 to-orange-800/10">
-                <CardHeader>
-                  <CardTitle className="text-orange-400 flex items-center space-x-2">
-                    <TrendingUp className="h-5 w-5" />
-                    <span>Kannattavuuden parannus</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center mb-4">
-                    <div className="text-3xl font-bold text-orange-400 mb-1">3-5pp</div>
-                    <div className="text-sm text-slate-400">Prosenttiyksikköä</div>
-                  </div>
-                  <div className="space-y-3 text-sm text-slate-300">
-                    <div className="bg-slate-700/50 rounded-lg p-3">
-                      <h5 className="font-medium text-white mb-2">Vaikutusmekanismit:</h5>
-                      <ul className="space-y-1">
-                        <li>• Henkilöstökustannusten aleneminen 15-25%</li>
-                        <li>• Skaalautuvuuden parantuminen</li>
-                        <li>• Virheiden ja uudelleentyön väheneminen</li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              {riskCategoriesQuery.isLoading ? (
+                <>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Skeleton key={i} className="h-64 bg-slate-800" />
+                  ))}
+                </>
+              ) : riskCategoriesQuery.isError ? (
+                <div className="col-span-full">
+                  <Card className="glass-panel-risk p-6 text-center">
+                    <p className="text-red-400 mb-4">Riskikategorioiden lataus epäonnistui.</p>
+                    <Button onClick={() => riskCategoriesQuery.refetch()} variant="outline">
+                      Yritä uudelleen
+                    </Button>
+                  </Card>
+                </div>
+              ) : (
+                riskCategoriesQuery.data?.map((risk, idx) => (
+                  <RiskCard
+                    key={idx}
+                    category={risk.category}
+                    likelihood={risk.likelihood}
+                    impact={risk.impact}
+                    risks={risk.risks}
+                    mitigations={risk.mitigations}
+                    sources={risk.sources}
+                    delay={idx * 0.1}
+                  />
+                ))
+              )}
             </div>
-
-            {/* Vertailu suomalaisiin yrityksiin */}
-            <Card className="border-slate-600 bg-slate-800/50">
-              <CardHeader>
-                <CardTitle className="text-yellow-400 flex items-center space-x-2">
-                  <Building2 className="h-5 w-5" />
-                  <span>Vertailu suomalaisiin asiakaspalvelun ulkoistajiin</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-slate-600">
-                        <th className="text-left py-3 px-4 text-white font-medium">Yritys</th>
-                        <th className="text-right py-3 px-4 text-white font-medium">Liikevaihto</th>
-                        <th className="text-right py-3 px-4 text-white font-medium">LV-kasvu</th>
-                        <th className="text-right py-3 px-4 text-white font-medium">Liiketulos-%</th>
-                        <th className="text-right py-3 px-4 text-white font-medium">AI-taso</th>
-                      </tr>
-                    </thead>
-                    <tbody className="text-slate-300">
-                      <tr className="border-b border-slate-700">
-                        <td className="py-3 px-4">Epassi Group Oy</td>
-                        <td className="text-right py-3 px-4">€150M</td>
-                        <td className="text-right py-3 px-4 text-green-400">+15%</td>
-                        <td className="text-right py-3 px-4 text-green-400">+8%</td>
-                        <td className="text-right py-3 px-4">Kehittynyt</td>
-                      </tr>
-                      <tr className="border-b border-slate-700">
-                        <td className="py-3 px-4">Accountor Group</td>
-                        <td className="text-right py-3 px-4">€300M</td>
-                        <td className="text-right py-3 px-4 text-green-400">+10%</td>
-                        <td className="text-right py-3 px-4 text-green-400">+6%</td>
-                        <td className="text-right py-3 px-4">Kehittynyt</td>
-                      </tr>
-                      <tr className="border-b border-slate-700">
-                        <td className="py-3 px-4">Administer Oyj</td>
-                        <td className="text-right py-3 px-4">€50M</td>
-                        <td className="text-right py-3 px-4 text-green-400">+8%</td>
-                        <td className="text-right py-3 px-4 text-green-400">+4%</td>
-                        <td className="text-right py-3 px-4">Kehittynyt</td>
-                      </tr>
-                      <tr className="border-b border-slate-700 bg-slate-700/30">
-                        <td className="py-3 px-4 font-semibold">Humm Group (nykyinen)</td>
-                        <td className="text-right py-3 px-4">€2.1M</td>
-                        <td className="text-right py-3 px-4 text-red-400">-7.7%</td>
-                        <td className="text-right py-3 px-4 text-red-400">-0.2%</td>
-                        <td className="text-right py-3 px-4">Perustaso</td>
-                      </tr>
-                      <tr className="border-b border-slate-700 bg-green-900/20">
-                        <td className="py-3 px-4 font-semibold text-green-400">Humm Group (AI-toteutuksen jälkeen)</td>
-                        <td className="text-right py-3 px-4">€2.1M</td>
-                        <td className="text-right py-3 px-4 text-green-400">+10-15%</td>
-                        <td className="text-right py-3 px-4 text-green-400">+3-5%</td>
-                        <td className="text-right py-3 px-4 text-green-400">Kehittynyt</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div className="mt-4 text-xs text-slate-400">
-                  Lähteet: Vertailuyritysten vuosikertomus 2024, toimialavertailut
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Riskit ja haasteet */}
-            <Card className="border-slate-600 bg-gradient-to-br from-red-900/20 to-red-800/10">
-              <CardHeader>
-                <CardTitle className="text-red-400 flex items-center space-x-2">
-                  <AlertCircle className="h-5 w-5" />
-                  <span>Riskit ja kriittiset menestystekijät</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-white flex items-center space-x-2">
-                      <Target className="h-4 w-4 text-red-400" />
-                      <span>Toteutusriskit</span>
-                    </h4>
-                    <ul className="space-y-2 text-sm text-slate-300">
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Huono teknologiavalinta</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Integraatio-ongelmat</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Riittämättömät resurssit</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-white flex items-center space-x-2">
-                      <Users className="h-4 w-4 text-orange-400" />
-                      <span>Muutosjohtaminen</span>
-                    </h4>
-                    <ul className="space-y-2 text-sm text-slate-300">
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Henkilöstön vastustus</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Osaamispuute</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-orange-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Asiakkaiden epäluottamus</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-white flex items-center space-x-2">
-                      <BarChart3 className="h-4 w-4 text-purple-400" />
-                      <span>Markkinariskit</span>
-                    </h4>
-                    <ul className="space-y-2 text-sm text-slate-300">
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Kilpailijoiden nopeus</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Teknologian vanheneminen</span>
-                      </li>
-                      <li className="flex items-start space-x-2">
-                        <div className="w-1 h-1 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span>Sääntely-ympäristö</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Suositukset */}
-            <Card className="border-slate-600 bg-gradient-to-br from-emerald-900/20 to-emerald-800/10">
-              <CardHeader>
-                <CardTitle className="text-emerald-400 flex items-center space-x-2">
-                  <Lightbulb className="h-5 w-5" />
-                  <span>Strategiset suositukset</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-white text-center">Välittömät (0-6 kk)</h4>
-                    <div className="bg-emerald-950/50 rounded-lg p-4 space-y-3">
-                      <div className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">Technology Lead -rekrytointi</span>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">Virtuaaliavustajan laajentaminen</span>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">AI-analytiikkapalveluiden aloitus</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-white text-center">Keskipitkä (1-2v)</h4>
-                    <div className="bg-blue-950/50 rounded-lg p-4 space-y-3">
-                      <div className="flex items-start space-x-2">
-                        <Target className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">AI-palvelutuotteiden kehitys</span>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <Target className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">Järjestelmäintegraatiot</span>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <Target className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">Henkilöstön AI-koulutus</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-white text-center">Pitkä aikaväli (3+v)</h4>
-                    <div className="bg-purple-950/50 rounded-lg p-4 space-y-3">
-                      <div className="flex items-start space-x-2">
-                        <Rocket className="h-4 w-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">Omien AI-mallien kehitys</span>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <Rocket className="h-4 w-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">Uusille markkinoille laajentuminen</span>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <Rocket className="h-4 w-4 text-purple-400 mt-0.5 flex-shrink-0" />
-                        <span className="text-sm text-slate-300">AI-edelläkävijäpositio CX-alalla</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Yhteenveto */}
-            <Card className="border-slate-600 bg-gradient-to-br from-slate-800 to-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white flex items-center space-x-2">
-                  <CheckCircle className="h-5 w-5 text-green-400" />
-                  <span>Yhteenveto ja päätelmät</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="bg-slate-700/50 rounded-lg p-6 space-y-4">
-                  <p className="text-slate-300 leading-relaxed">
-                    <strong className="text-white">Tekoälyn käyttöönottopotentiaali:</strong> Humm Group Oy:llä on merkittävä mahdollisuus 
-                    parantaa toimintaansa AI-teknologian avulla. Vertailu samankokoisiin suomalaisiin yrityksiin osoittaa, että 
-                    onnistunut toteutus voisi nostaa yrityksen kilpailukyvyn merkittävästi.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <h5 className="font-semibold text-emerald-400">Keskeiset hyödyt:</h5>
-                      <ul className="text-sm text-slate-300 space-y-1">
-                        <li>• 15-25% operatiivisen tehokkuuden parannus</li>
-                        <li>• 20-30% asiakastyytyväisyyden kasvu</li>
-                        <li>• 10-15% liikevaihdon nousu 2-3 vuodessa</li>
-                        <li>• 3-5pp kannattavuuden parannus</li>
-                      </ul>
-                    </div>
-                    <div className="space-y-2">
-                      <h5 className="font-semibold text-yellow-400">Kriittiset menestystekijät:</h5>
-                      <ul className="text-sm text-slate-300 space-y-1">
-                        <li>• Technology Lead -rekrytointi</li>
-                        <li>• Riittävät investoinnit (10-15% liikevaihdosta)</li>
-                        <li>• Onnistunut muutosjohtaminen</li>
-                        <li>• Asiakkaiden luottamuksen säilyttäminen</li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div className="border-l-4 border-emerald-400 pl-4 bg-emerald-950/20 py-3 rounded-r">
-                    <p className="text-emerald-200 font-medium">
-                      Suositus: AI-toteutus kannattaa aloittaa asteittain pilottiprojekteilla, keskittyen aluksi 
-                      asiakaspalvelun tehostamiseen ja laajentaen vähitellen muille liiketoiminta-alueille.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </section>
 
-          {/* Return to Home CTA */}
-          <div className="text-center py-8">
-            <Link href="/">
-              <Button size="lg" className="bg-slate-600 hover:bg-slate-700" data-testid="button-return-home">
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Palaa etusivulle
-              </Button>
-            </Link>
-          </div>
+          {/* Top 5 Root Causes */}
+          <section className="space-y-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Target className="h-8 w-8 text-orange-400" />
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">
+                Top 5 Perimmäiset Syyt
+              </h2>
+            </div>
+            {rootCausesQuery.isLoading ? (
+              <Skeleton className="h-96 bg-slate-800" />
+            ) : rootCausesQuery.isError ? (
+              <Card className="glass-panel-risk p-6 text-center">
+                <p className="text-red-400 mb-4">Perimmäisten syiden lataus epäonnistui.</p>
+                <Button onClick={() => rootCausesQuery.refetch()} variant="outline">
+                  Yritä uudelleen
+                </Button>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Horizontal scroll on mobile */}
+                <div className="lg:col-span-2">
+                  <ScrollArea className="w-full">
+                    <div className="flex lg:grid lg:grid-cols-5 gap-4 pb-4">
+                      {rootCausesQuery.data?.map((cause, idx) => (
+                        <motion.button
+                          key={idx}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: idx * 0.1 }}
+                          onClick={() => setSelectedRootCause(idx)}
+                          className={`
+                            flex-shrink-0 w-[200px] lg:w-full p-4 rounded-lg border-2 transition-all
+                            ${selectedRootCause === idx
+                              ? "bg-orange-500/20 border-orange-500"
+                              : "bg-slate-800/50 border-slate-700 hover:border-slate-600"
+                            }
+                          `}
+                        >
+                          <div className="text-3xl font-bold text-orange-400 mb-2">
+                            #{idx + 1}
+                          </div>
+                          <div className="text-sm text-slate-300 font-medium line-clamp-2">
+                            {cause.title}
+                          </div>
+                          <div className="text-2xl font-bold text-white mt-2">
+                            {cause.percentage}
+                          </div>
+                        </motion.button>
+                      ))}
+                    </div>
+                    <ScrollBar orientation="horizontal" />
+                  </ScrollArea>
+                </div>
+
+                {/* Detail panel */}
+                <Card className="glass-panel-risk p-6 lg:col-span-1">
+                  {rootCausesQuery.data?.[selectedRootCause] && (
+                    <div className="space-y-4">
+                      <h3 className="text-xl font-bold text-white">
+                        {rootCausesQuery.data[selectedRootCause].title}
+                      </h3>
+                      <p className="text-slate-300 text-sm">
+                        {rootCausesQuery.data[selectedRootCause].description}
+                      </p>
+                      <div className="pt-4 border-t border-slate-700">
+                        <h4 className="text-sm font-semibold text-slate-400 mb-2">
+                          Lisätietoja:
+                        </h4>
+                        <ul className="space-y-2">
+                          {rootCausesQuery.data[selectedRootCause].details.map((detail, idx) => (
+                            <li key={idx} className="flex items-start gap-2 text-sm text-slate-300">
+                              <ChevronRight className="h-4 w-4 text-orange-400 mt-0.5 flex-shrink-0" />
+                              <span>{detail}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            )}
+          </section>
+
+          {/* Change Management Frameworks */}
+          <section id="frameworks" className="space-y-8">
+            <div className="flex items-center gap-3 mb-6">
+              <BookOpen className="h-8 w-8 text-purple-400" />
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">
+                Muutosjohtamisen viitekehykset
+              </h2>
+            </div>
+            {frameworksQuery.isLoading ? (
+              <Skeleton className="h-96 bg-slate-800" />
+            ) : frameworksQuery.isError ? (
+              <Card className="glass-panel-risk p-6 text-center">
+                <p className="text-red-400 mb-4">Viitekehysten lataus epäonnistui.</p>
+                <Button onClick={() => frameworksQuery.refetch()} variant="outline">
+                  Yritä uudelleen
+                </Button>
+              </Card>
+            ) : (
+              <Tabs defaultValue="0" className="w-full">
+                <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-slate-800/50">
+                  {frameworksQuery.data?.map((framework, idx) => (
+                    <TabsTrigger key={idx} value={String(idx)} className="data-[state=active]:bg-purple-500/20">
+                      {framework.name}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+                {frameworksQuery.data?.map((framework, idx) => (
+                  <TabsContent key={idx} value={String(idx)}>
+                    <Card className="glass-panel-risk p-6">
+                      <div className="space-y-6">
+                        <div>
+                          <h3 className="text-2xl font-bold text-white mb-3">{framework.name}</h3>
+                          <p className="text-slate-300">{framework.description}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-semibold text-slate-300 mb-3">Vaiheet:</h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {framework.phases.map((phase, pIdx) => (
+                              <div key={pIdx} className="bg-slate-800/50 rounded-lg p-3 border border-slate-700">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 font-bold text-sm">
+                                    {pIdx + 1}
+                                  </div>
+                                  <span className="text-sm text-slate-300">{phase}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="pt-4 border-t border-slate-700">
+                          <h4 className="text-lg font-semibold text-emerald-400 mb-2">
+                            AI-sovellus:
+                          </h4>
+                          <p className="text-slate-300">{framework.aiApplication}</p>
+                        </div>
+                        {framework.sources.length > 0 && (
+                          <div className="pt-4 border-t border-slate-700">
+                            <h4 className="text-sm font-semibold text-slate-500 mb-2">Lähteet:</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {framework.sources.map((source, sIdx) => (
+                                <span key={sIdx} className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded">
+                                  [{sIdx + 1}] {source}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </Card>
+                  </TabsContent>
+                ))}
+              </Tabs>
+            )}
+          </section>
+
+          {/* Risk Matrix & Mitigation Roadmap */}
+          <section id="roadmap" className="space-y-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Layers className="h-8 w-8 text-blue-400" />
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">
+                Riskimatriisi & Vähentämistiekartta
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+              {/* Risk Matrix */}
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">Riskimatriisi</h3>
+                {riskCategoriesQuery.isLoading ? (
+                  <Skeleton className="h-96 bg-slate-800" />
+                ) : riskCategoriesQuery.isError ? (
+                  <Card className="glass-panel-risk p-6 text-center">
+                    <p className="text-red-400">Matriisin lataus epäonnistui.</p>
+                  </Card>
+                ) : (
+                  <RiskMatrix risks={riskMatrixData} />
+                )}
+              </div>
+
+              {/* Mitigation Timeline */}
+              <div>
+                <h3 className="text-xl font-bold text-white mb-4">Vähentämistiekartta</h3>
+                {timelineQuery.isLoading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <Skeleton key={i} className="h-48 bg-slate-800" />
+                    ))}
+                  </div>
+                ) : timelineQuery.isError ? (
+                  <Card className="glass-panel-risk p-6 text-center">
+                    <p className="text-red-400 mb-4">Tiekartan lataus epäonnistui.</p>
+                    <Button onClick={() => timelineQuery.refetch()} variant="outline">
+                      Yritä uudelleen
+                    </Button>
+                  </Card>
+                ) : (
+                  <div className="space-y-6">
+                    {timelineQuery.data?.map((phase, idx) => (
+                      <TimelineStep
+                        key={idx}
+                        phase={phase.phase}
+                        duration={phase.duration}
+                        icon={getTimelineIcon(phase.icon)}
+                        actions={phase.actions}
+                        kpis={phase.kpis}
+                        delay={idx * 0.15}
+                        isLast={idx === (timelineQuery.data?.length || 0) - 1}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* BPO Industry Insights */}
+          <section className="space-y-8">
+            <div className="flex items-center gap-3 mb-6">
+              <Briefcase className="h-8 w-8 text-green-400" />
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">
+                BPO-alan tapaustutkimukset
+              </h2>
+            </div>
+            {caseStudiesQuery.isLoading ? (
+              <Skeleton className="h-96 bg-slate-800" />
+            ) : caseStudiesQuery.isError ? (
+              <Card className="glass-panel-risk p-6 text-center">
+                <p className="text-red-400 mb-4">Tapaustutkimusten lataus epäonnistui.</p>
+                <Button onClick={() => caseStudiesQuery.refetch()} variant="outline">
+                  Yritä uudelleen
+                </Button>
+              </Card>
+            ) : (
+              <Accordion type="single" collapsible className="w-full space-y-4">
+                {caseStudiesQuery.data?.map((study, idx) => (
+                  <AccordionItem key={idx} value={`case-${idx}`} className="glass-panel-risk border-none">
+                    <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                      <div className="flex items-center gap-4 text-left">
+                        <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold flex-shrink-0">
+                          {idx + 1}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-white">{study.company}</h3>
+                          <p className="text-sm text-slate-400 mt-1">{study.challenge}</p>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-6">
+                      <div className="space-y-4 pt-4 border-t border-slate-700">
+                        <div>
+                          <h4 className="text-sm font-semibold text-blue-400 mb-2">Lähestymistapa:</h4>
+                          <p className="text-slate-300 text-sm">{study.approach}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-emerald-400 mb-2">Tulos:</h4>
+                          <p className="text-slate-300 text-sm">{study.outcome}</p>
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-semibold text-purple-400 mb-2">Opitut asiat:</h4>
+                          <ul className="space-y-2">
+                            {study.lessonsLearned.map((lesson, lIdx) => (
+                              <li key={lIdx} className="flex items-start gap-2 text-sm text-slate-300">
+                                <span className="text-purple-400 mt-0.5">•</span>
+                                <span>{lesson}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+          </section>
+
+          {/* CTA Footer */}
+          <section className="py-12">
+            <Card className="glass-panel-risk p-8 sm:p-12 text-center border-2 border-blue-500/30">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+                  Valmis aloittamaan?
+                </h2>
+                {ctaQuery.isLoading ? (
+                  <Skeleton className="h-20 w-3/4 mx-auto bg-slate-800 mb-8" />
+                ) : ctaQuery.isError ? (
+                  <p className="text-red-400 mb-8">Suosituksen lataus epäonnistui.</p>
+                ) : (
+                  <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
+                    {ctaQuery.data?.recommendation || "AI-muutosjohtaminen vaatii huolellista suunnittelua ja riskienhallintaa. Aloita analysoimalla organisaatiosi valmiustaso ja rakentamalla selkeä tiekartta."}
+                  </p>
+                )}
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Link href="/">
+                    <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
+                      <Shield className="h-5 w-5 mr-2" />
+                      Palaa etusivulle
+                    </Button>
+                  </Link>
+                  <Button size="lg" variant="outline" className="border-slate-600 hover:bg-slate-800">
+                    <FileText className="h-5 w-5 mr-2" />
+                    Lataa analyysi (PDF)
+                  </Button>
+                </div>
+              </motion.div>
+            </Card>
+          </section>
 
         </div>
       </ScrollArea>

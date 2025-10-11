@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { TrendingUp, TrendingDown, DollarSign, Users, Target, AlertCircle, Zap, Brain, BarChart3, ArrowUpRight, ArrowDownRight, Bot, Network, Link2, GitBranch, Database, Sparkles, Info, X } from "lucide-react";
 
 interface AIConcept {
@@ -219,25 +221,28 @@ export function HummOverviewDashboard() {
   const potentialProductivityGain = financialData.revenue2024 * 0.66; // 66% tuottavuuslisäys
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 space-y-6">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-lg flex items-center justify-center">
-            <BarChart3 className="h-6 w-6 text-white" />
-          </div>
-          Humm Group Oy - Nykytila & AI-transformaation potentiaali
-        </h1>
-        <p className="text-slate-300 text-sm">
-          Tilinpäätös 2024 ja skenaarioanalyysi: Polku kohti €10M liikevaihtoa AI-teknologian avulla
-        </p>
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
+            </div>
+            <span className="leading-tight">Humm Group Oy - Nykytila & AI-transformaation potentiaali</span>
+          </h1>
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed ml-0 sm:ml-[60px]">
+            Tilinpäätös 2024 ja skenaarioanalyysi: Polku kohti €10M liikevaihtoa AI-teknologian avulla
+          </p>
+        </div>
       </div>
 
       {/* Key Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {/* Liikevaihto */}
         <Card
-          className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-slate-600/50 backdrop-blur-sm p-5 hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-blue-500/50"
+          className="glass-panel p-5 sm:p-6 cursor-pointer transition-smooth hover:border-blue-500/60 hover:-translate-y-1"
           onClick={() => setSelectedMetric('revenue')}
         >
           <div className="flex items-center justify-between mb-3">
@@ -262,7 +267,7 @@ export function HummOverviewDashboard() {
 
         {/* Liikevoitto */}
         <Card
-          className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-slate-600/50 backdrop-blur-sm p-5 hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-emerald-500/50"
+          className="glass-panel p-5 sm:p-6 cursor-pointer transition-smooth hover:border-emerald-500/60 hover:-translate-y-1"
           onClick={() => setSelectedMetric('operating')}
         >
           <div className="flex items-center justify-between mb-3">
@@ -287,7 +292,7 @@ export function HummOverviewDashboard() {
 
         {/* Henkilöstö */}
         <Card
-          className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-slate-600/50 backdrop-blur-sm p-5 hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-purple-500/50"
+          className="glass-panel p-5 sm:p-6 cursor-pointer transition-smooth hover:border-purple-500/60 hover:-translate-y-1"
           onClick={() => setSelectedMetric('employees')}
         >
           <div className="flex items-center justify-between mb-3">
@@ -308,7 +313,7 @@ export function HummOverviewDashboard() {
 
         {/* Omavaraisuusaste */}
         <Card
-          className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-slate-600/50 backdrop-blur-sm p-5 hover:scale-105 transition-transform duration-200 cursor-pointer hover:border-yellow-500/50"
+          className="glass-panel p-5 sm:p-6 cursor-pointer transition-smooth hover:border-yellow-500/60 hover:-translate-y-1"
           onClick={() => setSelectedMetric('equity')}
         >
           <div className="flex items-center justify-between mb-3">
@@ -329,15 +334,17 @@ export function HummOverviewDashboard() {
             Oma pääoma: {(financialData.equity2024 / 1000).toFixed(0)}k€
           </p>
         </Card>
+        </div>
       </div>
 
       {/* AI Transformation Potential */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Current Challenges */}
-        <Card
-          className="bg-gradient-to-br from-red-900/20 via-slate-800/90 to-slate-700/90 border-red-500/30 backdrop-blur-sm p-6 cursor-pointer hover:border-red-400/50 transition-all"
-          onClick={() => setSelectedInsight('challenges')}
-        >
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Left: Current Challenges */}
+          <Card
+            className="glass-panel border-red-500/30 p-5 sm:p-6 cursor-pointer hover:border-red-400/50 transition-smooth"
+            onClick={() => setSelectedInsight('challenges')}
+          >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
               <AlertCircle className="h-6 w-6 text-red-400" />
@@ -396,11 +403,11 @@ export function HummOverviewDashboard() {
           </div>
         </Card>
 
-        {/* Right: AI Transformation Potential */}
-        <Card
-          className="bg-gradient-to-br from-emerald-900/20 via-slate-800/90 to-slate-700/90 border-emerald-500/30 backdrop-blur-sm p-6 cursor-pointer hover:border-emerald-400/50 transition-all"
-          onClick={() => setSelectedInsight('potential')}
-        >
+          {/* Right: AI Transformation Potential */}
+          <Card
+            className="glass-panel border-emerald-500/30 p-5 sm:p-6 cursor-pointer hover:border-emerald-400/50 transition-smooth"
+            onClick={() => setSelectedInsight('potential')}
+          >
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-lg flex items-center justify-center">
               <Brain className="h-6 w-6 text-white" />
@@ -473,23 +480,24 @@ export function HummOverviewDashboard() {
             </div>
           </div>
         </Card>
+        </div>
       </div>
 
-
       {/* Key Strengths */}
-      <Card className="bg-gradient-to-br from-slate-800/90 to-slate-700/90 border-slate-600/50 backdrop-blur-sm p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-            <TrendingUp className="h-5 w-5 text-emerald-400" />
+      <div className="max-w-7xl mx-auto">
+        <Card className="glass-panel p-5 sm:p-6">
+          <div className="flex items-center gap-3 mb-4 sm:mb-6">
+            <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="h-5 w-5 text-emerald-400" />
+            </div>
+            <h2 className="text-lg sm:text-xl font-bold text-white">Hummin vahvuudet transformaatiossa</h2>
           </div>
-          <h2 className="text-xl font-bold text-white">Hummin vahvuudet transformaatiossa</h2>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
-            onClick={() => setSelectedStrength('balance')}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+            <div
+              className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
+              onClick={() => setSelectedStrength('balance')}
+            >
             <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
               <DollarSign className="h-4 w-4 text-green-400" />
             </div>
@@ -500,12 +508,12 @@ export function HummOverviewDashboard() {
                 Investointikyky AI-kehitykseen on olemassa.
               </p>
             </div>
-          </div>
+            </div>
 
-          <div
-            className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
-            onClick={() => setSelectedStrength('brand')}
-          >
+            <div
+              className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
+              onClick={() => setSelectedStrength('brand')}
+            >
             <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
               <Users className="h-4 w-4 text-blue-400" />
             </div>
@@ -515,12 +523,12 @@ export function HummOverviewDashboard() {
                 Vahva asiakaskunta ja ihmisläheinen palvelu. AI voi vahvistaa tätä kilpailuetua entisestään.
               </p>
             </div>
-          </div>
+            </div>
 
-          <div
-            className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
-            onClick={() => setSelectedStrength('agility')}
-          >
+            <div
+              className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
+              onClick={() => setSelectedStrength('agility')}
+            >
             <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
               <Zap className="h-4 w-4 text-purple-400" />
             </div>
@@ -530,12 +538,12 @@ export function HummOverviewDashboard() {
                 Pieni organisaatio (52 hlö) mahdollistaa nopean muutoksen. Suuret kilpailijat ovat hitaampia.
               </p>
             </div>
-          </div>
+            </div>
 
-          <div
-            className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
-            onClick={() => setSelectedStrength('timing')}
-          >
+            <div
+              className="flex items-start gap-3 p-3 rounded-lg cursor-pointer hover:bg-slate-700/30 transition-colors"
+              onClick={() => setSelectedStrength('timing')}
+            >
             <div className="w-8 h-8 bg-yellow-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
               <Target className="h-4 w-4 text-yellow-400" />
             </div>
@@ -545,29 +553,30 @@ export function HummOverviewDashboard() {
                 Agentic AI ja MCP-protokolla tarjoavat ensimmäistä kertaa luotettavat ratkaisut. Nyt on aika toimia.
               </p>
             </div>
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      </div>
 
       {/* AI Concepts Grid */}
-      <div className="mt-8">
+      <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-            <Brain className="h-6 w-6 text-blue-400" />
-            Keskeiset AI-konseptit transformaatiossa
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-2 flex items-center gap-2">
+            <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-blue-400 flex-shrink-0" />
+            <span>Keskeiset AI-konseptit transformaatiossa</span>
           </h2>
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-400 text-sm sm:text-base">
             Tutustukaa näihin keskeisiin teknologioihin ja käsitteisiin, jotka ovat transformaation ytimessä
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {aiConcepts.map((concept, index) => {
             const Icon = concept.icon;
             return (
               <Card
                 key={concept.id}
-                className={`bg-gradient-to-br ${concept.gradient} border ${concept.borderColor} hover:scale-105 transition-all duration-300 cursor-pointer animate-in fade-in-0 slide-in-from-bottom-4`}
+                className={`glass-panel-light bg-gradient-to-br ${concept.gradient} border ${concept.borderColor} transition-smooth cursor-pointer hover:-translate-y-1 hover:border-opacity-80 animate-in fade-in-0 slide-in-from-bottom-4`}
                 style={{ animationDelay: `${index * 100}ms` }}
                 onClick={() => setSelectedConcept(concept)}
               >
@@ -594,9 +603,17 @@ export function HummOverviewDashboard() {
         </div>
       </div>
 
+      {/* Data Sources Footer */}
+      <div className="max-w-7xl mx-auto text-center pt-8 pb-2">
+        <p className="text-xs text-slate-400">
+          Lähteet: Humm Group Oy tilinpäätös 2024 (Kaupparekisteri) |
+          BPO-alan AI-tutkimus: tekoälyn vaikutukset työaikasäästöihin ja automaatioasteisiin
+        </p>
+      </div>
+
       {/* Key Metrics Modals */}
       <Dialog open={selectedMetric === 'revenue'} onOpenChange={() => setSelectedMetric(null)}>
-        <DialogContent className="max-w-4xl bg-slate-900 border-slate-700 text-white max-h-[80vh] overflow-y-auto">
+        <DialogContent className="glass-panel max-w-4xl text-white max-h-[90vh] sm:max-h-[80vh]">
           <DialogHeader>
             <DialogTitle className="flex items-center space-x-3 text-2xl">
               <DollarSign className="h-7 w-7 text-blue-400" />
@@ -606,9 +623,10 @@ export function HummOverviewDashboard() {
               Yksityiskohtainen analyysi liikevaihdosta ja sen kehityksestä
             </DialogDescription>
           </DialogHeader>
-          <div className="mt-6 space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-3">📊 Liikevaihdon kehitys</h3>
+          <ScrollArea className="max-h-[calc(90vh-12rem)] sm:max-h-[calc(80vh-12rem)]">
+            <div className="pr-4 space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3">📊 Liikevaihdon kehitys</h3>
               <div className="bg-slate-800/50 rounded-lg p-4 space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-slate-300">2024 liikevaihto:</span>
@@ -659,14 +677,15 @@ export function HummOverviewDashboard() {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="mt-6 pt-6 border-t border-slate-700">
-            <button
+            </div>
+          </ScrollArea>
+          <div className="mt-4 pt-4 border-t border-slate-700/50">
+            <Button
               onClick={() => setSelectedMetric(null)}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-smooth"
             >
               Sulje
-            </button>
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

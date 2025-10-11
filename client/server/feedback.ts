@@ -6,13 +6,14 @@ interface FeedbackPayload {
   priority: 'low' | 'medium' | 'high';
   userContext?: string;
   timestamp: string;
+  email?: string;
 }
 
 export function registerFeedbackRoutes(app: Express) {
   // Send feedback to Zapier webhook
   app.post("/api/feedback/send", async (req: Request, res: Response) => {
     try {
-      const { feedback, category, priority, userContext }: FeedbackPayload = req.body;
+      const { feedback, category, priority, userContext, email }: FeedbackPayload = req.body;
 
       // Validation
       if (!feedback || feedback.trim().length === 0) {
@@ -41,6 +42,7 @@ export function registerFeedbackRoutes(app: Express) {
             category,
             priority,
             userContext,
+            email: email || "Ei annettu",
             timestamp: new Date().toISOString()
           });
 
@@ -64,7 +66,8 @@ export function registerFeedbackRoutes(app: Express) {
         userContext: userContext || "Not specified",
         timestamp: new Date().toISOString(),
         appVersion: "1.0.0",
-        source: "Humm Tech Lead Demo"
+        source: "Humm Tech Lead Demo",
+        email: email || "Ei annettu (anonyymi palaute)"
       };
 
       const response = await fetch(zapierWebhookUrl, {

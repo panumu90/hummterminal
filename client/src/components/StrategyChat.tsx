@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Loader2, Sparkles, User, Bot, ChevronDown, X, MessageSquare } from "lucide-react";
+import { Send, Loader2, Sparkles, User, Bot, ChevronDown, X, MessageSquare, Maximize2, Minimize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,6 +22,7 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [placeholderText, setPlaceholderText] = useState("");
@@ -211,22 +212,58 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
 
   if (!isOpen) return null;
 
+  // Minimized floating button (mobile & desktop)
+  if (isMinimized) {
+    return (
+      <motion.button
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        onClick={() => setIsMinimized(false)}
+        className="fixed bottom-4 right-4 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 shadow-2xl flex items-center justify-center hover:scale-110 transition-transform border-2 border-purple-400/50"
+      >
+        <MessageSquare className="h-6 w-6 text-white" />
+        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+        </span>
+      </motion.button>
+    );
+  }
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      className={`fixed ${
-        isExpanded
-          ? "inset-4 sm:inset-8"
-          : "bottom-6 right-6 w-[90vw] sm:w-[480px] h-[600px]"
-      } z-50 flex flex-col`}
-      style={{ willChange: 'opacity, transform' }}
-    >
-      <Card className="flex flex-col h-full bg-gradient-to-br from-purple-900/95 to-blue-900/95 border-2 border-purple-400/50 backdrop-blur-xl shadow-2xl">
+    <>
+      {/* Backdrop overlay - mobile always, desktop only when expanded */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 ${
+          isExpanded ? "" : "md:hidden"
+        }`}
+        onClick={() => isExpanded ? setIsExpanded(false) : setIsMinimized(true)}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 20 }}
+        transition={{ duration: 0.3 }}
+        className={`fixed ${
+          isExpanded
+            ? "inset-0 md:inset-4 lg:inset-8"
+            : "bottom-0 right-0 left-0 md:bottom-4 md:right-4 md:left-auto md:w-[360px] lg:w-[400px] xl:w-[440px] 2xl:w-[480px] h-[70vh] md:h-[580px] lg:h-[620px] xl:h-[650px]"
+        } z-50 flex flex-col`}
+        style={{ willChange: 'opacity, transform' }}
+      >
+      <Card className="flex flex-col h-full bg-gradient-to-br from-purple-900/95 to-blue-900/95 border-2 border-purple-400/50 backdrop-blur-xl shadow-2xl rounded-t-2xl md:rounded-2xl">
+        {/* Mobile drag handle */}
+        <div className="md:hidden w-full flex justify-center pt-2 pb-1">
+          <div className="w-12 h-1 bg-purple-300/50 rounded-full"></div>
+        </div>
+
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-purple-400/30">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-purple-400/30">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-purple-500/30 border border-purple-400/50">
               <MessageSquare className="h-5 w-5 text-purple-300" />
@@ -242,24 +279,38 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
               <p className="text-xs text-purple-200">AI-strategia-assistentti</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Minimize button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0 hover:bg-white/10 text-white"
+              onClick={() => setIsMinimized(true)}
+              title="Pienennä"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+            {/* Expand button */}
             <Button
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0 hover:bg-white/10 text-white"
               onClick={() => setIsExpanded(!isExpanded)}
+              title={isExpanded ? "Palauta" : "Laajenna koko näytölle"}
             >
-              <ChevronDown
-                className={`h-4 w-4 transition-transform ${
-                  isExpanded ? "rotate-180" : ""
-                }`}
-              />
+              {isExpanded ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
             </Button>
+            {/* Close button */}
             <Button
               variant="ghost"
               size="sm"
               className="h-8 w-8 p-0 hover:bg-white/10 text-white"
               onClick={onClose}
+              title="Sulje"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -267,7 +318,7 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
         </div>
 
         {/* Messages Area */}
-        <ScrollArea className="flex-1 p-4">
+        <ScrollArea className="flex-1 p-3 sm:p-4">
           <div className="space-y-4">
             <AnimatePresence>
               {messages.map((message, index) => (
@@ -287,7 +338,7 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
                   )}
 
                   <div
-                    className={`max-w-[80%] rounded-2xl p-3 ${
+                    className={`max-w-[85%] sm:max-w-[80%] rounded-2xl p-2.5 sm:p-3 ${
                       message.role === "user"
                         ? "bg-gradient-to-r from-emerald-600 to-blue-600 text-white"
                         : "bg-slate-800/60 text-slate-100 border border-purple-400/20"
@@ -343,11 +394,11 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
 
         {/* Example Questions - Only show if no messages yet */}
         {messages.length <= 1 && !isLoading && (
-          <div className="px-4 pb-2">
+          <div className="px-3 sm:px-4 pb-2">
             <p className="text-xs text-purple-200/60 font-medium mb-2">
               Kokeile näitä kysymyksiä:
             </p>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {exampleQuestions.slice(0, 4).map((question, idx) => (
                 <motion.button
                   key={question}
@@ -367,7 +418,7 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
         )}
 
         {/* Input Area */}
-        <div className="p-4 border-t border-purple-400/30">
+        <div className="p-3 sm:p-4 border-t border-purple-400/30">
           <form onSubmit={handleSubmit} className="relative">
             <div className="relative">
               <input
@@ -398,18 +449,20 @@ export function StrategyChat({ isOpen, onClose }: StrategyChatProps) {
             </div>
           </form>
 
-          <div className="mt-2 flex items-center justify-between text-xs text-purple-200/60">
+          <div className="mt-2 flex items-center justify-between text-[10px] sm:text-xs text-purple-200/60">
             <div className="flex items-center gap-1">
               <Sparkles className="h-3 w-3" />
-              <span>Powered by Claude 4.5 Sonnet</span>
+              <span className="hidden sm:inline">Powered by Claude 4.5 Sonnet</span>
+              <span className="sm:hidden">Claude 4.5</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>RAG-pohjainen</span>
+              <span>RAG</span>
             </div>
           </div>
         </div>
       </Card>
-    </motion.div>
+      </motion.div>
+    </>
   );
 }

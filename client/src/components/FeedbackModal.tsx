@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { X, Send, CheckCircle, AlertCircle } from "lucide-react";
+import { X, Send, CheckCircle, AlertCircle, Mail } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -18,6 +20,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const [feedback, setFeedback] = useState("");
   const [category, setCategory] = useState<Category>('other');
   const [priority, setPriority] = useState<Priority>('medium');
+  const [email, setEmail] = useState("");
+  const [wantsReply, setWantsReply] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,6 +47,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
           priority,
           userContext: window.location.pathname,
           timestamp: new Date().toISOString(),
+          email: wantsReply && email.trim() ? email.trim() : undefined,
         }),
       });
 
@@ -59,6 +64,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
         setFeedback("");
         setCategory('other');
         setPriority('medium');
+        setEmail("");
+        setWantsReply(false);
         setSubmitStatus('idle');
         onClose();
       }, 2000);
@@ -77,6 +84,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       setFeedback("");
       setCategory('other');
       setPriority('medium');
+      setEmail("");
+      setWantsReply(false);
       setSubmitStatus('idle');
       setErrorMessage("");
       onClose();
@@ -206,6 +215,41 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               <p className="text-xs text-slate-500">
                 {feedback.length} / 1000 merkkiä
               </p>
+            </div>
+
+            {/* Optional Email */}
+            <div className="space-y-3 p-4 rounded-lg border border-slate-700/50 bg-slate-800/20">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="wantsReply"
+                  checked={wantsReply}
+                  onCheckedChange={(checked) => setWantsReply(checked as boolean)}
+                  disabled={isSubmitting}
+                />
+                <Label htmlFor="wantsReply" className="text-sm text-slate-300 cursor-pointer">
+                  Haluan vastauksen palautteeseen
+                </Label>
+              </div>
+
+              {wantsReply && (
+                <div className="space-y-2 pt-2">
+                  <Label className="text-white font-medium text-sm flex items-center gap-2">
+                    <Mail className="h-4 w-4" />
+                    Sähköpostiosoitteesi
+                  </Label>
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="esimerkki@yritys.fi"
+                    className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-purple-500 focus:ring-purple-500/20"
+                    disabled={isSubmitting}
+                  />
+                  <p className="text-xs text-slate-500">
+                    Panu vastaa sinulle tähän osoitteeseen
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Error Message */}

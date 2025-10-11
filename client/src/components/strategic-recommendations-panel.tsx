@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { StrategyChat } from "./StrategyChat";
+import { BottomPromptTray } from "./BottomPromptTray";
 
 // Roadmap data structure with extensive narrative fields
 const roadmapData = [
@@ -172,11 +172,10 @@ Tämä teknologiafilosofia antaa meille **neljä konkreettista etua:**
 
 export function StrategicRecommendationsPanel() {
   const [isAgenticModalOpen, setIsAgenticModalOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(true); // Chat widget auki oletuksena
 
   return (
     <ScrollArea className="h-full bg-gradient-to-br from-slate-950 via-blue-950/30 to-slate-950">
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-10">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-10 pb-24">
 
         {/* Critical Context Header - Always Visible */}
         <motion.div
@@ -565,24 +564,8 @@ export function StrategicRecommendationsPanel() {
           </TabsContent>
         </Tabs>
 
-        {/* Strategy Chat Widget */}
-        <StrategyChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-
-        {/* Floating button to reopen chat if closed */}
-        {!isChatOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="fixed bottom-6 right-6 z-40"
-          >
-            <Button
-              onClick={() => setIsChatOpen(true)}
-              className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 shadow-2xl hover:shadow-purple-500/50 transition-all"
-            >
-              <MessageSquare className="h-6 w-6 text-white" />
-            </Button>
-          </motion.div>
-        )}
+        {/* Bottom Prompt Tray - Modern ChatGPT-style interface */}
+        <BottomPromptTray />
 
         {/* Final CTA */}
         <motion.div
