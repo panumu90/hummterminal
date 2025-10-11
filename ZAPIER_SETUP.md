@@ -4,11 +4,36 @@ This guide shows how to set up the Zapier integration for the feedback system, a
 
 ## 🎯 What This Does
 
-When a user clicks the feedback button in the Co-Pilot chat and submits feedback, it:
-1. Sends data to a Zapier webhook
-2. Zapier processes the webhook
-3. Sends an email to you with the feedback details
-4. (Optional) Logs to Google Sheets/Notion/Slack
+When a user sends feedback from the Co-Pilot chat, it:
+1. **AI-Panu detects** "Lähetä palaute: ..." or user clicks feedback button
+2. **Backend sends** data to Zapier webhook
+3. **Zapier processes** the webhook and routes to email
+4. **You receive** professional email with feedback details
+5. **(Optional)** Logs to Google Sheets/Slack/Notion
+
+**Three ways to send feedback:**
+- 💬 **Natural language**: Type "Lähetä palaute: [message]" in chat
+- 🏷️ **Badge shortcut**: Click "📨 Lähetä palaute" badge in chat footer
+- 📝 **Modal form**: Click 💬 button in Co-Pilot header
+
+---
+
+## ⚡ Quick Start (5 minutes)
+
+**Don't want to read the full guide?** Here's the fastest setup:
+
+1. **Create Zap**: [zapier.com/app/editor](https://zapier.com/app/editor)
+2. **Trigger**: Webhooks by Zapier → Catch Hook → Copy URL
+3. **Action**: Gmail → Send Email → Configure (see templates below)
+4. **Publish**: Turn Zap ON
+5. **Configure**: Add webhook URL to `.env` file:
+   ```bash
+   ZAPIER_FEEDBACK_WEBHOOK_URL=https://hooks.zapier.com/hooks/catch/YOUR_ID/
+   ```
+6. **Test**: Restart dev server, open app, send test feedback
+7. **Done!** Check your email 📧
+
+**Need details?** Continue reading below ⬇️
 
 ---
 
@@ -68,12 +93,16 @@ curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_HOOK_ID/ \
 4. Click **Continue**
 
 **Email Configuration:**
-Configure the email template:
+Configure the email template with these fields:
 
-- **To**: `your-email@example.com` (your email)
-- **Subject**: `🔔 Palaute Humm-apista: {{1__category}}`
-- **Body**: Use this template:
+- **To**: `panu@humm.fi` (tai oma sähköpostisi)
+- **From Name**: `Humm AI Demo` (optional, makes emails recognizable)
+- **Reply To**: `noreply@humm-demo.local` (optional)
+- **Subject**: `🔔 Palaute: {{1__category}} [{{1__priority}}]`
 
+- **Body Type**: Choose **"HTML"** for better formatting, or **"Plain Text"** for simplicity
+
+**Plain Text Template** (yksinkertainen):
 ```
 📨 UUSI PALAUTE HUMM-APPISTA
 
@@ -86,18 +115,105 @@ Configure the email template:
 
 🏷️  KATEGORIA:  {{1__category}}
 ⚡  PRIORITEETTI: {{1__priority}}
-📍  SIJAINTI:    {{1__userContext}}
-⏰  AIKALEIMA:   {{1__timestamp}}
+📍  SIJAINTI:    {{1__userContext__page}}
+🔧  LÄHDE:       {{1__userContext__source}}
+⏰  AIKALEIMA:   {{1__userContext__timestamp}}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔧  Lähde:    {{1__source}}
-📦  Versio:   {{1__appVersion}}
+Tämä palaute lähetettiin automaattisesti Humm Tech Lead -sovelluksesta
+käyttämällä AI-Panu co-pilotin Zapier-integraatiota.
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Tämä palaute lähetettiin automaattisesti Humm Tech Lead -sovelluksesta käyttämällä Zapier-integraatiota.
+Demo-arvo:
+✅ AI tunnistaa intention ("lähetä palaute")
+✅ Laukaisee todellisen toimenpiteen (webhook → email)
+✅ Skaalautuva pattern (sama toimii CRM, Slack, Sheets, etc.)
 ```
+
+**HTML Template** (parempi muotoilu):
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+    .header h1 { margin: 0; font-size: 24px; }
+    .content { background: #f8f9fa; padding: 20px; border: 1px solid #e9ecef; }
+    .feedback-box { background: white; padding: 15px; border-left: 4px solid #667eea; margin: 15px 0; border-radius: 4px; }
+    .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .meta-item { background: white; padding: 10px; border-radius: 4px; }
+    .meta-label { font-size: 12px; color: #6c757d; text-transform: uppercase; font-weight: 600; }
+    .meta-value { font-size: 14px; color: #212529; margin-top: 5px; }
+    .footer { background: #212529; color: #adb5bd; padding: 15px; border-radius: 0 0 8px 8px; font-size: 12px; text-align: center; }
+    .priority-high { color: #dc3545; font-weight: bold; }
+    .priority-medium { color: #fd7e14; font-weight: bold; }
+    .priority-low { color: #28a745; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🤖 Uusi palaute AI-Panulta</h1>
+    <p style="margin: 5px 0 0 0; opacity: 0.9;">Humm Group Oy Tech Lead Demo</p>
+  </div>
+
+  <div class="content">
+    <h2 style="margin-top: 0;">📝 Palaute</h2>
+    <div class="feedback-box">
+      {{1__feedback}}
+    </div>
+
+    <div class="meta">
+      <div class="meta-item">
+        <div class="meta-label">🏷️ Kategoria</div>
+        <div class="meta-value">{{1__category}}</div>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label">⚡ Prioriteetti</div>
+        <div class="meta-value priority-{{1__priority}}">{{1__priority}}</div>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label">📍 Sijainti</div>
+        <div class="meta-value">{{1__userContext__page}}</div>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label">🔧 Lähde</div>
+        <div class="meta-value">{{1__userContext__source}}</div>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label">⏰ Aikaleima</div>
+        <div class="meta-value">{{1__userContext__timestamp}}</div>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label">💬 Viesti-ID</div>
+        <div class="meta-value" style="font-family: monospace; font-size: 11px;">{{1__timestamp}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p style="margin: 0 0 10px 0;">
+      <strong>Tämä on esimerkki agentti-orkestraatiosta</strong>
+    </p>
+    <p style="margin: 0;">
+      AI-Panu (Claude) → Zapier Webhook → Gmail<br>
+      Sama pattern toimii: CRM, Slack, Sheets, Salesforce, etc.
+    </p>
+  </div>
+</body>
+</html>
+```
+
+**Zapier Field Mapping Tips:**
+- Click on the field → it shows available data from webhook
+- Look for fields like: `1. Feedback`, `1. Category`, `1. Priority`
+- For nested objects: `1. User Context Page`, `1. User Context Source`
+- You can add custom text + variables together
 
 5. Click **Continue**
 6. Click **Test Action** (you should receive a test email)
@@ -133,17 +249,34 @@ npm run dev
 
 ## 🧪 Test the Integration
 
-### Test from UI:
+### Test from UI (3 different ways):
 
+**Method 1: Natural Language (recommended)**
 1. Open `http://localhost:5000`
-2. Look at the **Co-Pilot Chat** (left panel)
-3. Click the **💬 Message icon** in the header
-4. Fill in the feedback form:
+2. Go to **Co-Pilot Chat** (Johdon Co-Pilot tab)
+3. Type in chat: `Lähetä palaute: Zapier integraatio toimii loistavasti!`
+4. Press Enter
+5. Wait for success message: ✅ "Lähetin palautteesi Panulle sähköpostiin"
+6. Check your email! 📧
+
+**Method 2: Badge Shortcut**
+1. Open Co-Pilot Chat
+2. Scroll to footer (below input box)
+3. Click **"📨 Lähetä palaute"** badge
+4. Input field auto-fills with "Lähetä palaute: "
+5. Type your message and press Enter
+6. Check email!
+
+**Method 3: Modal Form**
+1. Open Co-Pilot Chat
+2. Click **💬 icon** in header (next to expand button)
+3. Fill in the feedback form:
    - **Category**: UI/UX
    - **Priority**: Medium
    - **Feedback**: "Testing Zapier integration - works great!"
-5. Click **"Lähetä palaute"**
-6. Check your email - you should receive the feedback!
+4. Click **"Lähetä palaute"**
+5. Wait for success animation
+6. Check your email!
 
 ### Test from API:
 
