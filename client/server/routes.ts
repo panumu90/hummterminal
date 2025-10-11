@@ -10,6 +10,7 @@ import { registerRAGRoutes } from "./rag/ragRoutes.js";
 import { vectorStore } from "./rag/vectorStore.js";
 import { getChatwootClient } from "./lib/chatwoot-client";
 import { AIOrchestrator } from "./lib/ai-orchestrator";
+import { registerFeedbackRoutes } from "./feedback";
 
 // DON'T DELETE THIS COMMENT - Blueprint: javascript_anthropic integration
 /*
@@ -34,6 +35,9 @@ const chatRequestSchema = z.object({
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register RAG (Retrieval-Augmented Generation) routes
   registerRAGRoutes(app);
+
+  // Register Feedback routes (Zapier integration)
+  registerFeedbackRoutes(app);
 
   // ==========================================================================
   // CHATWOOT WEBHOOK - AI ORCHESTRATION

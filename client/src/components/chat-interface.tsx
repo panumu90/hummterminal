@@ -14,6 +14,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { FeedbackModal } from "./FeedbackModal";
 
 interface ChatMessage {
   content: string;
@@ -1548,6 +1549,7 @@ export function ChatInterface() {
   const [selectedContext, setSelectedContext] = useState<ContextType>("general");
   const [isExpanded, setIsExpanded] = useState(false);
   const [mcpModalOpen, setMcpModalOpen] = useState(false);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [followUpSuggestions, setFollowUpSuggestions] = useState<string[]>([]);
   const [placeholderText, setPlaceholderText] = useState("Kysy mitä tahansa AI-asiakaspalvelusta johdolle...");
 
@@ -1921,10 +1923,80 @@ export function ChatInterface() {
     }
   });
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const message = inputValue.trim();
     if (!message || chatMutation.isPending) return;
 
+    // Check for feedback pattern
+    const feedbackPattern = /^lähetä palaute:?\s*/i;
+    if (feedbackPattern.test(message)) {
+      const feedbackText = message.replace(feedbackPattern, '').trim();
+
+      if (!feedbackText) {
+        toast({
+          title: "Tyhjä palaute",
+          description: "Kirjoita palaute muodossa: Lähetä palaute: [viestisi tähän]",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Add user message
+      setMessages(prev => [...prev, {
+        content: message,
+        isUser: true,
+        timestamp: Date.now()
+      }]);
+
+      setInputValue("");
+
+      try {
+        const response = await fetch("/api/feedback/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            feedback: feedbackText,
+            category: 'other',
+            priority: 'medium',
+            userContext: {
+              page: window.location.pathname,
+              timestamp: new Date().toISOString(),
+              source: 'chat'
+            }
+          })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Add success message to chat
+          setMessages(prev => [...prev, {
+            content: data.devMode
+              ? "✅ Palaute vastaanotettu (dev mode - ei lähetetty sähköpostia). Tuotannossa tämä lähtisi Panulle sähköpostiin Zapierin kautta."
+              : "✅ Kiitos! Lähetin palautteesi Panulle sähköpostiin. Hän vastaa pian.",
+            isUser: false,
+            timestamp: Date.now()
+          }]);
+        } else {
+          throw new Error("Palautteen lähetys epäonnistui");
+        }
+      } catch (error) {
+        // Add error message to chat
+        setMessages(prev => [...prev, {
+          content: "❌ Valitettavasti palautteen lähetys epäonnistui. Yritä uudelleen tai käytä palautenappia yläreunassa.",
+          isUser: false,
+          timestamp: Date.now()
+        }]);
+
+        toast({
+          title: "Virhe",
+          description: "Palautteen lähetys epäonnistui",
+          variant: "destructive"
+        });
+      }
+      return;
+    }
+
+    // Continue with normal chat flow if not feedback
     // Add user message
     setMessages(prev => [...prev, {
       content: message,
@@ -2012,20 +2084,31 @@ export function ChatInterface() {
               <p className="text-xs opacity-90">Proaktiivinen AI-assistentti strategiseen päätöksentekoon</p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleExpanded}
-            className="text-primary-foreground hover:bg-primary-foreground/20 p-1"
-            data-testid="expand-button"
-            title={isExpanded ? "Pienennä chat" : "Laajenna chat"}
-          >
-            {isExpanded ? (
-              <Minimize2 className="h-4 w-4" />
-            ) : (
-              <Maximize2 className="h-4 w-4" />
-            )}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setFeedbackModalOpen(true)}
+              className="text-primary-foreground hover:bg-primary-foreground/20 p-2"
+              title="Lähetä palautetta Panulle"
+            >
+              <MessageCircle className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleExpanded}
+              className="text-primary-foreground hover:bg-primary-foreground/20 p-1"
+              data-testid="expand-button"
+              title={isExpanded ? "Pienennä chat" : "Laajenna chat"}
+            >
+              {isExpanded ? (
+                <Minimize2 className="h-4 w-4" />
+              ) : (
+                <Maximize2 className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
 
 
@@ -2154,18 +2237,26 @@ export function ChatInterface() {
             </PulseButton>
           </div>
           <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
-            <span>💼 Räätälöidyt vastaukset Humm Group Oy:n johdolle</span>
+            <span>💡 <span className="font-medium text-slate-300">Vinkki:</span> Kirjoita "Lähetä palaute: ..." niin AI lähettää sen Panulle sähköpostiin</span>
             <div className="flex space-x-2">
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
+                className="cursor-pointer hover:opacity-80 bg-purple-700/50 text-purple-200 border border-purple-500/30"
+                onClick={() => setInputValue("Lähetä palaute: ")}
+                data-testid="example-feedback"
+              >
+                📨 Lähetä palaute
+              </Badge>
+              <Badge
+                variant="secondary"
                 className="cursor-pointer hover:opacity-80 bg-slate-700 text-slate-200"
                 onClick={() => setInputValue("Millä aikataululla voimme toteuttaa AI-asiakaspalvelun?")}
                 data-testid="example-timeline"
               >
                 Aikataulu
               </Badge>
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className="cursor-pointer hover:opacity-80 bg-slate-700 text-slate-200"
                 onClick={() => setInputValue("Mikä on ROI AI-investoinnille asiakaspalvelussa?")}
                 data-testid="example-roi"
@@ -2877,6 +2968,12 @@ export function ChatInterface() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Feedback Modal */}
+      <FeedbackModal
+        isOpen={feedbackModalOpen}
+        onClose={() => setFeedbackModalOpen(false)}
+      />
     </div>
   );
 }
