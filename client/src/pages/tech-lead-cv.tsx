@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, MessageCircle, Sparkles } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
+import { TechLeadChat } from "@/components/TechLeadChat";
 
 export default function TechLeadCV() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -607,6 +610,78 @@ export default function TechLeadCV() {
         </nav>
 
         <main className="wrap" role="main">
+          {/* Hero Card with AI Chat CTA */}
+          <div className="hero-card" style={{
+            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)',
+            border: '1px solid rgba(139, 92, 246, 0.2)',
+            borderRadius: 'var(--radius)',
+            padding: '2rem',
+            marginBottom: '2rem',
+            marginTop: '2rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'start', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <div style={{
+                background: 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
+                borderRadius: '12px',
+                padding: '1rem',
+                flexShrink: 0
+              }}>
+                <Sparkles style={{ width: '2rem', height: '2rem', color: 'white' }} />
+              </div>
+
+              <div style={{ flex: 1, minWidth: '250px' }}>
+                <h2 style={{
+                  fontSize: '1.5rem',
+                  fontWeight: 700,
+                  marginBottom: '0.5rem',
+                  background: 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>
+                  Keskustele AI-Panun kanssa
+                </h2>
+                <p style={{
+                  color: 'var(--muted)',
+                  marginBottom: '1rem',
+                  lineHeight: 1.6
+                }}>
+                  Kysy mitä tahansa hakemuksestani, €10M visiosta tai teknologia-strategiastani.
+                  AI-Panu vastaa reaaliaikaisesti käyttäen omaa tietämystään ja kokemustaan.
+                </p>
+
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button
+                      className="inline-flex items-center gap-2"
+                      style={{
+                        background: 'linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%)',
+                        color: 'white',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '8px',
+                        border: 'none',
+                        fontSize: '0.95rem',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'transform 0.2s'
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                      <MessageCircle style={{ width: '1.25rem', height: '1.25rem' }} />
+                      Avaa keskustelu
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="right"
+                    className="w-full sm:w-[540px] p-0 bg-slate-900 border-slate-700"
+                  >
+                    <TechLeadChat variant="standalone" autoGreet={true} />
+                  </SheetContent>
+                </Sheet>
+              </div>
+            </div>
+          </div>
+
           <section className="section collapsible-section" aria-labelledby="h-sum">
             <p className="eyebrow">Tiivistelmä</p>
             <h1 id="h-sum">Tech Lead -hakemus Humm Group Oy:lle</h1>
