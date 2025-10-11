@@ -1,17 +1,19 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { PageHeader } from "@/components/page-header";
 import { CaseCard } from "@/components/case-card";
 import { ChatInterface } from "@/components/chat-interface";
-import TechLeadDashboard from "@/components/tech-lead-dashboard";
-import StrategicRoadmap from "@/components/strategic-roadmap";
-import NewsFeed from "@/components/news-feed";
-import { HummOverviewDashboard } from "@/components/humm-overview-dashboard";
-import { StrategicRecommendationsPanel } from "@/components/strategic-recommendations-panel";
-import { CSPortalModal } from "@/components/cs-portal-modal";
 import { HummAILogo } from "@/components/humm-ai-logo";
-import { RAGInterface } from "@/components/rag-interface";
+
+// Lazy load heavy components (only loaded when tab is opened)
+const TechLeadDashboard = lazy(() => import("@/components/tech-lead-dashboard"));
+const StrategicRoadmap = lazy(() => import("@/components/strategic-roadmap"));
+const NewsFeed = lazy(() => import("@/components/news-feed"));
+const HummOverviewDashboard = lazy(() => import("@/components/humm-overview-dashboard").then(m => ({ default: m.HummOverviewDashboard })));
+const StrategicRecommendationsPanel = lazy(() => import("@/components/strategic-recommendations-panel").then(m => ({ default: m.StrategicRecommendationsPanel })));
+const CSPortalModal = lazy(() => import("@/components/cs-portal-modal").then(m => ({ default: m.CSPortalModal })));
+const RAGInterface = lazy(() => import("@/components/rag-interface").then(m => ({ default: m.RAGInterface })));
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PulseButton } from "@/components/ui/pulse-button";
@@ -1097,24 +1099,26 @@ export default function Home() {
 
       {/* Netflix-style Split Layout */}
       <div className="flex flex-col lg:flex-row min-h-screen lg:min-h-0 flex-1">
-        {/* Left Panel - AI Assistant (35%) */}
-        <div className="w-full lg:w-[35%] bg-slate-800 lg:border-r border-slate-700 flex flex-col min-h-[60vh] lg:min-h-0">
-          <div className="px-4 sm:px-6 lg:px-6 py-4 lg:py-5 border-b border-slate-700">
-            <div className="flex items-center space-x-3 mb-2">
-              <Rocket className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400" />
-              <h2 className="text-lg lg:text-xl font-semibold text-white">Johdon Co-Pilot</h2>
+        {/* Left Panel - AI Assistant (35%) - Hidden when strategy is active */}
+        {activeView !== 'strategy' && (
+          <div className="w-full lg:w-[35%] bg-slate-800 lg:border-r border-slate-700 flex flex-col min-h-[60vh] lg:min-h-0">
+            <div className="px-4 sm:px-6 lg:px-6 py-4 lg:py-5 border-b border-slate-700">
+              <div className="flex items-center space-x-3 mb-2">
+                <Rocket className="h-5 w-5 lg:h-6 lg:w-6 text-blue-400" />
+                <h2 className="text-lg lg:text-xl font-semibold text-white">Johdon Co-Pilot</h2>
+              </div>
+              <p className="text-slate-300 text-xs lg:text-sm">
+                Proaktiivinen strateginen assistentti Hummin johdolle
+              </p>
             </div>
-            <p className="text-slate-300 text-xs lg:text-sm">
-              Proaktiivinen strateginen assistentti Hummin johdolle
-            </p>
+            <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden">
+              <ChatInterface />
+            </div>
           </div>
-          <div className="flex-1 min-h-0 overflow-y-auto lg:overflow-hidden">
-            <ChatInterface />
-          </div>
-        </div>
+        )}
 
-        {/* Right Panel - Smart Content Switcher (65%) */}
-        <div className="w-full lg:w-[65%] bg-slate-900 flex flex-col min-h-[60vh] lg:min-h-0 border-t lg:border-t-0 border-slate-700">
+        {/* Right Panel - Smart Content Switcher - Full width when strategy active */}
+        <div className={`w-full ${activeView === 'strategy' ? 'lg:w-full' : 'lg:w-[65%]'} bg-slate-900 flex flex-col min-h-[60vh] lg:min-h-0 border-t lg:border-t-0 border-slate-700`}>
           <div className="px-4 sm:px-6 lg:px-8 py-4 lg:py-6 bg-slate-800 border-b border-slate-700">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 lg:space-y-0">
               <div>
@@ -1231,7 +1235,9 @@ export default function Home() {
               {/* Overview Dashboard View */}
               <TabsContent value="overview" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
                 <div className="h-full overflow-y-auto">
-                  <HummOverviewDashboard />
+                  <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-96 w-full" /></div>}>
+                    <HummOverviewDashboard />
+                  </Suspense>
                 </div>
               </TabsContent>
 
@@ -1305,33 +1311,43 @@ export default function Home() {
               {/* Tech Lead Dashboard View */}
               <TabsContent value="dashboard" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
                 <div className="h-full overflow-y-auto">
-                  <TechLeadDashboard />
+                  <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-96 w-full" /></div>}>
+                    <TechLeadDashboard />
+                  </Suspense>
                 </div>
               </TabsContent>
 
               {/* Strategic Roadmap View */}
               <TabsContent value="roadmap" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
                 <div className="h-full overflow-y-auto">
-                  <StrategicRoadmap />
+                  <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-96 w-full" /></div>}>
+                    <StrategicRoadmap />
+                  </Suspense>
                 </div>
               </TabsContent>
 
               {/* News Feed View */}
               <TabsContent value="news" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
                 <div className="h-full overflow-y-auto">
-                  <NewsFeed />
+                  <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-96 w-full" /></div>}>
+                    <NewsFeed />
+                  </Suspense>
                 </div>
               </TabsContent>
 
               {/* Strategic Recommendations View */}
               <TabsContent value="strategy" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
-                <StrategicRecommendationsPanel />
+                <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-96 w-full" /></div>}>
+                  <StrategicRecommendationsPanel />
+                </Suspense>
               </TabsContent>
 
               {/* RAG View */}
               <TabsContent value="rag" className="h-full mt-0 animate-in fade-in-0 duration-600 delay-200">
                 <div className="h-full overflow-y-auto p-4 sm:p-6 lg:p-8">
-                  <RAGInterface />
+                  <Suspense fallback={<div className="flex items-center justify-center h-full"><Skeleton className="h-96 w-full" /></div>}>
+                    <RAGInterface />
+                  </Suspense>
                 </div>
               </TabsContent>
             </Tabs>
@@ -1340,10 +1356,14 @@ export default function Home() {
       </div>
 
       {/* CS Portal Modal */}
-      <CSPortalModal
-        isOpen={csPortalModalOpen}
-        onClose={() => setCsPortalModalOpen(false)}
-      />
+      {csPortalModalOpen && (
+        <Suspense fallback={null}>
+          <CSPortalModal
+            isOpen={csPortalModalOpen}
+            onClose={() => setCsPortalModalOpen(false)}
+          />
+        </Suspense>
+      )}
 
       {/* Tech Lead Modal */}
       <TechLeadModal
